@@ -1,0 +1,102 @@
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("InterVariable.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("InterVariable-Italic.woff2") format("woff2");
+}
+
+:root {
+  /* Tailwind Neutral */
+  --neutral-50: #fafafa;
+  --neutral-100: #f5f5f5;
+  --neutral-200: #e5e5e5;
+  --neutral-300: #d4d4d4;
+  --neutral-400: #a3a3a3;
+  --neutral-500: #737373;
+  --neutral-600: #525252;
+  --neutral-700: #404040;
+  --neutral-800: #262626;
+  --neutral-900: #171717;
+  --neutral-950: #0a0a0a;
+  --neutral-750: #333333;
+
+  --primary-50: #eff7ff;
+  --primary-100: #DDEEFE;
+  --primary-200: #BCE0FD;
+  --primary-300: #87CBFC;
+  --primary-400: #4CB0F9;
+  --primary-500: #2493ef;
+  --primary-600: #1373d8;
+  --primary-700: #0f5bbc;
+  --primary-800: #124c99;
+  --primary-900: #15427c;
+  --primary-950: #0f294e;
+
+  --infused-50: #F6F9FD;
+  --infused-100: #ECF4FB;
+  --infused-200: #D8E6F3;
+  --infused-300: #BAD3E8;
+  --infused-400: #82A6C8;
+  --infused-500: #547CA4;
+  --infused-600: #3A5D85;
+  --infused-700: #2A486F;
+  --infused-800: #1B3252;
+  --infused-900: #10223E;
+  --infused-950: #050E25;
+
+  font-family: "Inter", system-ui, sans-serif;
+  font-optical-sizing: auto;
+  font-style: normal;
+  font-variation-settings: "slnt" 0;
+
+  color-scheme: dark;
+  background: var(--neutral-900);
+  color: var(--neutral-50);
+  accent-color: var(--primary-400);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+input,
+button,
+select,
+textarea {
+  font: inherit;
+}
+
+a {
+  text-decoration: inherit;
+  color: inherit;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.scr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
