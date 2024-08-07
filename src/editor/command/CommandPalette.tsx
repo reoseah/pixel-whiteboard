@@ -4,7 +4,7 @@ import { SearchIcon } from "../icons-16px"
 import { AppState } from "../app/App"
 
 import "./CommandPalette.css"
-import Command from "./Command"
+import Command from "./command"
 
 export const CommandPalette = (props: { commands: Command[], app: AppState }) => {
     const [query, setQuery] = createSignal("")
@@ -61,12 +61,14 @@ export const CommandPalette = (props: { commands: Command[], app: AppState }) =>
                             class="command-palette-item"
                             onClick={() => handleCommandClick(command)}
                         >
-                            <div class="command-palette-icon">
-                                <Show when={command.icon}>
-                                    <Dynamic component={command.icon} />
-                                </Show>
-                            </div>
-                            {command.label}
+                            <button>
+                                <div class="command-palette-icon">
+                                    <Show when={command.icon}>
+                                        <Dynamic component={command.icon} />
+                                    </Show>
+                                </div>
+                                {command.label}
+                            </button>
                         </li>
                     )}
                 </For>

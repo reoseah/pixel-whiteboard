@@ -1,10 +1,10 @@
-import { Component, createSignal, For, JSX, Show } from 'solid-js'
-import { createStore } from 'solid-js/store'
+import { Component, createEffect, createSignal, For, JSX, Show } from 'solid-js'
+import { createStore, reconcile } from 'solid-js/store'
 import { Dynamic } from 'solid-js/web';
 import { CommandIcon, CursorIcon, FrameIcon } from '../icons-16px';
 import { CommandPalette } from '../command/CommandPalette';
 import './App.css'
-import Command from '../command/Command';
+import Command from '../command/command';
 
 function App() {
   const app = createAppState();
@@ -28,18 +28,6 @@ export type AppNode = { type: string, parents: string[], [data: string]: any }
 
 export type FrameNode = AppNode & { type: "frame", parents: never[], title: string | null, x: number, y: number, width: number, height: number };
 
-export const builtin_commands: Command[] = [
-  {
-    label: "Test command",
-    icon: CursorIcon,
-    execute: () => console.log("Test command executed")
-  },
-  {
-    label: "Clear workspace",
-    execute: (app) => app.setNodes({})
-  }
-]
-
 export type AppState = ReturnType<typeof createAppState>
 
 export const createAppState = () => {
@@ -61,7 +49,28 @@ export const createAppState = () => {
   })
   // setSelectedNodes(["test"])
 
+  const [tools, setTools] = createSignal(builtin_tools);
   const [selectedTool, setSelectedTool] = createSignal("select")
+
+  createEffect(() => {
+    const handleKeybinds = (e: KeyboardEvent) => {
+      for (const tool of tools()) {
+        for (const keybind of tool.keybinds) {
+          if (e.key === keybind.key
+            && Boolean(keybind.shift) === e.shiftKey
+            && Boolean(keybind.ctrl) === e.ctrlKey
+            && Boolean(keybind.alt) === e.altKey) {
+              
+            setSelectedTool(tool.id)
+            e.preventDefault();
+            return;
+          }
+        }
+      }
+    }
+    document.addEventListener("keydown", handleKeybinds)
+    return () => document.removeEventListener("keydown", handleKeybinds)
+  })
 
   return {
     nodes,
@@ -70,8 +79,62 @@ export const createAppState = () => {
     setSelectedNodes,
     get selectedTool() { return selectedTool() },
     setSelectedTool,
+    tools
   }
 }
+
+export type Keybind = {
+  key: string,
+  shift?: true,
+  ctrl?: true,
+  alt?: true
+}
+
+export const builtin_commands: Command[] = [
+  {
+    label: "Test command",
+    icon: CursorIcon,
+    execute: () => console.log("Test command executed")
+  },
+  {
+    label: "Clear workspace",
+    execute: (app) => app.setNodes(reconcile({}))
+  }
+]
+
+export type Tool = {
+  id: string,
+  label: string,
+  icon: Component<{ selected: boolean }>,
+  keybinds: Keybind[],
+  keyshortcuts: string
+  // TODO on select, on deselect, on workspace click/move/release handlers, etc
+}
+
+const builtin_tools: Tool[] = [
+  {
+    id: "select",
+    label: "Select&thinsp;/&thinsp;Move",
+    icon: (props) => (<CursorIcon filled={props.selected} />),
+    keybinds: [{ key: "V" }],
+    keyshortcuts: "V"
+  },
+  {
+    id: "frame",
+    label: "Frame",
+    icon: FrameIcon,
+    keybinds: [{ key: "F" }],
+    keyshortcuts: "F"
+  },
+  {
+    id: "actions",
+    label: "Actions",
+    icon: CommandIcon,
+    keybinds: [{ key: "K", ctrl: true }],
+    keyshortcuts: "Ctrl+K"
+  }
+]
+
 
 function WorkspaceView(props: { app: AppState }) {
   const frames = () => Object.entries(props.app.nodes).filter(([_, node]) => node.type === "frame")
@@ -112,35 +175,6 @@ function FrameView(props: { frame: FrameNode, selected?: boolean, onSelect?: () 
     </div>
   )
 }
-
-export type Tool = {
-  id: string,
-  label: string,
-  icon: Component<{ selected: boolean }>,
-  keyshortcuts: string
-  // TODO on select, on deselect, on workspace click/move/release handlers, etc
-}
-
-const builtin_tools: Tool[] = [
-  {
-    id: "select",
-    label: "Select&thinsp;/&thinsp;Move",
-    icon: (props) => (<CursorIcon filled={props.selected} />),
-    keyshortcuts: "V"
-  },
-  {
-    id: "frame",
-    label: "Frame",
-    icon: FrameIcon,
-    keyshortcuts: "F"
-  },
-  {
-    id: "actions",
-    label: "Actions",
-    icon: CommandIcon,
-    keyshortcuts: "Ctrl+K"
-  }
-]
 
 function Toolbar(props: {
   app: AppState
