@@ -1,4 +1,4 @@
-export function Cursor(props: {
+export function CursorIcon(props: {
   filled?: boolean
 }) {
   return (
@@ -8,7 +8,7 @@ export function Cursor(props: {
   )
 }
 
-export function Frame() {
+export function FrameIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M1.5 4.5H14.5M1.5 11.5H14.5M4.5 14.5V1.5M11.5 1.5V14.5" stroke="currentColor" stroke-linecap="round" />
@@ -16,7 +16,7 @@ export function Frame() {
   )
 }
 
-export function Search() {
+export function SearchIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="7" cy="7" r="5.5" stroke="currentColor" />
@@ -25,7 +25,7 @@ export function Search() {
   )
 }
 
-export function Command() {
+export function CommandIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M2.5 3.5L7.5 8.5L2.5 13.5M7.5 13.5H14.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
