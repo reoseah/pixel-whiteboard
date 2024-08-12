@@ -1,9 +1,10 @@
-import { Accessor, createEffect, createMemo, createSignal, For, JSX, onCleanup, Show } from "solid-js"
+import "./CommandPalette.css"
+
+import { Accessor, createMemo, createSignal, For, type JSX, onCleanup, onMount, Show } from "solid-js"
 import { Dynamic } from "solid-js/web"
 import { SearchIcon } from "../icons-16px"
-import { AppState } from "../app/App"
+import { AppState } from "../App"
 
-import "./CommandPalette.css"
 import Command from "./command"
 
 export const CommandPalette = (props: { commands: Command[], app: AppState }) => {
@@ -11,24 +12,22 @@ export const CommandPalette = (props: { commands: Command[], app: AppState }) =>
 
     const filteredCommands = createMemo(() => {
         const queryLower = query().toLowerCase()
-        return props.commands.filter(command => command.label.toLowerCase().includes(queryLower))
+        
+        return props.commands
+            .filter(command => command.label.toLowerCase().includes(queryLower))
+            .filter(command => command.isDisabled === undefined || !command.isDisabled(props.app))
     })
 
     const [ref, setRef] = createSignal<HTMLDivElement>()
     useClickOutside(ref, () => { props.app.setSelectedTool("select") })
 
-    createEffect(() => {
-        const handleEscape = (event: KeyboardEvent) => {
-            if (event.key === "Escape") {
-                props.app.setSelectedTool("select")
-            }
+    const handleEscape = (event: KeyboardEvent) => {
+        if (event.key === "Escape") {
+            props.app.setSelectedTool("select")
         }
-        document.addEventListener("keydown", handleEscape);
-
-        return () => {
-            document.removeEventListener("keydown", handleEscape)
-        }
-    })
+    }
+    onMount(() => document.addEventListener("keydown", handleEscape))
+    onCleanup(() => document.removeEventListener("keydown", handleEscape))
 
     const handleInput: JSX.InputEventHandlerUnion<HTMLInputElement, InputEvent> = (event) => {
         setQuery(event.target.value)
@@ -77,19 +76,17 @@ export const CommandPalette = (props: { commands: Command[], app: AppState }) =>
     )
 }
 
+export default CommandPalette
 
 const useClickOutside = (ref: Accessor<HTMLElement | undefined>, callback: (e: Event) => void) => {
-    createEffect(() => {
-        const listener = (event: Event) => {
-            const element = ref()
-            if (!element || element.contains(event.target as Node)) {
-                return
-            }
-
-            callback(event)
+    const handleClick = (event: Event) => {
+        const element = ref()
+        if (!element || element.contains(event.target as Node)) {
+            return
         }
-        document.addEventListener('click', listener)
 
-        onCleanup(() => document.removeEventListener('click', listener))
-    })
+        callback(event)
+    }
+    onMount(() => document.addEventListener('click', handleClick))
+    onCleanup(() => document.removeEventListener('click', handleClick))
 }

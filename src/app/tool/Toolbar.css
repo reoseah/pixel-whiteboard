@@ -1,0 +1,55 @@
+.toolbar {
+    padding: .25rem;
+    background: var(--neutral-800);
+    border-radius: .5rem;
+    justify-self: center;
+    pointer-events: auto;
+}
+
+.toolbar-layout {
+    display: grid;
+    grid-auto-flow: column;
+    gap: .25rem;
+}
+
+.toolbar-button {
+    appearance: none;
+    border: none;
+    background: none;
+
+    cursor: pointer;
+    user-select: none;
+
+    display: grid;
+    place-content: center;
+    grid-auto-flow: column;
+    position: relative;
+
+    min-width: 2rem;
+    min-height: 2rem;
+    border-radius: .25rem;
+    color: var(--neutral-200);
+
+    &:hover {
+        background: var(--neutral-700);
+        color: var(--neutral-100);
+    }
+
+    &[aria-pressed="true"] {
+        background: var(--primary-600);
+        color: var(--primary-100);
+
+        .toolbar-button-hint {
+            color: var(--infused-400);
+        }
+    }
+}
+
+.toolbar-button-hint {
+    position: absolute;
+    right: .1875rem;
+    bottom: .1875rem;
+    font-size: .625rem;
+    line-height: 1;
+    color: var(--neutral-400);
+}
