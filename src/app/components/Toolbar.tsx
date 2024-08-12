@@ -2,30 +2,31 @@ import "./Toolbar.css"
 
 import { For, JSX, Show } from "solid-js"
 import { Dynamic } from "solid-js/web"
-import { AppState } from "../App"
-import { stringifyKeybind } from "../keybind"
+import { Keybind, Tool } from "../api"
 
 export function Toolbar(props: {
-    app: AppState
+    tools: readonly Tool[],
+    selectedTool: string,
+    onSelectTool: (id: string) => void
 }) {
     const handleClick = (id: string) => {
-        props.app.setSelectedTool(id)
+        props.onSelectTool(id)
     }
 
     return (
         <div class="toolbar">
             <h2 class="scr-only">Toolbar</h2>
             <div class="toolbar-layout">
-                <For each={props.app.tools()}>
+                <For each={props.tools}>
                     {(tool) => (
                         <ToolbarButton
                             name={tool.id}
                             label={tool.label}
                             keyshortcuts={tool.keybinds && tool.keybinds.map(stringifyKeybind).join(", ")}
-                            checked={props.app.selectedTool === tool.id}
+                            checked={props.selectedTool === tool.id}
                             onClick={() => handleClick(tool.id)}
                         >
-                            <Dynamic component={tool.icon} selected={props.app.selectedTool === tool.id} />
+                            <Dynamic component={tool.icon} selected={props.selectedTool === tool.id} />
                         </ToolbarButton>
                     )}
                 </For>
@@ -35,6 +36,10 @@ export function Toolbar(props: {
 }
 
 export default Toolbar
+
+export function stringifyKeybind(keybind: Keybind) {
+    return `${keybind.ctrl ? "Ctrl+" : ""}${keybind.alt ? "Alt+" : ""}${keybind.shift ? "Shift+" : ""}${keybind.key}`
+}
 
 function ToolbarButton(props: {
     label: string,

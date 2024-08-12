@@ -1,25 +1,45 @@
 import './App.css'
 
-import { createMemo, createSignal, For, onCleanup, onMount, Show } from 'solid-js'
+import { createSignal, For, onCleanup, onMount, Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
-import Toolbar from './tool/Toolbar';
-import CommandPalette from './command/CommandPalette';
-import { buildCommands } from './command/command';
-import { BUILTIN_TOOLS } from './tool/tool';
+import Toolbar from './components/Toolbar';
+import CommandPalette from './components/CommandPalette';
+import { Application, Command, FrameNode, Plugin, ProjectNode, ProjectState, Tool } from './api'
+import DefaultFeaturesPlugin from './plugins/default_features';
 
 function App() {
-  const app = createAppState();
+  const resources = buildResources([DefaultFeaturesPlugin()])
+
+  const [selectedTool, setSelectedTool] = createSignal("select")
+
+  const project = createProject();
+
+  const app: Application = {
+    resources,
+    state: {
+      selectedTool,
+      setSelectedTool
+    },
+    project
+  }
 
   const handleKeybinds = (e: KeyboardEvent) => {
-    for (const command of app.commands()) {
+    const target = e.target as HTMLElement;
+    const isEditable = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
+
+    if (isEditable) {
+      return
+    }
+
+    for (const command of resources.commands) {
       for (const keybind of command.keybinds ?? []) {
         if (e.key.toLowerCase() === keybind.key.toLowerCase()
           && Boolean(keybind.shift) === e.shiftKey
           && Boolean(keybind.ctrl) === e.ctrlKey
           && Boolean(keybind.alt) === e.altKey) {
           command.execute(app)
-          e.preventDefault();
-          return;
+          e.preventDefault()
+          return
         }
       }
     }
@@ -29,12 +49,12 @@ function App() {
 
   return (
     <>
-      <WorkspaceView app={app} />
+      <WorkspaceView app={project} />
       <div class="ui-layer">
         <div class="ui-top">
-          <Toolbar app={app} />
-          <Show when={app.selectedTool === "actions"}>
-            <CommandPalette commands={app.commands()} app={app} />
+          <Toolbar tools={resources.tools} selectedTool={selectedTool()} onSelectTool={setSelectedTool} />
+          <Show when={selectedTool() === "actions"}>
+            <CommandPalette commands={resources.commands} app={app} />
           </Show>
         </div>
       </div>
@@ -42,15 +62,25 @@ function App() {
   )
 }
 
-export type AppNode = { type: string, parents: string[], [data: string]: any }
+export default App
 
-export type FrameNode = AppNode & { type: "frame", parents: never[], title: string | null, x: number, y: number, width: number, height: number };
+function buildResources(plugins: Plugin[]) {
+  let tools: Tool[] = []
+  let commands: Command[] = []
 
-export type AppState = ReturnType<typeof createAppState>
+  plugins.forEach(plugin => plugin.initialize({
+    addTool: tool => tools.push(tool),
+    addCommand: command => commands.push(command)
+  }))
 
-export const createAppState = () => {
-  const [nodes, setNodes] = createStore<Record<string, AppNode>>({})
+  return {
+    tools: Object.freeze(tools),
+    commands: Object.freeze(commands)
+  }
+}
 
+const createProject = (): ProjectState => {
+  const [nodes, setNodes] = createStore<Record<string, ProjectNode>>({})
   const [selectedNodes, setSelectedNodes] = createSignal<string[]>([])
 
   // TODO remove, just for testing
@@ -65,26 +95,17 @@ export const createAppState = () => {
       height: 200
     }
   })
-  // setSelectedNodes(["test"])
-
-  const [tools, setTools] = createSignal(BUILTIN_TOOLS);
-  const [selectedTool, setSelectedTool] = createSignal("select")
-
-  const commands = createMemo(() => buildCommands())
+  setSelectedNodes(["test"])
 
   return {
     nodes,
     setNodes,
-    get selectedNodes() { return selectedNodes() },
-    setSelectedNodes,
-    get selectedTool() { return selectedTool() },
-    setSelectedTool,
-    tools,
-    commands
+    selectedNodes,
+    setSelectedNodes
   }
 }
 
-function WorkspaceView(props: { app: AppState }) {
+function WorkspaceView(props: { app: ProjectState }) {
   const frames = () => Object.entries(props.app.nodes).filter(([_, node]) => node.type === "frame")
 
   return (
@@ -93,7 +114,7 @@ function WorkspaceView(props: { app: AppState }) {
         {([nodeId, frame]) => (
           <FrameView
             frame={frame as FrameNode}
-            selected={props.app.selectedNodes.includes(nodeId)}
+            selected={props.app.selectedNodes().includes(nodeId)}
             onSelect={() => props.app.setSelectedNodes([nodeId])}
           />
         )}
@@ -124,4 +145,3 @@ function FrameView(props: { frame: FrameNode, selected?: boolean, onSelect?: () 
   )
 }
 
-export default App

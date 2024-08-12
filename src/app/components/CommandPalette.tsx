@@ -2,28 +2,26 @@ import "./CommandPalette.css"
 
 import { Accessor, createMemo, createSignal, For, type JSX, onCleanup, onMount, Show } from "solid-js"
 import { Dynamic } from "solid-js/web"
-import { SearchIcon } from "../icons-16px"
-import { AppState } from "../App"
+import { Application, Command } from "../api"
+import { SearchIcon } from "../plugins/default_features/icons"
 
-import Command from "./command"
-
-export const CommandPalette = (props: { commands: Command[], app: AppState }) => {
+export const CommandPalette = (props: { commands: readonly Command[], app: Application }) => {
     const [query, setQuery] = createSignal("")
 
     const filteredCommands = createMemo(() => {
         const queryLower = query().toLowerCase()
-        
+
         return props.commands
             .filter(command => command.label.toLowerCase().includes(queryLower))
             .filter(command => command.isDisabled === undefined || !command.isDisabled(props.app))
     })
 
     const [ref, setRef] = createSignal<HTMLDivElement>()
-    useClickOutside(ref, () => { props.app.setSelectedTool("select") })
+    useClickOutside(ref, () => { props.app.state.setSelectedTool("select") })
 
     const handleEscape = (event: KeyboardEvent) => {
         if (event.key === "Escape") {
-            props.app.setSelectedTool("select")
+            props.app.state.setSelectedTool("select")
         }
     }
     onMount(() => document.addEventListener("keydown", handleEscape))
@@ -31,6 +29,8 @@ export const CommandPalette = (props: { commands: Command[], app: AppState }) =>
 
     const handleInput: JSX.InputEventHandlerUnion<HTMLInputElement, InputEvent> = (event) => {
         setQuery(event.target.value)
+        event.preventDefault()
+        event.stopPropagation()
     }
 
     const handleCommandClick = (command: Command) => {
