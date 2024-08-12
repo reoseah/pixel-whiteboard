@@ -2,13 +2,13 @@ import './App.css'
 
 import { createSignal, For, onCleanup, onMount, Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
+import { Application, Command, FrameNode, Plugin, ProjectNode, ProjectState, Tool } from './api'
 import Toolbar from './components/Toolbar';
 import CommandPalette from './components/CommandPalette';
-import { Application, Command, FrameNode, Plugin, ProjectNode, ProjectState, Tool } from './api'
 import DefaultFeaturesPlugin from './plugins/default_features';
 
 function App() {
-  const resources = buildResources([DefaultFeaturesPlugin()])
+  const resources = buildResources([DefaultFeaturesPlugin])
 
   const [selectedTool, setSelectedTool] = createSignal("select")
 
