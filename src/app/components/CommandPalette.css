@@ -81,6 +81,10 @@
         background-color: var(--neutral-700);
     }
 
+    &:focus-visible {
+        outline: .125rem solid var(--primary-500);
+    }
+
     &:active {
         background-color: var(--primary-600);
         color: var(--primary-100);

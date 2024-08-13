@@ -36,6 +36,7 @@ export const CommandPalette = (props: { commands: readonly Command[], app: Appli
 
     const handleCommandClick = (command: Command) => {
         command.execute(props.app)
+        props.app.state.setSelectedTool("select")
     }
 
     return (
@@ -57,11 +58,11 @@ export const CommandPalette = (props: { commands: readonly Command[], app: Appli
             <ul class="command-palette-list">
                 <For each={filteredCommands()}>
                     {command => (
-                        <li
-                            class="command-palette-item"
-                            onClick={() => handleCommandClick(command)}
-                        >
-                            <button class="command-palette-button">
+                        <li>
+                            <button
+                                class="command-palette-button"
+                                onClick={() => handleCommandClick(command)}
+                            >
                                 <div class="command-palette-icon">
                                     <Show when={command.icon}>
                                         <Dynamic component={command.icon} />
