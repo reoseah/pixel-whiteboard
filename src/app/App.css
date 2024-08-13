@@ -13,35 +13,3 @@
   pointer-events: none;
   row-gap: .5rem;
 }
-
-.workspace-view {
-  position: relative;
-  isolation: isolate;
-  width: 100vw;
-  height: 100vh;
-}
-
-.frame-view {
-  position: absolute;
-}
-
-.frame-view[data-selected="true"] {
-  outline: .125rem solid var(--primary-400);
-}
-
-.frame-view-title {
-  position: absolute;
-  left: 0;
-  top: -.375rem;
-  translate: 0 -100%;
-  font-size: .75rem;
-  color: var(--neutral-400);
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  max-height: 1em;
-  cursor: pointer;
-}
-
-.frame-view[data-selected="true"] .frame-view-title {
-  color: var(--primary-400);
-}

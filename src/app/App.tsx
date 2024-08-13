@@ -1,26 +1,32 @@
 import './App.css'
 
-import { createSignal, For, onCleanup, onMount, Show } from 'solid-js'
+import { Component, createSignal, onCleanup, onMount, Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
-import { Application, Command, FrameNode, Plugin, ProjectNode, ProjectState, Tool } from './api'
+import { Application, Command, Plugin, ProjectNode, ProjectState, Tool } from './api'
+import DefaultFeaturesPlugin from './plugins/default_features';
 import Toolbar from './components/Toolbar';
 import CommandPalette from './components/CommandPalette';
-import DefaultFeaturesPlugin from './plugins/default_features';
+import Viewport from './components/Viewport';
 
 function App() {
   const resources = buildResources([DefaultFeaturesPlugin])
+  const project = createProject();
 
   const [selectedTool, setSelectedTool] = createSignal("select")
-
-  const project = createProject();
+  const [selectedToolStore, setSelectedToolStore] = createStore<any>();
+  const [selectedToolComponent, setSelectedToolComponent] = createSignal<Component | null>(null)
 
   const app: Application = {
     resources,
+    project,
     state: {
       selectedTool,
-      setSelectedTool
-    },
-    project
+      setSelectedTool,
+      selectedToolStore,
+      setSelectedToolStore,
+      selectedToolComponent,
+      setSelectedToolComponent
+    }
   }
 
   const handleKeybinds = (e: KeyboardEvent) => {
@@ -49,7 +55,7 @@ function App() {
 
   return (
     <>
-      <WorkspaceView app={project} />
+      <Viewport app={app} />
       <div class="ui-layer">
         <div class="ui-top">
           <Toolbar tools={resources.tools} selectedTool={selectedTool()} onSelectTool={setSelectedTool} />
@@ -65,11 +71,11 @@ function App() {
 export default App
 
 function buildResources(plugins: Plugin[]) {
-  let tools: Tool[] = []
+  let tools: Record<string, Tool> = {}
   let commands: Command[] = []
 
   plugins.forEach(plugin => plugin.initialize({
-    addTool: tool => tools.push(tool),
+    addTool: tool => tools[tool.id] = tool,
     addCommand: command => commands.push(command)
   }))
 
@@ -104,44 +110,3 @@ const createProject = (): ProjectState => {
     setSelectedNodes
   }
 }
-
-function WorkspaceView(props: { app: ProjectState }) {
-  const frames = () => Object.entries(props.app.nodes).filter(([_, node]) => node.type === "frame")
-
-  return (
-    <div class="workspace-view">
-      <For each={frames()}>
-        {([nodeId, frame]) => (
-          <FrameView
-            frame={frame as FrameNode}
-            selected={props.app.selectedNodes().includes(nodeId)}
-            onSelect={() => props.app.setSelectedNodes([nodeId])}
-          />
-        )}
-      </For>
-    </div>
-  )
-}
-
-function FrameView(props: { frame: FrameNode, selected?: boolean, onSelect?: () => void }) {
-  return (
-    <div
-      class="frame-view"
-      data-selected={props.selected}
-      style={{
-        left: `${props.frame.x}px`,
-        top: `${props.frame.y}px`,
-        width: `${props.frame.width}px`,
-        height: `${props.frame.height}px`
-      }}
-    >
-      <div
-        class="frame-view-title"
-        onClick={props.onSelect}
-      >
-        {props.frame.title ?? "Frame"}
-      </div>
-    </div>
-  )
-}
-

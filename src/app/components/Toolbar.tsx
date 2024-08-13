@@ -5,7 +5,7 @@ import { Dynamic } from "solid-js/web"
 import { Keybind, Tool } from "../api"
 
 export function Toolbar(props: {
-    tools: readonly Tool[],
+    tools: Record<string, Tool>,
     selectedTool: string,
     onSelectTool: (id: string) => void
 }) {
@@ -17,7 +17,7 @@ export function Toolbar(props: {
         <div class="toolbar">
             <h2 class="scr-only">Toolbar</h2>
             <div class="toolbar-layout">
-                <For each={props.tools}>
+                <For each={Object.values(props.tools)}>
                     {(tool) => (
                         <ToolbarButton
                             name={tool.id}
