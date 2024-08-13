@@ -4,6 +4,7 @@ import { Accessor, createMemo, createSignal, For, type JSX, onCleanup, onMount, 
 import { Dynamic } from "solid-js/web"
 import { Application, Command } from "../api"
 import { SearchIcon } from "../plugins/default_features/icons"
+import { stringifyKeybind } from "../api-utils"
 
 export const CommandPalette = (props: { commands: readonly Command[], app: Application }) => {
     const [query, setQuery] = createSignal("")
@@ -60,13 +61,18 @@ export const CommandPalette = (props: { commands: readonly Command[], app: Appli
                             class="command-palette-item"
                             onClick={() => handleCommandClick(command)}
                         >
-                            <button>
+                            <button class="command-palette-button">
                                 <div class="command-palette-icon">
                                     <Show when={command.icon}>
                                         <Dynamic component={command.icon} />
                                     </Show>
                                 </div>
                                 {command.label}
+                                <Show when={command.keybinds && command.keybinds[0]}>
+                                    <div class="command-palette-keybind">
+                                        {stringifyKeybind(command.keybinds![0])}
+                                    </div>
+                                </Show>
                             </button>
                         </li>
                     )}

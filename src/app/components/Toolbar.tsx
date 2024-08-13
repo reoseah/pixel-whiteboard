@@ -2,7 +2,8 @@ import "./Toolbar.css"
 
 import { For, JSX, Show } from "solid-js"
 import { Dynamic } from "solid-js/web"
-import { Keybind, Tool } from "../api"
+import { Tool } from "../api"
+import { stringifyKeybind } from "../api-utils"
 
 export function Toolbar(props: {
     tools: Record<string, Tool>,
@@ -36,10 +37,6 @@ export function Toolbar(props: {
 }
 
 export default Toolbar
-
-export function stringifyKeybind(keybind: Keybind) {
-    return `${keybind.ctrl ? "Ctrl+" : ""}${keybind.alt ? "Alt+" : ""}${keybind.shift ? "Shift+" : ""}${keybind.key}`
-}
 
 function ToolbarButton(props: {
     label: string,
