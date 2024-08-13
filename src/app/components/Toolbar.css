@@ -29,19 +29,20 @@
     min-height: 2rem;
     border-radius: .25rem;
     color: var(--neutral-200);
+    transition: background-color .1s;
 
     &:hover {
-        background: var(--neutral-700);
+        background-color: var(--neutral-700);
         color: var(--neutral-100);
     }
 
     &:focus-visible {
         outline: none;
-        background: var(--infused-700);
+        background-color: var(--infused-700);
     }
 
     &[aria-pressed="true"] {
-        background: var(--primary-600);
+        background-color: var(--primary-600);
         color: var(--primary-100);
 
         .toolbar-button-hint {

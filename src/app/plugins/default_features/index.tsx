@@ -70,7 +70,8 @@ const frame = (): Tool => {
       const width = Math.abs(app.state.selectedToolStore["x"] - x)
       const height = Math.abs(app.state.selectedToolStore["y"] - y)
 
-      app.project.setNodes(`frame-${Date.now()}`,
+      const id = `frame-${Date.now()}`
+      app.project.setNodes(id,
         {
           type: "frame",
           parents: [],
@@ -81,6 +82,7 @@ const frame = (): Tool => {
           height,
         }
       )
+      app.project.setSelectedNodes([id])
       app.state.setSelectedToolStore(reconcile({}))
       app.state.setSelectedToolComponent(null)
       app.state.setSelectedTool("select")
