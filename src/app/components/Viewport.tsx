@@ -8,13 +8,13 @@ export function Viewport(props: { app: Application }) {
   const frames = () => Object.entries(props.app.project.nodes).filter(([_, node]) => node.type === "frame")
 
   const handlePress = (e: MouseEvent) => {
-    const toolId = props.app.state.selectedTool()
-    const tool = props.app.resources.tools[toolId];
+    const tool = props.app.resources.tools[props.app.state.selectedTool()];
+
     if (tool && tool.onPress) {
       e.preventDefault()
       let shouldTrack = tool.onPress(props.app, e.clientX, e.clientY)
 
-      if (shouldTrack !== false) {
+      if (shouldTrack) {
         let prevX = e.clientX
         let prevY = e.clientY
 

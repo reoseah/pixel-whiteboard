@@ -13,7 +13,6 @@ const DefaultFeaturesPlugin: Plugin = {
         keybinds: tool.keybinds,
         icon: () => tool.icon({ selected: false }),
         isDisabled: app => {
-          console.log(app)
           return app.state.selectedTool() === tool.id
         },
         execute: app => app.state.setSelectedTool(tool.id)
@@ -59,6 +58,7 @@ const frame = (): Tool => {
           }} />
         )
       })
+      return true
     },
     onMove: (app, x, y) => {
       app.state.setSelectedToolStore('x2', x)

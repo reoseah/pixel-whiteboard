@@ -1,6 +1,6 @@
 import "./Toolbar.css"
 
-import { For, JSX, Show } from "solid-js"
+import { createEffect, createSignal, For, JSX, Show } from "solid-js"
 import { Dynamic } from "solid-js/web"
 import { Tool } from "../api"
 import { stringifyKeybind } from "../api-utils"
@@ -14,6 +14,14 @@ export function Toolbar(props: {
         props.onSelectTool(id)
     }
 
+    const [refs, setRefs] = createSignal<Record<string, HTMLButtonElement>>({})
+    createEffect(() => {
+        const selectedToolRef = refs()[props.selectedTool]
+        if (selectedToolRef) {
+            selectedToolRef.focus()
+        }
+    })
+
     return (
         <div class="toolbar">
             <h2 class="scr-only">Toolbar</h2>
@@ -26,6 +34,7 @@ export function Toolbar(props: {
                             keyshortcuts={tool.keybinds && tool.keybinds.map(stringifyKeybind).join(", ")}
                             checked={props.selectedTool === tool.id}
                             onClick={() => handleClick(tool.id)}
+                            ref={(el) => setRefs({ ...refs(), [tool.id]: el })}
                         >
                             <Dynamic component={tool.icon} selected={props.selectedTool === tool.id} />
                         </ToolbarButton>
@@ -45,7 +54,8 @@ function ToolbarButton(props: {
     keyshortcuts?: string,
     cornerHint?: string,
     onClick?: JSX.EventHandlerUnion<HTMLButtonElement, MouseEvent>,
-    children?: JSX.Element
+    children?: JSX.Element,
+    ref?: (el: HTMLButtonElement) => void
 }) {
     const title = () => props.keyshortcuts ? `${props.label} — ${props.keyshortcuts}` : props.label
 
@@ -57,6 +67,7 @@ function ToolbarButton(props: {
             aria-keyshortcuts={props.keyshortcuts}
             aria-pressed={props.checked}
             onclick={props.onClick}
+            ref={props.ref}
         >
             {props.children}
             <Show when={props.cornerHint}>

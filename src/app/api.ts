@@ -52,7 +52,7 @@ export type Tool = {
   label: string,
   icon: Component<{ selected: boolean }>,
   keybinds: Keybind[],
-  onPress?: (app: Application, x: number, y: number) => void | false,
+  onPress?: (app: Application, x: number, y: number) => boolean | void,
   onMove?: (app: Application, x: number, y: number, prevX: number, prevY: number) => void,
   onRelease?: (app: Application, x: number, y: number, prevX: number, prevY: number) => void,
   onCancel?: (app: Application) => void,
