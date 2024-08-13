@@ -17,9 +17,6 @@
     border: none;
     background: none;
 
-    cursor: pointer;
-    user-select: none;
-
     display: grid;
     place-content: center;
     grid-auto-flow: column;

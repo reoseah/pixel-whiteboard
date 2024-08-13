@@ -79,6 +79,13 @@ textarea {
   font: inherit;
 }
 
+button,
+input[type="button"],
+input[type="submit"] {
+  cursor: pointer;
+  user-select: none;
+}
+
 a {
   text-decoration: inherit;
   color: inherit;

@@ -35,8 +35,8 @@ export const CommandPalette = (props: { commands: readonly Command[], app: Appli
     }
 
     const handleCommandClick = (command: Command) => {
-        command.execute(props.app)
         props.app.state.setSelectedTool("select")
+        command.execute(props.app)
     }
 
     return (
