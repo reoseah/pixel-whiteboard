@@ -63,6 +63,27 @@ const frame = (): Tool => {
     onMove: (app, x, y) => {
       app.state.setSelectedToolStore('x2', x)
       app.state.setSelectedToolStore('y2', y)
+    },
+    onRelease: (app, x, y) => {
+      const left = Math.min(app.state.selectedToolStore["x"], x)
+      const top = Math.min(app.state.selectedToolStore["y"], y)
+      const width = Math.abs(app.state.selectedToolStore["x"] - x)
+      const height = Math.abs(app.state.selectedToolStore["y"] - y)
+
+      app.project.setNodes(`frame-${Date.now()}`,
+        {
+          type: "frame",
+          parents: [],
+          title: "Frame",
+          x: left,
+          y: top,
+          width,
+          height,
+        }
+      )
+      app.state.setSelectedToolStore(reconcile({}))
+      app.state.setSelectedToolComponent(null)
+      app.state.setSelectedTool("select")
     }
   }
 }

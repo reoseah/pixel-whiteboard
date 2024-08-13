@@ -72,12 +72,16 @@ function FrameView(props: { frame: FrameNode, selected?: boolean, onSelect?: () 
         left: `${props.frame.x}px`,
         top: `${props.frame.y}px`,
         width: `${props.frame.width}px`,
-        height: `${props.frame.height}px`
+        height: `${props.frame.height}px`,
+        "pointer-events": "none"
       }}
     >
       <div
         class="frame-view-title"
         onClick={props.onSelect}
+        style={{
+          "pointer-events": "auto"
+        }}
       >
         {props.frame.title ?? "Frame"}
       </div>
