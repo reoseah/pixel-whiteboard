@@ -36,7 +36,8 @@
     }
 
     &:focus-visible {
-        outline: .125rem solid var(--primary-500);
+        outline: none;
+        background: var(--infused-700);
     }
 
     &[aria-pressed="true"] {
