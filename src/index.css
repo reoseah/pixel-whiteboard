@@ -14,7 +14,25 @@
   src: url("InterVariable-Italic.woff2") format("woff2");
 }
 
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("JetBrainsMono[wght].woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: italic;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("JetBrainsMono-Italic[wght].woff2") format("woff2");
+}
+
 :root {
+  --font-monospace: "JetBrains Mono", monospace;
+
   /* Tailwind Neutral */
   --neutral-50: #fafafa;
   --neutral-100: #f5f5f5;
@@ -29,6 +47,7 @@
   --neutral-950: #0a0a0a;
   --neutral-750: #333333;
 
+  /* Tailwind 50% Sky Blue + 50% Blue */
   --primary-50: #eff7ff;
   --primary-100: #DDEEFE;
   --primary-200: #BCE0FD;
@@ -94,6 +113,13 @@ a {
 img {
   max-width: 100%;
   height: auto;
+}
+
+code:not(class),
+pre:not(class),
+kbd:not(class) {
+  font-family: var(--font-monospace);
+  translate: 0 0.0625em;
 }
 
 .scr-only {

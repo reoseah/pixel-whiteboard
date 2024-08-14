@@ -10,7 +10,8 @@ export type Application = {
     selectedToolStore: Store<any>,
     setSelectedToolStore: SetStoreFunction<any>
     selectedToolComponent: Accessor<Component | null>,
-    setSelectedToolComponent: Setter<Component | null>
+    setSelectedToolComponent: Setter<Component | null>,
+    shiftHeld: Accessor<boolean>,
   }
 }
 
@@ -35,7 +36,8 @@ export type Keybind = {
   key: string,
   shift?: true,
   ctrl?: true,
-  alt?: true
+  alt?: true,
+  // TODO: MacOS support
 }
 
 export type Command = {
@@ -52,10 +54,11 @@ export type Tool = {
   label: string,
   icon: Component<{ selected: boolean }>,
   keybinds: Keybind[],
-  onPress?: (app: Application, x: number, y: number) => boolean | void,
+  onPress?: (app: Application, x: number, y: number, nodeId: string | null) => boolean | void,
   onMove?: (app: Application, x: number, y: number, prevX: number, prevY: number) => void,
   onRelease?: (app: Application, x: number, y: number, prevX: number, prevY: number) => void,
-  onCancel?: (app: Application) => void,
+  // onCancel?: (app: Application) => void,
+  onTitleClick?: (app: Application, nodeId: string) => void,
 }
 
 // export type NodeType = {

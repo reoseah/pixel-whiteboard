@@ -1,4 +1,3 @@
-
 .workspace-view {
   position: relative;
   isolation: isolate;
@@ -24,7 +23,6 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   max-height: 1em;
-  cursor: pointer;
 }
 
 .frame-view[data-selected="true"] .frame-view-title {

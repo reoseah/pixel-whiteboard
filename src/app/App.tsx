@@ -16,6 +16,24 @@ function App() {
   const [selectedToolStore, setSelectedToolStore] = createStore<any>();
   const [selectedToolComponent, setSelectedToolComponent] = createSignal<Component | null>(null)
 
+  const [shiftHeld, setShiftHeld] = createSignal(false)
+  const handleKeydown = (e: KeyboardEvent) => {
+    if (e.key === "Shift") {
+      setShiftHeld(true)
+    }
+  }
+  const handleKeyup = (e: KeyboardEvent) => {
+    if (e.key === "Shift") {
+      setShiftHeld(false)
+    }
+  }
+  document.addEventListener("keydown", handleKeydown)
+  document.addEventListener("keyup", handleKeyup)
+  onCleanup(() => {
+    document.removeEventListener("keydown", handleKeydown)
+    document.removeEventListener("keyup", handleKeyup)
+  })
+
   const app: Application = {
     resources,
     project,
@@ -25,7 +43,8 @@ function App() {
       selectedToolStore,
       setSelectedToolStore,
       selectedToolComponent,
-      setSelectedToolComponent
+      setSelectedToolComponent,
+      shiftHeld
     }
   }
 
@@ -88,20 +107,6 @@ function buildResources(plugins: Plugin[]) {
 const createProject = (): ProjectState => {
   const [nodes, setNodes] = createStore<Record<string, ProjectNode>>({})
   const [selectedNodes, setSelectedNodes] = createSignal<string[]>([])
-
-  // TODO remove, just for testing
-  setNodes({
-    "test": {
-      type: "frame",
-      parents: [],
-      title: "Frame",
-      x: 100,
-      y: 100,
-      width: 200,
-      height: 200
-    }
-  })
-  setSelectedNodes(["test"])
 
   return {
     nodes,
