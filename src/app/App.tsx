@@ -1,6 +1,6 @@
 import './App.css'
 
-import { Component, createSignal, onCleanup, onMount, Show, Signal } from 'solid-js'
+import { Component, createSignal, onCleanup, onMount, Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { Application, Command, Plugin, ProjectNode, ProjectState, Tool } from './api'
 import DefaultFeaturesPlugin from './plugins/default_features';
@@ -82,7 +82,7 @@ function App() {
         <div class="top-center-layout">
           <Toolbar tools={resources.tools} selectedTool={selectedTool()} onSelectTool={setSelectedTool} />
           <Show when={selectedTool().id === "actions"}>
-            <CommandPalette commands={resources.commands} app={app} />
+            <CommandPalette app={app} />
           </Show>
         </div>
       </div>

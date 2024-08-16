@@ -1,6 +1,4 @@
 .command-palette {
-  justify-self: center;
-  pointer-events: auto;
   padding: .5rem;
   background: var(--neutral-800);
   border-radius: .5rem;
@@ -13,41 +11,37 @@
   border-radius: .25rem;
   background: var(--neutral-750);
   color: var(--neutral-500);
-}
 
-.command-palette-search svg {
-  display: flex;
-  padding-left: .5rem;
-  top: 50%;
-  translate: 0 -50%;
-  box-sizing: content-box;
-  position: absolute;
-  pointer-events: none;
-}
-
-.command-palette-input {
-  border: none;
-  outline: none;
-  background: none;
-  border-radius: .25rem;
-  font-size: .875rem;
-  color: var(--neutral-100);
-  padding-inline: 2rem .5rem;
-  height: 32px;
-  width: 100%;
-
-  &:focus {
-    outline: .125rem solid var(--primary-500);
+  svg {
+    display: flex;
+    padding-left: .5rem;
+    top: 50%;
+    translate: 0 -50%;
+    box-sizing: content-box;
+    position: absolute;
+    pointer-events: none;
   }
 
-  &::placeholder {
-    color: var(--neutral-500);
-    opacity: 1;
+  input {
+    border: none;
+    outline: none;
+    background: none;
+    border-radius: .25rem;
+    font-size: .875rem;
+    color: var(--neutral-100);
+    padding-inline: 2rem .5rem;
+    height: 32px;
+    width: 100%;
+  
+    &:focus {
+      outline: .125rem solid var(--primary-500);
+    }
+  
+    &::placeholder {
+      color: var(--neutral-500);
+      opacity: 1;
+    }
   }
-}
-
-.command-palette-list {
-  list-style: none;
 }
 
 .command-palette-heading {
@@ -58,6 +52,10 @@
   padding-inline: .5rem;
   font-size: .75rem;
   color: var(--neutral-400);
+}
+
+.command-palette-entries {
+  list-style: none;
 }
 
 .command-palette-button {
@@ -95,15 +93,9 @@
       color: inherit;
     }
   }
-
-  span {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    max-height: 1em;
-  }
 }
 
-.command-palette-icon {
+.command-icon {
   display: flex;
   justify-content: center;
   align-items: center;
@@ -111,7 +103,13 @@
   height: 1rem;
 }
 
-.command-palette-keybind {
+.command-description {
+  max-height: 1em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.command-keybind {
   justify-self: right;
   color: var(--neutral-400);
   font-family: inherit;

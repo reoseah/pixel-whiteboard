@@ -6,13 +6,13 @@ import { Application, Command } from "../api"
 import { SearchIcon } from "../plugins/default_features/components/icons"
 import { stringifyKeybind } from "../api-utils"
 
-export const CommandPalette = (props: { commands: readonly Command[], app: Application }) => {
+export const CommandPalette = (props: { app: Application }) => {
   const [query, setQuery] = createSignal("")
 
   const filteredCommands = createMemo(() => {
     const queryLower = query().toLowerCase()
 
-    return props.commands
+    return props.app.resources.commands
       .filter(command => command.label.toLowerCase().includes(queryLower))
       .filter(command => command.isDisabled === undefined || !command.isDisabled(props.app))
   })
@@ -45,7 +45,6 @@ export const CommandPalette = (props: { commands: readonly Command[], app: Appli
         <SearchIcon />
         <input
           type="text"
-          class="command-palette-input"
           placeholder="Search"
           maxlength="150"
           spellcheck={false}
@@ -56,7 +55,7 @@ export const CommandPalette = (props: { commands: readonly Command[], app: Appli
       </div>
       <Show when={filteredCommands().length}>
         <h2 class="command-palette-heading">Actions</h2>
-        <ul class="command-palette-list">
+        <ul class="command-palette-entries">
           <For each={filteredCommands()}>
             {command => (
               <li>
@@ -64,14 +63,14 @@ export const CommandPalette = (props: { commands: readonly Command[], app: Appli
                   class="command-palette-button"
                   onClick={() => handleCommandClick(command)}
                 >
-                  <div class="command-palette-icon">
+                  <div class="command-icon">
                     <Show when={command.icon}>
                       <Dynamic component={command.icon} />
                     </Show>
                   </div>
-                  <span>{command.label}</span>
+                  <span class="command-description">{command.label}</span>
                   <Show when={command.keybinds && command.keybinds[0]}>
-                    <kbd class="command-palette-keybind">
+                    <kbd class="command-keybind">
                       {stringifyKeybind(command.keybinds![0])}
                     </kbd>
                   </Show>

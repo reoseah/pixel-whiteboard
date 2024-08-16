@@ -2,8 +2,6 @@
     padding: .25rem;
     background: var(--neutral-800);
     border-radius: .5rem;
-    justify-self: center;
-    pointer-events: auto;
 }
 
 .toolbar-layout {
@@ -41,10 +39,6 @@
     &[aria-pressed="true"] {
         background-color: var(--primary-600);
         color: var(--primary-100);
-
-        .toolbar-button-hint {
-            color: var(--infused-400);
-        }
     }
 }
 
@@ -55,4 +49,9 @@
     font-size: .625rem;
     line-height: 1;
     color: var(--neutral-400);
+
+    .toolbar-button[aria-pressed="true"] & {
+        color: var(--infused-400);
+    }
 }
+
