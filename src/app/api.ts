@@ -5,8 +5,8 @@ export type Application = {
   resources: Resources,
   project: ProjectState,
   state: {
-    selectedTool: Accessor<string>,
-    setSelectedTool: Setter<string>,
+    selectedTool: Accessor<Tool>,
+    setSelectedTool: (tool: Tool) => void,
     selectedToolStore: Store<any>,
     setSelectedToolStore: SetStoreFunction<any>
     selectedToolComponent: Accessor<Component | null>,
@@ -54,11 +54,17 @@ export type Tool = {
   label: string,
   icon: Component<{ selected: boolean }>,
   keybinds: Keybind[],
-  onPress?: (app: Application, x: number, y: number, nodeId: string | null) => boolean | void,
+  /** 
+   * Return true if the tool should be able to click on the frame titles.
+   * 
+   * I.e., if false, the titles with have "pointer-events: none" and clicks
+   * will go through them to the element behind or the workspace.
+   */
+  interactsWithTitles?: boolean,
+  onPress?: (app: Application, x: number, y: number, nodeId: string | null, isTitle?: boolean) => boolean | void,
   onMove?: (app: Application, x: number, y: number, prevX: number, prevY: number) => void,
   onRelease?: (app: Application, x: number, y: number, prevX: number, prevY: number) => void,
   // onCancel?: (app: Application) => void,
-  onTitleClick?: (app: Application, nodeId: string) => void,
 }
 
 // export type NodeType = {

@@ -30,8 +30,8 @@ export const defaultCommands: Command[] = [
     label: `Toolbar: ${tool.label}`,
     keybinds: tool.keybinds,
     icon: () => tool.icon({ selected: false }),
-    isDisabled: app => app.state.selectedTool() === tool.id,
-    execute: app => app.state.setSelectedTool(tool.id)
+    isDisabled: app => app.state.selectedTool() === tool,
+    execute: app => app.state.setSelectedTool(tool)
   })),
   selectAll,
   deleteSelected

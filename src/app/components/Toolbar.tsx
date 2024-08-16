@@ -7,16 +7,16 @@ import { stringifyKeybind } from "../api-utils"
 
 export function Toolbar(props: {
     tools: Record<string, Tool>,
-    selectedTool: string,
-    onSelectTool: (id: string) => void
+    selectedTool: Tool,
+    onSelectTool: (id: Tool) => void
 }) {
     const handleClick = (id: string) => {
-        props.onSelectTool(id)
+        props.onSelectTool(props.tools[id])
     }
 
     const [refs, setRefs] = createSignal<Record<string, HTMLButtonElement>>({})
     createEffect(() => {
-        const selectedToolRef = refs()[props.selectedTool]
+        const selectedToolRef = refs()[props.selectedTool.id]
         if (selectedToolRef) {
             selectedToolRef.focus()
         }
@@ -32,11 +32,11 @@ export function Toolbar(props: {
                             name={tool.id}
                             label={tool.label}
                             keyshortcuts={tool.keybinds && tool.keybinds.map(stringifyKeybind).join(", ")}
-                            checked={props.selectedTool === tool.id}
+                            checked={props.selectedTool === tool}
                             onClick={() => handleClick(tool.id)}
                             ref={(el) => setRefs({ ...refs(), [tool.id]: el })}
                         >
-                            <Dynamic component={tool.icon} selected={props.selectedTool === tool.id} />
+                            <Dynamic component={tool.icon} selected={props.selectedTool === tool} />
                         </ToolbarButton>
                     )}
                 </For>

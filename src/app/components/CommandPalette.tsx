@@ -18,11 +18,11 @@ export const CommandPalette = (props: { commands: readonly Command[], app: Appli
   })
 
   const [ref, setRef] = createSignal<HTMLDivElement>()
-  useClickOutside(ref, () => { props.app.state.setSelectedTool("select") })
+  useClickOutside(ref, () => { props.app.state.setSelectedTool(props.app.resources.tools["select"]) })
 
   const handleEscape = (event: KeyboardEvent) => {
     if (event.key === "Escape") {
-      props.app.state.setSelectedTool("select")
+      props.app.state.setSelectedTool(props.app.resources.tools["select"])
     }
   }
   onMount(() => document.addEventListener("keydown", handleEscape))
@@ -35,7 +35,7 @@ export const CommandPalette = (props: { commands: readonly Command[], app: Appli
   }
 
   const handleCommandClick = (command: Command) => {
-    props.app.state.setSelectedTool("select")
+    props.app.state.setSelectedTool(props.app.resources.tools["select"])
     command.execute(props.app)
   }
 

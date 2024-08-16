@@ -8,8 +8,7 @@
   padding-right: env(safe-area-inset-right);
 }
 
-.ui-top {
+.top-center-layout {
   display: grid;
-  pointer-events: none;
   row-gap: .5rem;
 }

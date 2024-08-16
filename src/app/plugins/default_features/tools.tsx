@@ -8,20 +8,8 @@ export const select = (): Tool => {
     label: "Select\u2009/\u2009Move",
     icon: props => (<CursorIcon filled={props.selected} />),
     keybinds: [{ key: "V" }],
-    onTitleClick: (app, nodeId) => {
-      const shift = app.state.shiftHeld()
-      if (shift) {
-        const selected = app.project.selectedNodes()
-        if (selected.includes(nodeId)) {
-          app.project.setSelectedNodes(selected.filter(id => id !== nodeId))
-        } else {
-          app.project.setSelectedNodes([...selected, nodeId])
-        }
-      } else {
-        app.project.setSelectedNodes([nodeId])
-      }
-    },
-    onPress: (app, x, y, nodeId) => {
+    interactsWithTitles: true,
+    onPress: (app, x, y, nodeId, isTitle) => {
       const shift = app.state.shiftHeld()
       if (nodeId) {
         const selected = app.project.selectedNodes()
@@ -100,7 +88,7 @@ export const frame = (): Tool => {
       app.project.setSelectedNodes([id])
       app.state.setSelectedToolStore(reconcile({}))
       app.state.setSelectedToolComponent(null)
-      app.state.setSelectedTool("select")
+      app.state.setSelectedTool(app.resources.tools.select)
     }
   }
 }

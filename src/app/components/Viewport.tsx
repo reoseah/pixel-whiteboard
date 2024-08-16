@@ -8,13 +8,14 @@ export function Viewport(props: { app: Application }) {
   const frames = () => Object.entries(props.app.project.nodes).filter(([_, node]) => node.type === "frame")
 
   const handlePress = (e: MouseEvent) => {
-    const tool = props.app.resources.tools[props.app.state.selectedTool()];
+    const tool = props.app.state.selectedTool();
 
     if (tool && tool.onPress) {
       e.preventDefault()
 
       const nodeId = (e.target as Element)?.closest("[data-node-id]")?.getAttribute("data-node-id") ?? null
-      const shouldTrack = tool.onPress(props.app, e.clientX, e.clientY, nodeId)
+      const isTitle = (e.target as Element)?.hasAttribute("data-element-title") ?? false
+      const shouldTrack = tool.onPress(props.app, e.clientX, e.clientY, nodeId, isTitle)
 
       if (shouldTrack) {
         let prevX = e.clientX
@@ -68,8 +69,6 @@ export function Viewport(props: { app: Application }) {
 export default Viewport
 
 function FrameView(props: { app: Application, id: string, frame: FrameNode, selected?: boolean, onSelect?: () => void }) {
-  const seletedToolClicksTitle = () => props.app.resources.tools[props.app.state.selectedTool()]?.onTitleClick !== undefined;
-
   return (
     <div
       class="frame-view"
@@ -84,9 +83,8 @@ function FrameView(props: { app: Application, id: string, frame: FrameNode, sele
     >
       <div
         class="frame-view-title"
-        // onClick={props.onSelect}
-        {...seletedToolClicksTitle() ? {
-          onmousedown: () => props.app.resources.tools[props.app.state.selectedTool()]?.onTitleClick!(props.app, props.id),
+        data-element-title
+        {...props.app.state.selectedTool()?.interactsWithTitles? {
           style: { 
             cursor: "pointer",
             "pointer-events": "auto"

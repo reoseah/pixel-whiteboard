@@ -1,6 +1,6 @@
 import './App.css'
 
-import { Component, createSignal, onCleanup, onMount, Show } from 'solid-js'
+import { Component, createSignal, onCleanup, onMount, Show, Signal } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { Application, Command, Plugin, ProjectNode, ProjectState, Tool } from './api'
 import DefaultFeaturesPlugin from './plugins/default_features';
@@ -12,7 +12,10 @@ function App() {
   const resources = buildResources([DefaultFeaturesPlugin])
   const project = createProject();
 
-  const [selectedTool, setSelectedTool] = createSignal("select")
+  const [selectedToolId, setSelectedToolId] = createSignal("select")
+  const selectedTool = () => resources.tools[selectedToolId()] ?? resources.tools["select"]
+  const setSelectedTool = (tool: Tool) => setSelectedToolId(tool.id ?? "select")
+
   const [selectedToolStore, setSelectedToolStore] = createStore<any>();
   const [selectedToolComponent, setSelectedToolComponent] = createSignal<Component | null>(null)
 
@@ -76,9 +79,9 @@ function App() {
     <>
       <Viewport app={app} />
       <div class="ui-layer">
-        <div class="ui-top">
+        <div class="top-center-layout">
           <Toolbar tools={resources.tools} selectedTool={selectedTool()} onSelectTool={setSelectedTool} />
-          <Show when={selectedTool() === "actions"}>
+          <Show when={selectedTool().id === "actions"}>
             <CommandPalette commands={resources.commands} app={app} />
           </Show>
         </div>
