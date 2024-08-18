@@ -6,12 +6,12 @@ import { Tool } from "../api"
 import { stringifyKeybind } from "../api-utils"
 
 export function Toolbar(props: {
-    tools: Record<string, Tool>,
+    tools: Tool[],
     selectedTool: Tool,
     onSelectTool: (id: Tool) => void
 }) {
-    const handleClick = (id: string) => {
-        props.onSelectTool(props.tools[id])
+    const handleClick = (tool: Tool) => {
+        props.onSelectTool(tool)
     }
 
     const [refs, setRefs] = createSignal<Record<string, HTMLButtonElement>>({})
@@ -27,13 +27,13 @@ export function Toolbar(props: {
             <h2 class="scr-only">Toolbar</h2>
             <div class="toolbar-layout">
                 <For each={Object.values(props.tools)}>
-                    {(tool) => (
+                    {tool => (
                         <ToolbarButton
                             name={tool.id}
                             label={tool.label}
                             keyshortcuts={tool.keybinds && tool.keybinds.map(stringifyKeybind).join(", ")}
                             checked={props.selectedTool === tool}
-                            onClick={() => handleClick(tool.id)}
+                            onClick={() => handleClick(tool)}
                             ref={(el) => setRefs({ ...refs(), [tool.id]: el })}
                         >
                             <Dynamic component={tool.icon} selected={props.selectedTool === tool} />

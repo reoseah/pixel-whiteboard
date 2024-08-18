@@ -73,6 +73,7 @@
   --infused-950: #050E25;
 
   font-family: "Inter", system-ui, sans-serif;
+  font-feature-settings: 'liga' 1, 'calt' 1, 'tnum' 1;
   font-optical-sizing: auto;
   font-style: normal;
   font-variation-settings: "slnt" 0;
@@ -115,11 +116,8 @@ img {
   height: auto;
 }
 
-code:not(class),
-pre:not(class),
-kbd:not(class) {
-  font-family: var(--font-monospace);
-  translate: 0 0.0625em;
+kbd {
+  font-family: inherit;
 }
 
 .scr-only {

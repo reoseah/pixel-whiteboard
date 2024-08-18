@@ -1,5 +1,10 @@
 import { Accessor, Component, Setter } from "solid-js"
 import { SetStoreFunction, Store } from "solid-js/store"
+import { Tool } from './tool'
+
+export * from './tool'
+
+// TODO: split into multiple files (resources.ts, project_state.ts, misc/keybind.ts, etc)
 
 export type Application = {
   resources: Resources,
@@ -9,8 +14,10 @@ export type Application = {
     setSelectedTool: (tool: Tool) => void,
     selectedToolStore: Store<any>,
     setSelectedToolStore: SetStoreFunction<any>
-    selectedToolComponent: Accessor<Component | null>,
-    setSelectedToolComponent: Setter<Component | null>,
+    selectedToolComponent: Accessor<Component<{ app: Application }> | null>,
+    setSelectedToolComponent: Setter<Component<{ app: Application }> | null>,
+    selectedToolExtraToolbar: Accessor<Component<{ app: Application }> | null>,
+    setSelectedToolExtraToolbar: Setter<Component<{ app: Application }> | null>,
     shiftHeld: Accessor<boolean>,
   }
 }
@@ -47,24 +54,6 @@ export type Command = {
   isDisabled?: (app: Application) => boolean,
   execute: (app: Application) => void,
   // keywords?: string[],
-}
-
-export type Tool = {
-  id: string,
-  label: string,
-  icon: Component<{ selected: boolean }>,
-  keybinds: Keybind[],
-  /** 
-   * Return true if the tool should be able to click on the frame titles.
-   * 
-   * I.e., if false, the titles with have "pointer-events: none" and clicks
-   * will go through them to the element behind or the workspace.
-   */
-  interactsWithTitles?: boolean,
-  onPress?: (app: Application, x: number, y: number, nodeId: string | null, isTitle?: boolean) => boolean | void,
-  onMove?: (app: Application, x: number, y: number, prevX: number, prevY: number) => void,
-  onRelease?: (app: Application, x: number, y: number, prevX: number, prevY: number) => void,
-  // onCancel?: (app: Application) => void,
 }
 
 // export type NodeType = {

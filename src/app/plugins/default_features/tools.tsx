@@ -1,6 +1,7 @@
 import { reconcile } from "solid-js/store"
 import { Tool } from "../../api"
 import { CommandIcon, CursorIcon, FrameIcon } from "./components/icons"
+import CommandPalette from "./components/CommandPalette"
 
 export const select = (): Tool => {
   return {
@@ -98,6 +99,15 @@ export const actions: Tool = {
   label: "Actions",
   icon: CommandIcon,
   keybinds: [{ key: "K", ctrl: true }],
+  onSelect: (app) => {
+    app.state.setSelectedToolExtraToolbar((prev) => {
+      console.log(prev)
+      return CommandPalette
+    })
+  },
+  onDeselect: (app) => {
+    app.state.setSelectedToolExtraToolbar(null)
+  }
 };
 
 export const defaultTools: Tool[] = [

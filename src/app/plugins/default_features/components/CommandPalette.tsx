@@ -2,15 +2,17 @@ import "./CommandPalette.css"
 
 import { Accessor, createMemo, createSignal, For, type JSX, onCleanup, onMount, Show } from "solid-js"
 import { Dynamic } from "solid-js/web"
-import { Application, Command } from "../api"
-import { SearchIcon } from "../plugins/default_features/components/icons"
-import { stringifyKeybind } from "../api-utils"
+import { Application, Command } from "../../../api"
+import { SearchIcon } from "./icons"
+import { stringifyKeybind } from "../../../api-utils"
 
 export const CommandPalette = (props: { app: Application }) => {
   const [query, setQuery] = createSignal("")
 
+  console.log(props.app)
   const filteredCommands = createMemo(() => {
     const queryLower = query().toLowerCase()
+
 
     return props.app.resources.commands
       .filter(command => command.label.toLowerCase().includes(queryLower))

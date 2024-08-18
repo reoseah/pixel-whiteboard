@@ -88,10 +88,6 @@
   &:active {
     background-color: var(--primary-600);
     color: var(--primary-100);
-
-    & .command-palette-keybind {
-      color: inherit;
-    }
   }
 }
 
@@ -112,5 +108,8 @@
 .command-keybind {
   justify-self: right;
   color: var(--neutral-400);
-  font-family: inherit;
+
+  .command-palette-button:active & {
+    color: var(--primary-100);
+  }
 }

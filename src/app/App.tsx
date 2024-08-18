@@ -5,8 +5,8 @@ import { createStore } from 'solid-js/store'
 import { Application, Command, Plugin, ProjectNode, ProjectState, Tool } from './api'
 import DefaultFeaturesPlugin from './plugins/default_features';
 import Toolbar from './components/Toolbar';
-import CommandPalette from './components/CommandPalette';
 import Viewport from './components/Viewport';
+import { Dynamic } from 'solid-js/web';
 
 function App() {
   const resources = buildResources([DefaultFeaturesPlugin])
@@ -14,10 +14,16 @@ function App() {
 
   const [selectedToolId, setSelectedToolId] = createSignal("select")
   const selectedTool = () => resources.tools[selectedToolId()] ?? resources.tools["select"]
-  const setSelectedTool = (tool: Tool) => setSelectedToolId(tool.id ?? "select")
+  const setSelectedTool = (tool: Tool) => {
+    const prev = selectedTool();
+    prev.onDeselect?.(app)
+    tool.onSelect?.(app, prev)
+    setSelectedToolId(tool.id)
+  }
 
   const [selectedToolStore, setSelectedToolStore] = createStore<any>();
-  const [selectedToolComponent, setSelectedToolComponent] = createSignal<Component | null>(null)
+  const [selectedToolComponent, setSelectedToolComponent] = createSignal<Component<{app: Application}> | null>(null)
+  const [selectedToolExtraToolbar, setSelectedToolExtraToolbar] = createSignal<Component<{app: Application}> | null>(null)
 
   const [shiftHeld, setShiftHeld] = createSignal(false)
   const handleKeydown = (e: KeyboardEvent) => {
@@ -47,6 +53,8 @@ function App() {
       setSelectedToolStore,
       selectedToolComponent,
       setSelectedToolComponent,
+      selectedToolExtraToolbar,
+      setSelectedToolExtraToolbar,
       shiftHeld
     }
   }
@@ -80,9 +88,12 @@ function App() {
       <Viewport app={app} />
       <div class="ui-layer">
         <div class="top-center-layout">
-          <Toolbar tools={resources.tools} selectedTool={selectedTool()} onSelectTool={setSelectedTool} />
-          <Show when={selectedTool().id === "actions"}>
+          <Toolbar tools={Object.values(resources.tools)} selectedTool={selectedTool()} onSelectTool={setSelectedTool} />
+          {/* <Show when={selectedTool().id === "actions"}>
             <CommandPalette app={app} />
+          </Show> */}
+          <Show when={selectedToolExtraToolbar()}>
+            <Dynamic component={selectedToolExtraToolbar()!} app={app} />
           </Show>
         </div>
       </div>

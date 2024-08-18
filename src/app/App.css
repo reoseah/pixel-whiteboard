@@ -12,8 +12,8 @@
   display: grid;
   row-gap: .5rem;
   justify-items: center;
-}
 
-.top-center-layout > * {
-  pointer-events: auto;
+  & * {
+    pointer-events: auto;
+  }
 }
