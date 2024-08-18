@@ -22,8 +22,8 @@ function App() {
   }
 
   const [selectedToolStore, setSelectedToolStore] = createStore<any>();
-  const [selectedToolComponent, setSelectedToolComponent] = createSignal<Component<{app: Application}> | null>(null)
-  const [selectedToolExtraToolbar, setSelectedToolExtraToolbar] = createSignal<Component<{app: Application}> | null>(null)
+  const [selectedToolComponent, setSelectedToolComponent] = createSignal<Component<{ app: Application }> | null>(null)
+  const [selectedToolExtraToolbar, setSelectedToolExtraToolbar] = createSignal<Component<{ app: Application }> | null>(null)
 
   const [shiftHeld, setShiftHeld] = createSignal(false)
   const handleKeydown = (e: KeyboardEvent) => {

@@ -84,8 +84,8 @@ function FrameView(props: { app: Application, id: string, frame: FrameNode, sele
       <div
         class="frame-view-title"
         data-element-title
-        {...props.app.state.selectedTool()?.interactsWithTitles? {
-          style: { 
+        {...props.app.state.selectedTool()?.interactsWithTitles ? {
+          style: {
             cursor: "pointer",
             "pointer-events": "auto"
           },
