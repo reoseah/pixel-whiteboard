@@ -124,7 +124,7 @@ export const actions = (): Tool => {
     onSelect: (app, prev) => {
       prevTool = prev
 
-      app.state.setSubToolbar(() => CommandPalette)
+      app.state.setSubToolbar(() => CommandPalette(prevTool ?? app.resources.tools.select))
     },
     onDeselect: (app) => {
       app.state.setSubToolbar(undefined)

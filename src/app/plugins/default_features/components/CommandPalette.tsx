@@ -2,10 +2,10 @@ import "./CommandPalette.css"
 
 import { Accessor, createMemo, createSignal, For, type JSX, onCleanup, onMount, Show } from "solid-js"
 import { Dynamic } from "solid-js/web"
-import { Application, Command, stringifyKeybind } from "../../../api"
+import { Application, Command, stringifyKeybind, Tool } from "../../../api"
 import { SearchIcon } from "./icons"
 
-export const CommandPalette = (props: { app: Application }) => {
+export const CommandPalette = (previousTool: Tool) => (props: { app: Application }) => {
   const [query, setQuery] = createSignal("")
 
   const filteredCommands = createMemo(() => {
@@ -17,11 +17,11 @@ export const CommandPalette = (props: { app: Application }) => {
   })
 
   const [wrapper, setWrapper] = createSignal<HTMLDivElement>()
-  useClickOutside(wrapper, () => { props.app.state.selectTool(props.app.resources.tools["select"]) })
+  useClickOutside(wrapper, () => { props.app.state.selectTool(previousTool) })
 
   const handleEscape = (event: KeyboardEvent) => {
     if (event.key === "Escape") {
-      props.app.state.selectTool(props.app.resources.tools["select"])
+      props.app.state.selectTool(previousTool)
     }
   }
   document.addEventListener("keydown", handleEscape)
@@ -34,7 +34,7 @@ export const CommandPalette = (props: { app: Application }) => {
   }
 
   const handleCommandClick = (command: Command) => {
-    props.app.state.selectTool(props.app.resources.tools["select"])
+    props.app.state.selectTool(previousTool)
     command.execute(props.app)
   }
 
