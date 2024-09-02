@@ -59,7 +59,7 @@ export const frame = (): Tool => {
           const width = () => Math.abs(x2() - x1())
           const height = () => Math.abs(y2() - y1())
 
-          // TODO: insert a in-progress frame node
+          // TODO: insert a in-progress frame node to document
           return (
             <div style={{
               position: "absolute",
@@ -113,17 +113,21 @@ export const frame = (): Tool => {
   }
 }
 
-export const actions: Tool = {
-  id: "actions",
-  label: "Actions",
-  icon: CommandIcon,
-  keybinds: [{ key: "K", ctrl: true }],
-  onSelect: (app) => {
-    app.state.setSubToolbar(() => {
-      return CommandPalette
-    })
-  },
-  onDeselect: (app) => {
-    app.state.setSubToolbar(undefined)
+export const actions = (): Tool => {
+  let prevTool: Tool | null
+
+  return {
+    id: "actions",
+    label: "Actions",
+    icon: CommandIcon,
+    keybinds: [{ key: "K", ctrl: true }],
+    onSelect: (app, prev) => {
+      prevTool = prev
+
+      app.state.setSubToolbar(() => CommandPalette)
+    },
+    onDeselect: (app) => {
+      app.state.setSubToolbar(undefined)
+    }
   }
-};
+}

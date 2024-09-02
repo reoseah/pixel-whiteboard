@@ -24,7 +24,7 @@ export const deleteSelected: Command = {
   }
 }
 
-export const selectToolCommand = (tool: Tool): Command => ({
+export const createSelectToolCommand = (tool: Tool): Command => ({
   label: `Toolbar: ${tool.label}`,
   keybinds: tool.keybinds,
   icon: () => tool.icon({ selected: false }),

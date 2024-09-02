@@ -1,6 +1,6 @@
 import { Command, Plugin, ResourceBuilder, Tool } from '../../api'
 import { actions, frame, select } from './tools'
-import { deleteSelected, selectAll, selectToolCommand } from './commands'
+import { deleteSelected, selectAll, createSelectToolCommand } from './commands'
 
 export const DefaultFeaturesPlugin: Plugin = {
   id: 'default_features',
@@ -9,15 +9,12 @@ export const DefaultFeaturesPlugin: Plugin = {
     const defaultTools: Tool[] = [
       select(),
       frame(),
-      actions
+      actions()
     ]
-    defaultTools.forEach(tool => {
-      builder.addTool(tool)
-      builder.addCommand(selectToolCommand(tool))
-    })
-    
+    defaultTools.forEach(builder.addTool)
+
     const defaultCommands: Command[] = [
-      ...defaultTools.map(selectToolCommand),
+      ...defaultTools.map(createSelectToolCommand),
       selectAll,
       deleteSelected
     ]

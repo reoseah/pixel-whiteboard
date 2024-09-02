@@ -16,15 +16,15 @@ export const CommandPalette = (props: { app: Application }) => {
       .filter(command => command.isDisabled === undefined || !command.isDisabled(props.app))
   })
 
-  const [ref, setRef] = createSignal<HTMLDivElement>()
-  useClickOutside(ref, () => { props.app.state.selectTool(props.app.resources.tools["select"]) })
+  const [wrapper, setWrapper] = createSignal<HTMLDivElement>()
+  useClickOutside(wrapper, () => { props.app.state.selectTool(props.app.resources.tools["select"]) })
 
   const handleEscape = (event: KeyboardEvent) => {
     if (event.key === "Escape") {
       props.app.state.selectTool(props.app.resources.tools["select"])
     }
   }
-  onMount(() => document.addEventListener("keydown", handleEscape))
+  document.addEventListener("keydown", handleEscape)
   onCleanup(() => document.removeEventListener("keydown", handleEscape))
 
   const handleInput: JSX.InputEventHandlerUnion<HTMLInputElement, InputEvent> = (event) => {
@@ -39,7 +39,7 @@ export const CommandPalette = (props: { app: Application }) => {
   }
 
   return (
-    <div class="command-palette" ref={setRef}>
+    <div class="command-palette" ref={setWrapper}>
       <div class="command-palette-search">
         <SearchIcon />
         <input

@@ -23,7 +23,7 @@ export type Application = {
 }
 
 export type Resources = {
-  tools: Record<string, Tool>,
+  tools: Readonly<Record<string, Tool>>,
   commands: readonly Command[],
   // nodeTypes: Record<string, NodeType>
 }
