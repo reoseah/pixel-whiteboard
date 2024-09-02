@@ -1,6 +1,5 @@
 import "./Viewport.css"
-
-import { For, Show } from "solid-js"
+import { For } from "solid-js"
 import { Application, FrameNode } from "../api"
 import { Dynamic } from "solid-js/web"
 
@@ -8,7 +7,7 @@ export function Viewport(props: { app: Application }) {
   const frames = () => Object.entries(props.app.project.nodes).filter(([_, node]) => node.type === "frame")
 
   const handlePress = (e: MouseEvent) => {
-    const tool = props.app.state.selectedTool();
+    const tool = props.app.state.tool();
 
     if (tool && tool.onPress) {
       e.preventDefault()
@@ -59,9 +58,14 @@ export function Viewport(props: { app: Application }) {
           />
         )}
       </For>
-      <Show when={props.app.state.selectedToolComponent()}>
+      {/* <Show when={props.app.state.selectedToolComponent()}>
         <Dynamic component={props.app.state.selectedToolComponent()!} />
-      </Show>
+      </Show> */}
+      <For each={Object.entries(props.app.state.viewportElements)}>
+        {([_, element]) => (
+          <Dynamic component={element} app={props.app} />
+        )}
+      </For>
     </div>
   )
 }
@@ -84,7 +88,7 @@ function FrameView(props: { app: Application, id: string, frame: FrameNode, sele
       <div
         class="frame-view-title"
         data-element-title
-        {...props.app.state.selectedTool()?.interactsWithTitles ? {
+        {...props.app.state.tool()?.interactsWithTitles ? {
           style: {
             cursor: "pointer",
             "pointer-events": "auto"

@@ -9,10 +9,8 @@ import { stringifyKeybind } from "../../../api-utils"
 export const CommandPalette = (props: { app: Application }) => {
   const [query, setQuery] = createSignal("")
 
-  console.log(props.app)
   const filteredCommands = createMemo(() => {
     const queryLower = query().toLowerCase()
-
 
     return props.app.resources.commands
       .filter(command => command.label.toLowerCase().includes(queryLower))
@@ -20,11 +18,11 @@ export const CommandPalette = (props: { app: Application }) => {
   })
 
   const [ref, setRef] = createSignal<HTMLDivElement>()
-  useClickOutside(ref, () => { props.app.state.setSelectedTool(props.app.resources.tools["select"]) })
+  useClickOutside(ref, () => { props.app.state.selectTool(props.app.resources.tools["select"]) })
 
   const handleEscape = (event: KeyboardEvent) => {
     if (event.key === "Escape") {
-      props.app.state.setSelectedTool(props.app.resources.tools["select"])
+      props.app.state.selectTool(props.app.resources.tools["select"])
     }
   }
   onMount(() => document.addEventListener("keydown", handleEscape))
@@ -37,7 +35,7 @@ export const CommandPalette = (props: { app: Application }) => {
   }
 
   const handleCommandClick = (command: Command) => {
-    props.app.state.setSelectedTool(props.app.resources.tools["select"])
+    props.app.state.selectTool(props.app.resources.tools["select"])
     command.execute(props.app)
   }
 

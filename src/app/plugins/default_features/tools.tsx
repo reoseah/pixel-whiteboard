@@ -1,7 +1,7 @@
-import { reconcile } from "solid-js/store"
 import { Tool } from "../../api"
 import { CommandIcon, CursorIcon, FrameIcon } from "./components/icons"
 import CommandPalette from "./components/CommandPalette"
+import { batch, createSignal } from "solid-js"
 
 export const select = (): Tool => {
   return {
@@ -10,7 +10,7 @@ export const select = (): Tool => {
     icon: props => (<CursorIcon filled={props.selected} />),
     keybinds: [{ key: "V" }],
     interactsWithTitles: true,
-    onPress: (app, x, y, nodeId, isTitle) => {
+    onPress: (app, _x, _y, nodeId, _isTitle) => {
       const shift = app.state.shiftHeld()
       if (nodeId) {
         const selected = app.project.selectedNodes()
@@ -36,60 +36,79 @@ export const select = (): Tool => {
 }
 
 export const frame = (): Tool => {
+  const [x1, setX1] = createSignal(0)
+  const [y1, setY1] = createSignal(0)
+  const [x2, setX2] = createSignal(0)
+  const [y2, setY2] = createSignal(0)
+
   return {
     id: "frame",
     label: "Frame",
     icon: FrameIcon,
     keybinds: [{ key: "F" }],
     onPress: (app, x, y) => {
-      app.project.setSelectedNodes([])
-      app.state.setSelectedToolStore(reconcile({ x, y, x2: x, y2: y }))
-      app.state.setSelectedToolComponent(() => () => {
-        const left = () => Math.min(app.state.selectedToolStore["x"], app.state.selectedToolStore["x2"])
-        const top = () => Math.min(app.state.selectedToolStore["y"], app.state.selectedToolStore["y2"])
-        const width = () => Math.abs(app.state.selectedToolStore["x2"] - app.state.selectedToolStore["x"])
-        const height = () => Math.abs(app.state.selectedToolStore["y2"] - app.state.selectedToolStore["y"])
+      batch(() => {
+        app.project.setSelectedNodes([])
+        setX1(x)
+        setY1(y)
+        setX2(x)
+        setY2(y)
+        app.state.setViewportElements("frame-preview", () => () => {
+          const left = () => Math.min(x1(), x2())
+          const top = () => Math.min(y1(), y2())
+          const width = () => Math.abs(x2() - x1())
+          const height = () => Math.abs(y2() - y1())
 
-        // TODO: insert a in-progress frame node
-        return (
-          <div style={{
-            position: "absolute",
-            left: `${left()}px`,
-            top: `${top()}px`,
-            width: `${width()}px`,
-            height: `${height()}px`,
-            outline: "1px solid var(--primary-400)",
-          }} />
-        )
+          // TODO: insert a in-progress frame node
+          return (
+            <div style={{
+              position: "absolute",
+              left: `${left()}px`,
+              top: `${top()}px`,
+              width: `${width()}px`,
+              height: `${height()}px`,
+              outline: "1px solid var(--primary-400)",
+            }} />
+          )
+        })
       })
       return true
     },
-    onMove: (app, x, y) => {
-      app.state.setSelectedToolStore('x2', x)
-      app.state.setSelectedToolStore('y2', y)
+    onMove: (_, x, y) => {
+      setX2(x)
+      setY2(y)
     },
     onRelease: (app, x, y) => {
-      const left = Math.min(app.state.selectedToolStore["x"], x)
-      const top = Math.min(app.state.selectedToolStore["y"], y)
-      const width = Math.abs(app.state.selectedToolStore["x"] - x)
-      const height = Math.abs(app.state.selectedToolStore["y"] - y)
+      const left = Math.min(x1(), x)
+      const top = Math.min(y1(), y)
+      const width = Math.abs(x - x1())
+      const height = Math.abs(y - y1())
 
       const id = `frame-${Date.now()}`
-      app.project.setNodes(id,
-        {
-          type: "frame",
-          parents: [],
-          title: "Frame",
-          x: left,
-          y: top,
-          width,
-          height,
-        }
-      )
-      app.project.setSelectedNodes([id])
-      app.state.setSelectedToolStore(reconcile({}))
-      app.state.setSelectedToolComponent(null)
-      app.state.setSelectedTool(app.resources.tools.select)
+
+      batch(() => {
+        setX1(0)
+        setY1(0)
+        setX2(0)
+        setY2(0)
+
+        app.project.setNodes(id,
+          {
+            type: "frame",
+            parents: [],
+            title: "Frame",
+            x: left,
+            y: top,
+            width,
+            height,
+          }
+        )
+        app.project.setSelectedNodes([id])
+        app.state.setViewportElements({
+          "frame-preview": undefined
+        })
+        app.state.selectTool(app.resources.tools.select)
+      })
     }
   }
 }
@@ -100,20 +119,11 @@ export const actions: Tool = {
   icon: CommandIcon,
   keybinds: [{ key: "K", ctrl: true }],
   onSelect: (app) => {
-    app.state.setSelectedToolExtraToolbar((prev) => {
-      console.log(prev)
+    app.state.setSubToolbar(() => {
       return CommandPalette
     })
   },
   onDeselect: (app) => {
-    app.state.setSelectedToolExtraToolbar(null)
+    app.state.setSubToolbar(undefined)
   }
 };
-
-export const defaultTools: Tool[] = [
-  select(),
-  frame(),
-  actions
-]
-
-export default defaultTools

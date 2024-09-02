@@ -10,14 +10,12 @@ export type Application = {
   resources: Resources,
   project: ProjectState,
   state: {
-    selectedTool: Accessor<Tool>,
-    setSelectedTool: (tool: Tool) => void,
-    selectedToolStore: Store<any>,
-    setSelectedToolStore: SetStoreFunction<any>
-    selectedToolComponent: Accessor<Component<{ app: Application }> | null>,
-    setSelectedToolComponent: Setter<Component<{ app: Application }> | null>,
-    selectedToolExtraToolbar: Accessor<Component<{ app: Application }> | null>,
-    setSelectedToolExtraToolbar: Setter<Component<{ app: Application }> | null>,
+    tool: Accessor<Tool>,
+    selectTool: (tool: Tool) => void,
+    subToolbar: Accessor<Component<{ app: Application }> | undefined>,
+    setSubToolbar: Setter<Component<{ app: Application }> | undefined>,
+    viewportElements: Store<Record<string, Component<{ app: Application }>>>,
+    setViewportElements: SetStoreFunction<Record<string, Component<{ app: Application }>>>,
     shiftHeld: Accessor<boolean>,
   }
 }

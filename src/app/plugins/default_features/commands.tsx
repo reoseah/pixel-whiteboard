@@ -1,7 +1,6 @@
-import { produce } from "solid-js/store";
-import { Command } from "../../api";
-import defaultTools from "./tools";
-import { AddSelectionIcon, DeleteIcon } from "./components/icons";
+import { produce } from "solid-js/store"
+import { Command, Tool } from "../../api"
+import { AddSelectionIcon, DeleteIcon } from "./components/icons"
 
 export const selectAll: Command = {
   label: "Select all",
@@ -25,16 +24,10 @@ export const deleteSelected: Command = {
   }
 }
 
-export const defaultCommands: Command[] = [
-  ...defaultTools.map<Command>(tool => ({
-    label: `Toolbar: ${tool.label}`,
-    keybinds: tool.keybinds,
-    icon: () => tool.icon({ selected: false }),
-    isDisabled: app => app.state.selectedTool() === tool,
-    execute: app => app.state.setSelectedTool(tool)
-  })),
-  selectAll,
-  deleteSelected
-]
-
-export default defaultCommands
+export const selectToolCommand = (tool: Tool): Command => ({
+  label: `Toolbar: ${tool.label}`,
+  keybinds: tool.keybinds,
+  icon: () => tool.icon({ selected: false }),
+  isDisabled: app => app.state.tool() === tool,
+  execute: app => app.state.selectTool(tool)
+})
