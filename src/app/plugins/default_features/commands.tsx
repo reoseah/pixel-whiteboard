@@ -2,14 +2,14 @@ import { produce } from "solid-js/store"
 import { Command, Tool } from "../../api"
 import { AddSelectionIcon, DeleteIcon } from "./components/icons"
 
-export const selectAll: Command = {
+export const SelectAll: Command = {
   label: "Select all",
   keybinds: [{ key: "A", ctrl: true }],
   icon: AddSelectionIcon,
   execute: app => app.project.setSelectedNodes(Object.keys(app.project.nodes))
 }
 
-export const deleteSelected: Command = {
+export const DeleteSelected: Command = {
   label: "Delete selected",
   keybinds: [{ key: "Delete" }],
   icon: DeleteIcon,

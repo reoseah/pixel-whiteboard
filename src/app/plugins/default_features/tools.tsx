@@ -11,6 +11,7 @@ export const select = (): Tool => {
     keybinds: [{ key: "V" }],
     interactsWithTitles: true,
     onPress: (app, _x, _y, nodeId, _isTitle) => {
+      console.log("select", nodeId)
       const shift = app.state.shiftHeld()
       if (nodeId) {
         const selected = app.project.selectedNodes()

@@ -1,6 +1,6 @@
 import "./Viewport.css"
 import { For } from "solid-js"
-import { Application, FrameNode } from "../api"
+import { Application } from "../api"
 import { Dynamic } from "solid-js/web"
 
 export function Viewport(props: { app: Application }) {
@@ -11,6 +11,8 @@ export function Viewport(props: { app: Application }) {
 
     if (tool && tool.onPress) {
       e.preventDefault()
+
+      console.log(e.target, (e.target as Element)?.closest("[data-node-id]"));
 
       const nodeId = (e.target as Element)?.closest("[data-node-id]")?.getAttribute("data-node-id") ?? null
       const isTitle = (e.target as Element)?.hasAttribute("data-element-title") ?? false
@@ -47,16 +49,13 @@ export function Viewport(props: { app: Application }) {
       onmousedown={handlePress}
     >
       <For each={frames()}>
-        {/* TODO test code, use node types to render their corresponding nodes */}
-        {([nodeId, frame]) => (
-          <FrameView
-            app={props.app}
-            id={nodeId}
-            frame={frame as FrameNode}
-            selected={props.app.project.selectedNodes().includes(nodeId)}
-            onSelect={() => props.app.project.setSelectedNodes([nodeId])}
-          />
-        )}
+        {([nodeId, frame]) => {
+          const type = props.app.resources.nodeTypes[frame.type]
+
+          return (
+            <Dynamic component={type.render} app={props.app} node={frame} id={nodeId} />
+          )
+        }}
       </For>
       <For each={Object.entries(props.app.state.viewportElements)}>
         {([_, element]) => (
@@ -68,37 +67,3 @@ export function Viewport(props: { app: Application }) {
 }
 
 export default Viewport
-
-function FrameView(props: { app: Application, id: string, frame: FrameNode, selected?: boolean, onSelect?: () => void }) {
-  return (
-    <div
-      class="frame-view"
-      data-selected={props.selected}
-      data-node-id={props.id}
-      style={{
-        left: `${props.frame.x}px`,
-        top: `${props.frame.y}px`,
-        width: `${props.frame.width}px`,
-        height: `${props.frame.height}px`,
-      }}
-    >
-      <div
-        class="frame-view-title"
-        data-element-title
-        {...props.app.state.tool()?.interactsWithTitles ? {
-          style: {
-            cursor: "pointer",
-            "pointer-events": "auto"
-          },
-        } : {
-          style: {
-            "pointer-events": "none"
-          }
-        }}
-      >
-        {props.frame.title ?? "Frame"}
-      </div>
-    </div>
-  )
-}
-

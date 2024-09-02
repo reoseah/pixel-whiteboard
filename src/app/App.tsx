@@ -1,12 +1,15 @@
 import './App.css'
 
-import { Component, createSignal, onCleanup, onMount, Show } from 'solid-js'
+import { Component, createSignal, onCleanup, Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { Dynamic } from 'solid-js/web';
-import { Application, Command, Plugin, ProjectNode, ProjectState, Resources, Tool } from './api'
+import * as Y from "yjs"
+import { IndexeddbPersistence } from 'y-indexeddb';
+import { Application, Command, NodeType, Plugin, ProjectNode, ProjectState, Resources, Tool } from './api'
 import DefaultFeaturesPlugin from './plugins/default_features';
 import Toolbar from './components/Toolbar';
 import Viewport from './components/Viewport';
+import useHeldKey from './hooks/useHeldKey';
 
 function App() {
   const resources = useResources([DefaultFeaturesPlugin])
@@ -24,7 +27,10 @@ function App() {
   const [subToolbar, setSubToolbar] = createSignal<Component<{ app: Application }> | undefined>()
   const [viewportElements, setViewportElements] = createStore<Record<string, Component<{ app: Application }>>>()
 
-  const shiftHeld = useKeyHeld("Shift")
+  const shiftHeld = useHeldKey("Shift")
+
+  const ydoc = new Y.Doc()
+  new IndexeddbPersistence('pixel-art-editor', ydoc)
 
   const app: Application = {
     resources,
@@ -37,8 +43,10 @@ function App() {
       viewportElements,
       setViewportElements,
       shiftHeld
-    }
+    },
+    ydoc
   }
+
   useCommandKeybinds(app)
 
   return (
@@ -61,15 +69,18 @@ export default App
 function useResources(plugins: Plugin[]): Resources {
   let tools: Record<string, Tool> = {}
   let commands: Command[] = []
+  let nodeTypes: Record<string, NodeType<any>> = {}
 
   plugins.forEach(plugin => plugin.initialize({
     addTool: tool => tools[tool.id] = tool,
-    addCommand: command => commands.push(command)
+    addCommand: command => commands.push(command),
+    addNodeType: (type, nodeType) => nodeTypes[type] = nodeType
   }))
 
   return {
     tools: Object.freeze(tools),
-    commands: Object.freeze(commands)
+    commands: Object.freeze(commands),
+    nodeTypes: Object.freeze(nodeTypes)
   }
 }
 
@@ -107,28 +118,6 @@ const useCommandKeybinds = (app: Application) => {
       }
     }
   }
-  onMount(() => document.addEventListener("keydown", handleKeydown))
-  onCleanup(() => document.removeEventListener("keydown", handleKeydown))
-}
-
-const useKeyHeld = (key: string): () => boolean => {
-  const [held, setHeld] = createSignal(false)
-  const handleKeydown = (e: KeyboardEvent) => {
-    if (e.key === key) {
-      setHeld(true)
-    }
-  }
-  const handleKeyup = (e: KeyboardEvent) => {
-    if (e.key === key) {
-      setHeld(false)
-    }
-  }
   document.addEventListener("keydown", handleKeydown)
-  document.addEventListener("keyup", handleKeyup)
-  onCleanup(() => {
-    document.removeEventListener("keydown", handleKeydown)
-    document.removeEventListener("keyup", handleKeyup)
-  })
-
-  return held
+  onCleanup(() => document.removeEventListener("keydown", handleKeydown))
 }

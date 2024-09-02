@@ -1,5 +1,6 @@
-import { Accessor, Setter } from "solid-js"
+import { Accessor, Component, Setter } from "solid-js"
 import { SetStoreFunction, Store } from "solid-js/store"
+import { Application } from "."
 
 export type ProjectState = {
   nodes: Store<Record<string, ProjectNode>>
@@ -8,22 +9,24 @@ export type ProjectState = {
   setSelectedNodes: Setter<string[]>
 }
 
-export type ProjectNode = {
-  type: string,
-  parents: string[],
-  [data: string]: any
-}
+export type ProjectNode =
+  | FrameNode
+  | {
+    type: string
+    parents: string[]
+    [data: string]: unknown
+  }
 
-export type FrameNode = ProjectNode & {
-  type: "frame",
-  parents: never[],
-  title: string | null,
-  x: number,
-  y: number,
-  width: number,
+export type FrameNode = {
+  type: "frame"
+  parents: never[]
+  title: string | null
+  x: number
+  y: number
+  width: number
   height: number
 }
 
-// export type NodeType = {
-// 
-// }
+export type NodeType<T extends ProjectNode> = {
+  render: Component<{ node: T, id: string, app: Application }>
+}

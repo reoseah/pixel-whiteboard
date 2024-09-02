@@ -1,9 +1,10 @@
 import "./CommandPalette.css"
 
-import { Accessor, createMemo, createSignal, For, type JSX, onCleanup, onMount, Show } from "solid-js"
+import { createMemo, createSignal, For, type JSX, onCleanup, Show } from "solid-js"
 import { Dynamic } from "solid-js/web"
 import { Application, Command, stringifyKeybind, Tool } from "../../../api"
 import { SearchIcon } from "./icons"
+import useClickOutside from "../../../hooks/useClickOutside"
 
 export const CommandPalette = (previousTool: Tool) => (props: { app: Application }) => {
   const [query, setQuery] = createSignal("")
@@ -84,16 +85,3 @@ export const CommandPalette = (previousTool: Tool) => (props: { app: Application
 }
 
 export default CommandPalette
-
-const useClickOutside = (ref: Accessor<HTMLElement | undefined>, callback: (e: Event) => void) => {
-  const handleClick = (event: Event) => {
-    const element = ref()
-    if (!element || element.contains(event.target as Node)) {
-      return
-    }
-
-    callback(event)
-  }
-  onMount(() => document.addEventListener('click', handleClick))
-  onCleanup(() => document.removeEventListener('click', handleClick))
-}

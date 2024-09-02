@@ -8,6 +8,7 @@
   padding-right: env(safe-area-inset-right);
 }
 
+/* TODO: possibly use grid with named areas */
 .top-center-layout {
   display: grid;
   row-gap: .5rem;
