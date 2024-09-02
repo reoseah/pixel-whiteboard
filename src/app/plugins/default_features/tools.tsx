@@ -1,7 +1,9 @@
-import { Tool } from "../../api"
+import { CanvasAction, Tool } from "../../api"
 import { CommandIcon, CursorIcon, FrameIcon } from "./components/icons"
 import CommandPalette from "./components/CommandPalette"
 import { batch, createSignal } from "solid-js"
+import * as Y from "yjs"
+import { PencilAction } from "./actions"
 
 export const select = (): Tool => {
   return {
@@ -129,6 +131,36 @@ export const actions = (): Tool => {
     },
     onDeselect: (app) => {
       app.state.setSubToolbar(undefined)
+    }
+  }
+}
+
+export const pencil = (): Tool => {
+  return {
+    id: "pencil",
+    label: "Pencil",
+    icon: props => (<CursorIcon filled={props.selected} />),
+    keybinds: [{ key: "P" }],
+    onPress: (app, x, y, nodeId) => {
+      console.log("pencil", nodeId)
+
+      if (nodeId) {
+        const node = app.project.nodes[nodeId]
+        if (node.type === "canvas") {
+          app.ydoc.transact(() => {
+            if (!app.ydoc.getMap("canvas-actions").get(nodeId)) {
+              app.ydoc.getMap<Y.Array<CanvasAction>>("canvas-actions").set(nodeId, new Y.Array<CanvasAction>())
+            }
+            const actions = app.ydoc.getMap<Y.Array<CanvasAction>>("canvas-actions").get(nodeId)!
+            actions.push([{
+              type: pencil,
+              uuid: crypto.randomUUID(),
+              points: [{ x, y }]
+            } as unknown as PencilAction])
+          })
+        }
+      }
+      return true
     }
   }
 }

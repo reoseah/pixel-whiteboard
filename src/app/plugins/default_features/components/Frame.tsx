@@ -1,5 +1,8 @@
 import './Frame.css'
-import { Application, FrameNode } from "../../../api"
+import { Application } from "../../../api"
+import { FrameNode } from '../nodes'
+import { Show } from 'solid-js'
+import { Dynamic } from 'solid-js/web'
 
 export const Frame = (props: {
   app: Application,
@@ -7,6 +10,7 @@ export const Frame = (props: {
   node: FrameNode
 }) => {
   const selected = () => props.app.project.selectedNodes().includes(props.id)
+  const child = () => props.node.parents[0] ? props.app.project.nodes[props.node.parents[0]] : undefined
 
   return (
     <div
@@ -36,6 +40,16 @@ export const Frame = (props: {
       >
         {props.node.title ?? "Frame"}
       </div>
+      <Show when={child()}>
+        <div class="frame-children">
+          <Dynamic
+            component={props.app.resources.nodeTypes[child()!.type].render}
+            id={props.node.parents[0]!}
+            node={child()}
+            app={props.app}
+          />
+        </div>
+      </Show>
     </div>
   )
 }

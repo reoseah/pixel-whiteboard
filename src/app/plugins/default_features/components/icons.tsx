@@ -16,6 +16,14 @@ export function FrameIcon() {
   )
 }
 
+export function PencilIcon() {
+  return (
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M8.5 3.5L1.5 10.5L0.5 15.5L5.5 14.5L12.5 7.5M8.5 3.5L10.2929 1.70711C10.6834 1.31658 11.3166 1.31658 11.7071 1.70711L14.2929 4.29289C14.6834 4.68342 14.6834 5.31658 14.2929 5.70711L12.5 7.5M8.5 3.5L12.5 7.5" stroke="currentColor" stroke-linejoin="round" />
+      </svg>
+  )
+}
+
 export function SearchIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">

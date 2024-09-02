@@ -1,6 +1,7 @@
 import { produce } from "solid-js/store"
 import { Command, Tool } from "../../api"
 import { AddSelectionIcon, DeleteIcon } from "./components/icons"
+import { CanvasNode, FrameNode } from "./nodes"
 
 export const SelectAll: Command = {
   label: "Select all",
@@ -16,7 +17,16 @@ export const DeleteSelected: Command = {
   execute: app => {
     const selected = app.project.selectedNodes
     app.project.setNodes(produce(draft => {
-      for (const id of selected()) {
+      let nodesToDelete = selected()
+
+      while (nodesToDelete.length > 0) {
+        const id = nodesToDelete.pop()!
+        const node = draft[id]
+
+        if (node.type === "frame") {
+          nodesToDelete.push(...node.parents)
+        }
+
         delete draft[id]
       }
     }))
@@ -31,3 +41,31 @@ export const createSelectToolCommand = (tool: Tool): Command => ({
   isDisabled: app => app.state.tool() === tool,
   execute: app => app.state.selectTool(tool)
 })
+
+// TODO: remove this, 
+export const canvasTest: Command = {
+  label: "Canvas test",
+  execute: app => {
+    const canvasNode: CanvasNode = {
+      type: "canvas",
+      parents: []
+    }
+    const canvasId = crypto.randomUUID()
+
+    const frameNode: FrameNode = {
+      type: "frame",
+      parents: [canvasId],
+      title: "Canvas test",
+      x: 100,
+      y: 100,
+      width: 200,
+      height: 200,
+    }
+    const frameId = crypto.randomUUID()
+
+    app.project.setNodes({
+      [canvasId]: canvasNode,
+      [frameId]: frameNode
+    })
+  }
+}

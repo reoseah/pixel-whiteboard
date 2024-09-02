@@ -1,0 +1,4 @@
+.canvas-chunk {
+  position: absolute;
+  image-rendering: pixelated;
+}
