@@ -15,7 +15,7 @@ export function Viewport(props: { app: Application }) {
       console.log(e.target, (e.target as Element)?.closest("[data-node-id]"));
 
       const nodeId = (e.target as Element)?.closest("[data-node-id]")?.getAttribute("data-node-id") ?? null
-      const isTitle = (e.target as Element)?.hasAttribute("data-element-title") ?? false
+      const isTitle = (e.target as Element)?.hasAttribute("data-node-title") ?? false
       const shouldTrack = tool.onPress(props.app, e.clientX, e.clientY, nodeId, isTitle)
 
       if (shouldTrack) {
