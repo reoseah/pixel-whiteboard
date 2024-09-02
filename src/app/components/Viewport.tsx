@@ -58,9 +58,6 @@ export function Viewport(props: { app: Application }) {
           />
         )}
       </For>
-      {/* <Show when={props.app.state.selectedToolComponent()}>
-        <Dynamic component={props.app.state.selectedToolComponent()!} />
-      </Show> */}
       <For each={Object.entries(props.app.state.viewportElements)}>
         {([_, element]) => (
           <Dynamic component={element} app={props.app} />

@@ -1,10 +1,12 @@
 import { Accessor, Component, Setter } from "solid-js"
 import { SetStoreFunction, Store } from "solid-js/store"
 import { Tool } from './tool'
+import { Keybind } from "./keybind"
+import { ProjectState } from "./project"
 
 export * from './tool'
-
-// TODO: split into multiple files (resources.ts, project_state.ts, misc/keybind.ts, etc)
+export * from './keybind'
+export * from './project'
 
 export type Application = {
   resources: Resources,
@@ -37,14 +39,6 @@ export type ResourceBuilder = {
   addCommand: (command: Command) => void
 }
 
-export type Keybind = {
-  key: string,
-  shift?: true,
-  ctrl?: true,
-  alt?: true,
-  // TODO: MacOS support
-}
-
 export type Command = {
   label: string,
   icon?: Component,
@@ -53,18 +47,3 @@ export type Command = {
   execute: (app: Application) => void,
   // keywords?: string[],
 }
-
-// export type NodeType = {
-// 
-// }
-
-export type ProjectState = {
-  nodes: Store<Record<string, ProjectNode>>,
-  setNodes: SetStoreFunction<Record<string, ProjectNode>>,
-  selectedNodes: Accessor<string[]>,
-  setSelectedNodes: Setter<string[]>
-}
-
-export type ProjectNode = { type: string, parents: string[], [data: string]: any }
-
-export type FrameNode = ProjectNode & { type: "frame", parents: never[], title: string | null, x: number, y: number, width: number, height: number };

@@ -2,9 +2,8 @@ import "./CommandPalette.css"
 
 import { Accessor, createMemo, createSignal, For, type JSX, onCleanup, onMount, Show } from "solid-js"
 import { Dynamic } from "solid-js/web"
-import { Application, Command } from "../../../api"
+import { Application, Command, stringifyKeybind } from "../../../api"
 import { SearchIcon } from "./icons"
-import { stringifyKeybind } from "../../../api-utils"
 
 export const CommandPalette = (props: { app: Application }) => {
   const [query, setQuery] = createSignal("")

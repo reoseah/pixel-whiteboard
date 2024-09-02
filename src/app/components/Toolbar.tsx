@@ -2,8 +2,7 @@ import "./Toolbar.css"
 
 import { createEffect, createSignal, For, JSX, Show } from "solid-js"
 import { Dynamic } from "solid-js/web"
-import { Tool } from "../api"
-import { stringifyKeybind } from "../api-utils"
+import { stringifyKeybind, Tool } from "../api"
 
 export function Toolbar(props: {
     tools: Tool[],
