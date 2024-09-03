@@ -20,6 +20,7 @@ export const Select = (): Tool => {
   }
 
   const createMouseDown = (app: Application) => (e: MouseEvent) => {
+    console.log("Mouse down", e.target)
     if (!(e.target as Element)?.closest(".workspace-view")) {
       return;
     }
@@ -28,6 +29,7 @@ export const Select = (): Tool => {
 
     const nodeId = (e.target as Element)?.closest("[data-node-id]")?.getAttribute("data-node-id") ?? null
     if (nodeId) {
+      console.log("Selecting", nodeId)
       const isTitle = (e.target as Element)?.hasAttribute("data-node-title")
 
       if (isTitle) {

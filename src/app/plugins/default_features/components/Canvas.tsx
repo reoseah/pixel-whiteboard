@@ -6,7 +6,7 @@ import { onCleanup, onMount } from "solid-js"
 import { actionTypes } from '../actions'
 
 // TODO: don't expose this somehow, maybe pass as parameter wherever it's needed
-export const chunkSize = 16
+export const chunkSize = 64
 
 export const affectsChunk = (action: RasterAction, column: number, row: number) => {
   const type = actionTypes[action.type]
@@ -40,6 +40,7 @@ export const Canvas = (props: {
 
   let containerRef!: HTMLDivElement
   let canvasRefs = new Map<`${number},${number}`, HTMLCanvasElement>()
+  let contexts = new Map<HTMLCanvasElement, CanvasRenderingContext2D>()
 
   const getOrCreateCanvas = (x: number, y: number): HTMLCanvasElement => {
     const column = Math.floor(x / chunkSize)
@@ -65,9 +66,20 @@ export const Canvas = (props: {
     return canvas
   }
 
-  const rerenderChunks = (positions: Array<{ column: number, row: number }>) => {
-    console.log('rerendering chunks', positions)
+  const getContext = (x: number, y: number): CanvasRenderingContext2D => {
+    const canvas = getOrCreateCanvas(x, y)
+    if (contexts.has(canvas)) {
+      return contexts.get(canvas)!
+    }
+    const ctx = canvas.getContext('2d')
+    if (!ctx) {
+      throw new Error('could not get canvas context')
+    }
+    contexts.set(canvas, ctx)
+    return ctx
+  }
 
+  const rerenderChunks = (positions: Array<{ column: number, row: number }>) => {
     const canModify = (x: number, y: number) => {
       if (!positions) {
         return true
@@ -77,7 +89,7 @@ export const Canvas = (props: {
 
     const ctxs = new Map<HTMLCanvasElement, CanvasRenderingContext2D>()
     positions.forEach(({ column, row }) => {
-      const canvas = getOrCreateCanvas(column * 64, row * 64)
+      const canvas = getOrCreateCanvas(column * chunkSize, row * chunkSize)
       const ctx = canvas.getContext('2d')
       if (!ctx) {
         console.error('could not get canvas context')
@@ -89,22 +101,21 @@ export const Canvas = (props: {
 
     const helper: RasterHelper = {
       get: (x: number, y: number) => {
-        const canvas = getOrCreateCanvas(x, y)
-        const ctx = ctxs.get(canvas)
-        if (!canvas || !ctx) {
-          return 0
-        }
-        const imageData = ctx.getImageData(x % 64, y % 64, 1, 1)
+        const ctx = getContext(x, y)
+        const localX = ((x % chunkSize) + chunkSize) % chunkSize
+        const localY = ((y % chunkSize) + chunkSize) % chunkSize
+        const imageData = ctx.getImageData(localX, localY, 1, 1)
         return imageData.data[0] << 24 | imageData.data[1] << 16 | imageData.data[2] << 8 | imageData.data[3]
       },
       set: (x: number, y: number, rgba: number) => {
         if (!canModify(x, y)) {
           return
         }
-        const canvas = getOrCreateCanvas(x, y)
-        const ctx = ctxs.get(canvas)!
+        const ctx = getContext(x, y)
+        const localX = ((x % chunkSize) + chunkSize) % chunkSize
+        const localY = ((y % chunkSize) + chunkSize) % chunkSize
         ctx.fillStyle = `rgba(${(rgba >> 24) & 0xff}, ${(rgba >> 16) & 0xff}, ${(rgba >> 8) & 0xff}, ${rgba & 0xff})`
-        ctx.fillRect(x % 64, y % 64, 1, 1)
+        ctx.fillRect(localX, localY, 1, 1)
       }
     }
 
@@ -117,31 +128,20 @@ export const Canvas = (props: {
   }
 
   const get = (x: number, y: number) => {
-    const chunkX = Math.floor(x / chunkSize)
-    const chunkY = Math.floor(y / chunkSize)
-    const chunkId = `${chunkX},${chunkY}` as `${number},${number}`
-    const canvas = canvasRefs.get(chunkId)
-    if (!canvas) {
-      return 0
-    }
-    const ctx = canvas.getContext('2d')
-    if (!ctx) {
-      return 0
-    }
-    const imageData = ctx.getImageData(x % chunkSize, y % chunkSize, 1, 1)
+    const ctx = getContext(x, y)
+    const localX = ((x % chunkSize) + chunkSize) % chunkSize
+    const localY = ((y % chunkSize) + chunkSize) % chunkSize
+    const imageData = ctx.getImageData(localX, localY, 1, 1)
+    
     return imageData.data[0] << 24 | imageData.data[1] << 16 | imageData.data[2] << 8 | imageData.data[3]
   }
 
   const set = (x: number, y: number, rgba: number) => {
-    const chunkX = Math.floor(x / chunkSize)
-    const chunkY = Math.floor(y / chunkSize)
-    const canvas = getOrCreateCanvas(chunkX * chunkSize, chunkY * chunkSize)
-    const ctx = canvas.getContext('2d')
-    if (!ctx) {
-      return
-    }
+    const ctx = getContext(x, y)
+    const localX = ((x % chunkSize) + chunkSize) % chunkSize
+    const localY = ((y % chunkSize) + chunkSize) % chunkSize
     ctx.fillStyle = `rgba(${(rgba >> 24) & 0xff}, ${(rgba >> 16) & 0xff}, ${(rgba >> 8) & 0xff}, ${rgba & 0xff})`
-    ctx.fillRect(x % chunkSize, y % chunkSize, 1, 1)
+    ctx.fillRect(localX, localY, 1, 1)
   }
 
   const onDataChange = (event: Y.YEvent<Y.Array<RasterAction>>) => {
