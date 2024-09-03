@@ -1,5 +1,5 @@
 import { Plugin, ResourceBuilder, Tool } from '../../api'
-import { actions, frame, pencil, select } from './tools'
+import { Actions, Frame, Pencil, Select } from './tools'
 import { DeleteSelected, SelectAll, canvasTest, createSelectToolCommand } from './commands'
 import { CanvasType, FrameType } from './nodes'
 
@@ -8,10 +8,10 @@ export const DefaultFeaturesPlugin: Plugin = {
   title: 'Default Features',
   initialize(builder: ResourceBuilder) {
     const defaultTools: Tool[] = [
-      select(),
-      frame(),
-      actions(),
-      pencil(),
+      Select(),
+      Frame(),
+      Actions(),
+      Pencil(),
     ]
     defaultTools.forEach(builder.addTool)
 

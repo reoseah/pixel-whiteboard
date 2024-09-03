@@ -11,26 +11,30 @@ export type ProjectState = {
 
 export type ProjectNode = {
   type: string
-  parents: string[]
+  children: string[]
   [data: string]: unknown
 }
 
 export type NodeType<T extends ProjectNode> = {
   render: Component<{ node: T, id: string, app: Application }>
+  transformPosition?: (node: T, x: number, y: number) => { x: number, y: number }
+  supportsRasterActions?: boolean
+  addRasterAction?: (node: T, nodeId: string, action: RasterAction, app: Application) => void
+  replaceRasterAction?: (node: T, nodeId: string, previous: RasterAction, replacement: RasterAction, app: Application) => void
 }
 
-export type CanvasAction = {
+export type RasterAction = {
   type: string
   uuid?: string
   [data: string]: any
 }
 
-export type CanvasActionType<T extends CanvasAction> = {
+export type RasterActionType<T extends RasterAction> = {
   getBounds: (action: T) => { left: number, top: number, right: number, bottom: number }
-  draw: (action: T, helper: CanvasHelper) => void
+  draw: (action: T, helper: RasterHelper) => void
 }
 
-export type CanvasHelper = {
+export type RasterHelper = {
   get: (x: number, y: number) => number
   set: (x: number, y: number, rgba: number) => void
 }

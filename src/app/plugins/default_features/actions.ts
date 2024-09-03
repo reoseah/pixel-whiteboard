@@ -1,18 +1,17 @@
-import { CanvasActionType } from "../../api";
+import { RasterActionType } from "../../api";
 
 export type PencilAction = {
   type: "pencil"
-  uuid: string
   points: Array<{ x: number, y: number }>
 }
 
 export const getUniquePoints = (points: Array<{ column: number, row: number }>): Array<{ column: number, row: number }> => {
   return points.filter((point, index, self) =>
     index === self.findIndex((p) => p.column === point.column && p.row === point.row)
-  );
-};
+  )
+}
 
-export const PencilActionType: CanvasActionType<PencilAction> = {
+export const PencilActionType: RasterActionType<PencilAction> = {
   getBounds: (action) => {
     const left = Math.min(...action.points.map((point) => point.x))
     const top = Math.min(...action.points.map((point) => point.y))
@@ -21,14 +20,51 @@ export const PencilActionType: CanvasActionType<PencilAction> = {
     return { left, top, right, bottom }
   },
   draw: (action, helper) => {
-    // TODO: implement a better drawing algorithm
-    action.points.forEach((point) => {
+    if (action.points.length === 1) {
+      const point = action.points[0]
       helper.set(point.x, point.y, 0xffffffff)
-    })
+      return
+    }
+
+    let prev = action.points[0]
+    for (let i = 1; i < action.points.length; i++) {
+      const point = action.points[i]
+      drawPixelLine(prev.x, prev.y, point.x, point.y, (x, y) => {
+        helper.set(x, y, 0xffffffff)
+      })
+      prev = point
+    }
+  }
+}
+
+export function drawPixelLine(startX: number, startY: number, endX: number, endY: number, drawPixel: (x: number, y: number) => void) {
+  const deltaX = Math.abs(endX - startX);
+  const deltaY = Math.abs(endY - startY);
+  const signX = startX < endX ? 1 : -1;
+  const signY = startY < endY ? 1 : -1;
+  let error = deltaX - deltaY;
+
+  while (true) {
+    drawPixel(startX, startY);
+
+    if (startX === endX && startY === endY) {
+      break;
+    }
+    const error2 = 2 * error;
+
+    if (error2 > -deltaY) {
+      error -= deltaY;
+      startX += signX;
+    }
+
+    if (error2 < deltaX) {
+      error += deltaX;
+      startY += signY;
+    }
   }
 }
 
 // TODO: make it a resource added through plugins
-export const actionTypes: Record<string, CanvasActionType<any>> = {
+export const actionTypes: Record<string, RasterActionType<any>> = {
   'pencil': PencilActionType
 }

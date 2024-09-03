@@ -24,7 +24,7 @@ export const DeleteSelected: Command = {
         const node = draft[id]
 
         if (node.type === "frame") {
-          nodesToDelete.push(...node.parents)
+          nodesToDelete.push(...node.children)
         }
 
         delete draft[id]
@@ -48,13 +48,13 @@ export const canvasTest: Command = {
   execute: app => {
     const canvasNode: CanvasNode = {
       type: "canvas",
-      parents: []
+      children: []
     }
     const canvasId = crypto.randomUUID()
 
     const frameNode: FrameNode = {
       type: "frame",
-      parents: [canvasId],
+      children: [canvasId],
       title: "Canvas test",
       x: 100,
       y: 100,

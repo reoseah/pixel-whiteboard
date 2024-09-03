@@ -1,6 +1,6 @@
 import './Canvas.css'
 import * as Y from "yjs"
-import { Application, CanvasAction, CanvasHelper } from "../../../api"
+import { Application, RasterAction, RasterHelper } from "../../../api"
 import { CanvasNode } from "../nodes"
 import { onCleanup, onMount } from "solid-js"
 import { actionTypes } from '../actions'
@@ -8,13 +8,13 @@ import { actionTypes } from '../actions'
 // TODO: don't expose this somehow, maybe pass as parameter wherever it's needed
 export const chunkSize = 16
 
-export const affectsChunk = (action: CanvasAction, column: number, row: number) => {
+export const affectsChunk = (action: RasterAction, column: number, row: number) => {
   const type = actionTypes[action.type]
   const { top, left, bottom, right } = type.getBounds(action)
   return left <= column * chunkSize && column * chunkSize <= right && top <= row * chunkSize && row * chunkSize <= bottom
 }
 
-export const getAffectedChunks = (action: CanvasAction) => {
+export const getAffectedChunks = (action: RasterAction) => {
   const type = actionTypes[action.type]
   const { top, left, bottom, right } = type.getBounds(action)
   const chunks = []
@@ -33,10 +33,10 @@ export const Canvas = (props: {
 }) => {
   if (!props.app.ydoc.getMap("canvas-actions").get(props.id)) {
     props.app.ydoc.transact(() => {
-      props.app.ydoc.getMap<Y.Array<CanvasAction>>("canvas-actions").set(props.id, new Y.Array<CanvasAction>())
+      props.app.ydoc.getMap<Y.Array<RasterAction>>("canvas-actions").set(props.id, new Y.Array<RasterAction>())
     })
   }
-  const actions = props.app.ydoc.getMap<Y.Array<CanvasAction>>("canvas-actions").get(props.id)!
+  const actions = props.app.ydoc.getMap<Y.Array<RasterAction>>("canvas-actions").get(props.id)!
 
   let containerRef!: HTMLDivElement
   let canvasRefs = new Map<`${number},${number}`, HTMLCanvasElement>()
@@ -87,7 +87,7 @@ export const Canvas = (props: {
       ctxs.set(canvas, ctx)
     })
 
-    const helper: CanvasHelper = {
+    const helper: RasterHelper = {
       get: (x: number, y: number) => {
         const canvas = getOrCreateCanvas(x, y)
         const ctx = ctxs.get(canvas)
@@ -144,15 +144,13 @@ export const Canvas = (props: {
     ctx.fillRect(x % chunkSize, y % chunkSize, 1, 1)
   }
 
-  const onDataChange = (event: Y.YEvent<Y.Array<CanvasAction>>) => {
+  const onDataChange = (event: Y.YEvent<Y.Array<RasterAction>>) => {
     const chunksToRerender = new Map<number, Set<number>>()
 
     const addedUuids = new Set<string>()
 
     event.changes.added.forEach((item) => {
       item.content.getContent().forEach((action) => {
-        console.log('added', action)
-
         addedUuids.add(action.uuid)
         const type = actionTypes[action.type]
         type.draw(action, {
@@ -165,9 +163,6 @@ export const Canvas = (props: {
 
     event.changes.deleted.forEach((item) => {
       item.content.getContent().forEach((action) => {
-        console.log('deleted', action)
-
-        const type = actionTypes[action.type]
         getAffectedChunks(action).forEach((chunk) => {
           if (!addedUuids.has(action.uuid)) {
             const { column, row } = chunk
