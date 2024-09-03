@@ -132,7 +132,7 @@ export const Canvas = (props: {
     const localX = ((x % chunkSize) + chunkSize) % chunkSize
     const localY = ((y % chunkSize) + chunkSize) % chunkSize
     const imageData = ctx.getImageData(localX, localY, 1, 1)
-    
+
     return imageData.data[0] << 24 | imageData.data[1] << 16 | imageData.data[2] << 8 | imageData.data[3]
   }
 
@@ -147,11 +147,8 @@ export const Canvas = (props: {
   const onDataChange = (event: Y.YEvent<Y.Array<RasterAction>>) => {
     const chunksToRerender = new Map<number, Set<number>>()
 
-    const addedUuids = new Set<string>()
-
     event.changes.added.forEach((item) => {
       item.content.getContent().forEach((action) => {
-        addedUuids.add(action.uuid)
         const type = actionTypes[action.type]
         type.draw(action, {
           // TODO: optimize this
@@ -164,13 +161,11 @@ export const Canvas = (props: {
     event.changes.deleted.forEach((item) => {
       item.content.getContent().forEach((action) => {
         getAffectedChunks(action).forEach((chunk) => {
-          if (!addedUuids.has(action.uuid)) {
-            const { column, row } = chunk
-            if (!chunksToRerender.has(column)) {
-              chunksToRerender.set(column, new Set<number>())
-            }
-            chunksToRerender.get(column)!.add(row)
+          const { column, row } = chunk
+          if (!chunksToRerender.has(column)) {
+            chunksToRerender.set(column, new Set<number>())
           }
+          chunksToRerender.get(column)!.add(row)
         })
       })
     })

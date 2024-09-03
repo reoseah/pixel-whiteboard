@@ -1,4 +1,4 @@
-import { Application, RasterAction, Tool } from "../../api"
+import { Application, Tool } from "../../api"
 import { CommandIcon, CursorIcon, FrameIcon, PencilIcon } from "./components/icons"
 import CommandPalette from "./components/CommandPalette"
 import { batch, createSignal } from "solid-js"
@@ -211,17 +211,19 @@ export const Pencil = (): Tool => {
         const handleMouseMove = (e: MouseEvent) => {
           const { x: x1, y: y1 } = nodeType.transformPosition!(node, e.clientX, e.clientY)
 
-          action = {
+          const action1 = {
             ...action,
             points: [...action.points, { x: x1, y: y1 }]
           }
+          // TODO: replace with replaceRasterAction once implemented
+          nodeType.replaceRasterAction!(node, nodeId, action, action1, app)
+
           x = x1
           y = y1
-          // TODO: replace with replaceRasterAction once implemented
-          nodeType.addRasterAction!(node, nodeId, action, app)
+          action = action1
         }
 
-        const handleMouseUp = (e: MouseEvent) => {
+        const handleMouseUp = () => {
           document.removeEventListener("mousemove", handleMouseMove)
           document.removeEventListener("mouseup", handleMouseUp)
         }

@@ -21,6 +21,7 @@ export type NodeType<T extends ProjectNode> = {
   supportsRasterActions?: boolean
   addRasterAction?: (node: T, nodeId: string, action: RasterAction, app: Application) => void
   replaceRasterAction?: (node: T, nodeId: string, previous: RasterAction, replacement: RasterAction, app: Application) => void
+  onDelete?: (node: T, nodeId: string, app: Application) => void
 }
 
 export type RasterAction = {

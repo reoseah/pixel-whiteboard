@@ -61,6 +61,19 @@ export const CanvasType: NodeType<CanvasNode> = {
   addRasterAction: (_: CanvasNode, nodeId: string, action: RasterAction, app: Application) => {
     const actions = getOrCreateRasterActions(nodeId, app)
     actions.push([action])
+  },
+  replaceRasterAction: (_: CanvasNode, nodeId: string, previous: RasterAction, replacement: RasterAction, app: Application) => {
+    const actions = getOrCreateRasterActions(nodeId, app)
+    const index = actions.toArray().findIndex(a => a === previous)
+    if (index !== -1) {
+      actions.delete(index)
+      actions.insert(index, [replacement])
+    }
+  },
+  onDelete: (_: CanvasNode, nodeId: string, app: Application) => {
+    app.ydoc.transact(() => {
+      app.ydoc.getMap<Y.Array<RasterAction>>("canvas-actions").delete(nodeId)
+    })
   }
 }
 
