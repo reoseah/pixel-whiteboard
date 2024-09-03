@@ -1,7 +1,8 @@
 .toolbar {
-    padding: .25rem;
     background: var(--neutral-800);
     border-radius: .5rem;
+    border: .0625rem solid var(--neutral-750);
+    padding: .1875rem;
 }
 
 .toolbar-layout {

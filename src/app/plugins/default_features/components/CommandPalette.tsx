@@ -24,6 +24,7 @@ export const CommandPalette = (previousTool: Tool) => (props: { app: Application
     if (event.key === "Escape") {
       props.app.state.selectTool(previousTool)
     }
+    // TODO: handle arrow keys to navigate the list
   }
   document.addEventListener("keydown", handleEscape)
   onCleanup(() => document.removeEventListener("keydown", handleEscape))
@@ -51,6 +52,7 @@ export const CommandPalette = (previousTool: Tool) => (props: { app: Application
           ref={el => requestAnimationFrame(() => el.focus())}
           onInput={handleInput}
           id="command-palette-search"
+          autocomplete="off"
         />
       </div>
       <Show when={filteredCommands().length}>

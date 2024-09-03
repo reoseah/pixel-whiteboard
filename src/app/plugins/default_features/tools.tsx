@@ -1,5 +1,5 @@
 import { CanvasAction, Tool } from "../../api"
-import { CommandIcon, CursorIcon, FrameIcon } from "./components/icons"
+import { CommandIcon, CursorIcon, FrameIcon, PencilIcon } from "./components/icons"
 import CommandPalette from "./components/CommandPalette"
 import { batch, createSignal } from "solid-js"
 import * as Y from "yjs"
@@ -139,12 +139,12 @@ export const pencil = (): Tool => {
   return {
     id: "pencil",
     label: "Pencil",
-    icon: props => (<CursorIcon filled={props.selected} />),
+    icon: PencilIcon,
     keybinds: [{ key: "P" }],
     onPress: (app, x, y, nodeId) => {
-      console.log("pencil", nodeId)
-
       if (nodeId) {
+        console.log("pencil", nodeId, app.project.nodes[nodeId])
+
         const node = app.project.nodes[nodeId]
         if (node.type === "canvas") {
           app.ydoc.transact(() => {
@@ -153,7 +153,7 @@ export const pencil = (): Tool => {
             }
             const actions = app.ydoc.getMap<Y.Array<CanvasAction>>("canvas-actions").get(nodeId)!
             actions.push([{
-              type: pencil,
+              type: "pencil",
               uuid: crypto.randomUUID(),
               points: [{ x, y }]
             } as unknown as PencilAction])

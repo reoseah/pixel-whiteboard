@@ -1,5 +1,7 @@
 .command-palette {
-  padding: .5rem;
+  /* padding: .5rem; */
+  border: .0625rem solid var(--neutral-750);
+  padding: .4375rem;
   background: var(--neutral-800);
   border-radius: .5rem;
   width: 20rem;
@@ -32,6 +34,11 @@
     padding-inline: 2rem .5rem;
     height: 32px;
     width: 100%;
+
+    &:hover:not(:focus) {
+      border: 0.0625rem solid var(--neutral-700);
+      padding-inline: 1.9375rem 0.4375rem;
+    }
 
     &:focus {
       outline: .125rem solid var(--primary-500);

@@ -1,4 +1,4 @@
-import { CanvasActionType, chunkSize } from "../../api";
+import { CanvasActionType } from "../../api";
 
 export type PencilAction = {
   type: "pencil"
@@ -13,19 +13,12 @@ export const getUniquePoints = (points: Array<{ column: number, row: number }>):
 };
 
 export const PencilActionType: CanvasActionType<PencilAction> = {
-  affectsChunk: (action, column, row) => {
-    return action.points.some((point) => {
-      return Math.floor(point.x / chunkSize) === Math.floor(column) &&
-        Math.floor(point.y / chunkSize) === Math.floor(row)
-    })
-  },
-  getAffectedChunks: (action) => {
-    return getUniquePoints(action.points.map((point) => {
-      return {
-        column: Math.floor(point.x / chunkSize),
-        row: Math.floor(point.y / chunkSize)
-      }
-    }))
+  getBounds: (action) => {
+    const left = Math.min(...action.points.map((point) => point.x))
+    const top = Math.min(...action.points.map((point) => point.y))
+    const right = Math.max(...action.points.map((point) => point.x))
+    const bottom = Math.max(...action.points.map((point) => point.y))
+    return { left, top, right, bottom }
   },
   draw: (action, helper) => {
     // TODO: implement a better drawing algorithm
@@ -35,7 +28,7 @@ export const PencilActionType: CanvasActionType<PencilAction> = {
   }
 }
 
-// TODO: make a resource added through plugins
+// TODO: make it a resource added through plugins
 export const actionTypes: Record<string, CanvasActionType<any>> = {
-  pencil: PencilActionType
+  'pencil': PencilActionType
 }

@@ -21,3 +21,8 @@
 .frame[data-selected="true"] .frame-title {
   color: var(--primary-400);
 }
+
+.frame-children {
+  width: 100%;
+  height: 100%;
+}

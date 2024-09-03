@@ -26,8 +26,7 @@ export type CanvasAction = {
 }
 
 export type CanvasActionType<T extends CanvasAction> = {
-  affectsChunk: (action: T, column: number, row: number) => boolean
-  getAffectedChunks: (action: T) => Array<{ column: number, row: number }>
+  getBounds: (action: T) => { left: number, top: number, right: number, bottom: number }
   draw: (action: T, helper: CanvasHelper) => void
 }
 
@@ -35,6 +34,3 @@ export type CanvasHelper = {
   get: (x: number, y: number) => number
   set: (x: number, y: number, rgba: number) => void
 }
-
-// TODO: don't expose this somehow, maybe pass as parameter wherever it's needed
-export const chunkSize = 16

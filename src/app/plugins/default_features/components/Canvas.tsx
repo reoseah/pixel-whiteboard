@@ -1,9 +1,30 @@
 import './Canvas.css'
 import * as Y from "yjs"
-import { Application, CanvasAction, CanvasHelper, chunkSize } from "../../../api"
+import { Application, CanvasAction, CanvasHelper } from "../../../api"
 import { CanvasNode } from "../nodes"
 import { onCleanup, onMount } from "solid-js"
 import { actionTypes } from '../actions'
+
+// TODO: don't expose this somehow, maybe pass as parameter wherever it's needed
+export const chunkSize = 16
+
+export const affectsChunk = (action: CanvasAction, column: number, row: number) => {
+  const type = actionTypes[action.type]
+  const { top, left, bottom, right } = type.getBounds(action)
+  return left <= column * chunkSize && column * chunkSize <= right && top <= row * chunkSize && row * chunkSize <= bottom
+}
+
+export const getAffectedChunks = (action: CanvasAction) => {
+  const type = actionTypes[action.type]
+  const { top, left, bottom, right } = type.getBounds(action)
+  const chunks = []
+  for (let x = left; x <= right; x += chunkSize) {
+    for (let y = top; y <= bottom; y += chunkSize) {
+      chunks.push({ column: Math.floor(x / chunkSize), row: Math.floor(y / chunkSize) })
+    }
+  }
+  return chunks
+}
 
 export const Canvas = (props: {
   app: Application,
@@ -89,15 +110,15 @@ export const Canvas = (props: {
 
     actions.forEach((action) => {
       const type = actionTypes[action.type]
-      if (positions.some(({ column, row }) => type.affectsChunk(action, column, row))) {
+      if (positions.some(({ column, row }) => affectsChunk(action, column, row))) {
         type.draw(action, helper)
       }
     })
   }
 
   const get = (x: number, y: number) => {
-    const chunkX = Math.floor(x / 64)
-    const chunkY = Math.floor(y / 64)
+    const chunkX = Math.floor(x / chunkSize)
+    const chunkY = Math.floor(y / chunkSize)
     const chunkId = `${chunkX},${chunkY}` as `${number},${number}`
     const canvas = canvasRefs.get(chunkId)
     if (!canvas) {
@@ -107,20 +128,20 @@ export const Canvas = (props: {
     if (!ctx) {
       return 0
     }
-    const imageData = ctx.getImageData(x % 64, y % 64, 1, 1)
+    const imageData = ctx.getImageData(x % chunkSize, y % chunkSize, 1, 1)
     return imageData.data[0] << 24 | imageData.data[1] << 16 | imageData.data[2] << 8 | imageData.data[3]
   }
 
   const set = (x: number, y: number, rgba: number) => {
-    const chunkX = Math.floor(x / 64)
-    const chunkY = Math.floor(y / 64)
-    const canvas = getOrCreateCanvas(chunkX * 64, chunkY * 64)
+    const chunkX = Math.floor(x / chunkSize)
+    const chunkY = Math.floor(y / chunkSize)
+    const canvas = getOrCreateCanvas(chunkX * chunkSize, chunkY * chunkSize)
     const ctx = canvas.getContext('2d')
     if (!ctx) {
       return
     }
     ctx.fillStyle = `rgba(${(rgba >> 24) & 0xff}, ${(rgba >> 16) & 0xff}, ${(rgba >> 8) & 0xff}, ${rgba & 0xff})`
-    ctx.fillRect(x % 64, y % 64, 1, 1)
+    ctx.fillRect(x % chunkSize, y % chunkSize, 1, 1)
   }
 
   const onDataChange = (event: Y.YEvent<Y.Array<CanvasAction>>) => {
@@ -147,7 +168,7 @@ export const Canvas = (props: {
         console.log('deleted', action)
 
         const type = actionTypes[action.type]
-        type.getAffectedChunks(action).forEach((chunk) => {
+        getAffectedChunks(action).forEach((chunk) => {
           if (!addedUuids.has(action.uuid)) {
             const { column, row } = chunk
             if (!chunksToRerender.has(column)) {
@@ -176,7 +197,12 @@ export const Canvas = (props: {
   })
 
   return (
-    <div ref={containerRef} class="canvas-container">
+    <div
+      ref={containerRef}
+      class="canvas-container"
+      // data-selected={selected()}
+      data-node-id={props.id}
+    >
     </div>
   )
 }
