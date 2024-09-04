@@ -25,6 +25,10 @@ export const FrameType: NodeType<FrameNode> = {
   addRasterAction: (node: FrameNode, nodeId: string, action: RasterAction, app: Application) => {
     const { canvasId, canvas } = getOrCreateChildCanvas(node, nodeId, app)
     CanvasType.addRasterAction!(canvas, canvasId, action, app)
+  },
+  replaceOrAddRasterAction: (node: FrameNode, nodeId: string, previous: RasterAction, replacement: RasterAction, app: Application) => {
+    const { canvasId, canvas } = getOrCreateChildCanvas(node, nodeId, app)
+    CanvasType.replaceOrAddRasterAction!(canvas, canvasId, previous, replacement, app)
   }
 }
 
@@ -62,12 +66,15 @@ export const CanvasType: NodeType<CanvasNode> = {
     const actions = getOrCreateRasterActions(nodeId, app)
     actions.push([action])
   },
-  replaceRasterAction: (_: CanvasNode, nodeId: string, previous: RasterAction, replacement: RasterAction, app: Application) => {
+  replaceOrAddRasterAction: (_: CanvasNode, nodeId: string, previous: RasterAction, replacement: RasterAction, app: Application) => {
     const actions = getOrCreateRasterActions(nodeId, app)
-    const index = actions.toArray().findIndex(a => a === previous)
-    if (index !== -1) {
-      actions.delete(index)
-      actions.insert(index, [replacement])
+    if (actions.get(actions.length - 1) === previous) {
+      app.ydoc.transact(() => {
+        actions.delete(actions.length - 1)
+        actions.push([replacement])
+      })
+    } else {
+      actions.push([replacement])
     }
   },
   onDelete: (_: CanvasNode, nodeId: string, app: Application) => {

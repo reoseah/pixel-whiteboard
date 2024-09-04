@@ -8,10 +8,20 @@ import { actionTypes } from '../actions'
 // TODO: don't expose this somehow, maybe pass as parameter wherever it's needed
 export const chunkSize = 64
 
+const doRectanglesIntersect = (a: { left: number, top: number, right: number, bottom: number }, b: { left: number, top: number, right: number, bottom: number }) => {
+  return a.left <= b.right && a.right >= b.left && a.top <= b.bottom && a.bottom >= b.top
+}
+
 export const affectsChunk = (action: RasterAction, column: number, row: number) => {
   const type = actionTypes[action.type]
-  const { top, left, bottom, right } = type.getBounds(action)
-  return left <= column * chunkSize && column * chunkSize <= right && top <= row * chunkSize && row * chunkSize <= bottom
+  const actionBounds = type.getBounds(action)
+  const chunkBounds = {
+    left: column * chunkSize,
+    top: row * chunkSize,
+    right: column * chunkSize + chunkSize - 1,
+    bottom: row * chunkSize + chunkSize - 1
+  }
+  return doRectanglesIntersect(actionBounds, chunkBounds)
 }
 
 export const getAffectedChunks = (action: RasterAction) => {
@@ -87,16 +97,9 @@ export const Canvas = (props: {
       return positions.some(({ column, row }) => Math.floor(x / chunkSize) === column && Math.floor(y / chunkSize) === row)
     }
 
-    const ctxs = new Map<HTMLCanvasElement, CanvasRenderingContext2D>()
     positions.forEach(({ column, row }) => {
-      const canvas = getOrCreateCanvas(column * chunkSize, row * chunkSize)
-      const ctx = canvas.getContext('2d')
-      if (!ctx) {
-        console.error('could not get canvas context')
-        return
-      }
+      const ctx = getContext(column * chunkSize, row * chunkSize)
       ctx!.clearRect(0, 0, 64, 64)
-      ctxs.set(canvas, ctx)
     })
 
     const helper: RasterHelper = {
@@ -147,17 +150,6 @@ export const Canvas = (props: {
   const onDataChange = (event: Y.YEvent<Y.Array<RasterAction>>) => {
     const chunksToRerender = new Map<number, Set<number>>()
 
-    event.changes.added.forEach((item) => {
-      item.content.getContent().forEach((action) => {
-        const type = actionTypes[action.type]
-        type.draw(action, {
-          // TODO: optimize this
-          get,
-          set
-        })
-      })
-    })
-
     event.changes.deleted.forEach((item) => {
       item.content.getContent().forEach((action) => {
         getAffectedChunks(action).forEach((chunk) => {
@@ -178,6 +170,17 @@ export const Canvas = (props: {
       }).flat()
       rerenderChunks(chunks)
     }
+
+    event.changes.added.forEach((item) => {
+      item.content.getContent().forEach((action) => {
+        const type = actionTypes[action.type]
+        type.draw(action, {
+          // TODO: optimize this
+          get,
+          set
+        })
+      })
+    })
   }
   onMount(() => {
     actions.observe(onDataChange)

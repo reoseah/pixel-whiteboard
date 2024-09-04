@@ -20,7 +20,7 @@ export type NodeType<T extends ProjectNode> = {
   transformPosition?: (node: T, x: number, y: number) => { x: number, y: number }
   supportsRasterActions?: boolean
   addRasterAction?: (node: T, nodeId: string, action: RasterAction, app: Application) => void
-  replaceRasterAction?: (node: T, nodeId: string, previous: RasterAction, replacement: RasterAction, app: Application) => void
+  replaceOrAddRasterAction?: (node: T, nodeId: string, previous: RasterAction, replacement: RasterAction, app: Application) => void
   onDelete?: (node: T, nodeId: string, app: Application) => void
 }
 

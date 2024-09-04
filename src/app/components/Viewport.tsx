@@ -1,32 +1,25 @@
 import "./Viewport.css"
-import { For } from "solid-js"
+import { Show } from "solid-js"
 import { Application } from "../api"
 import { Dynamic } from "solid-js/web"
+import { Entries } from "@solid-primitives/keyed"
+import { FrameNode, FrameType } from "../plugins/default_features/nodes"
 
 export function Viewport(props: { app: Application }) {
-  const frames = () => Object.entries(props.app.project.nodes).filter(([_, node]) => node.type === "frame")
-
-  // const { handlePress } = useToolHandlers(props.app, () => 0, () => 0, () => 1)
-
   return (
-    <div
-      class="workspace-view"
-    // onmousedown={handlePress}
-    >
-      <For each={frames()}>
-        {([nodeId, frame]) => {
-          const type = props.app.resources.nodeTypes[frame.type]
-
-          return (
-            <Dynamic component={type.render} app={props.app} node={frame} id={nodeId} />
-          )
-        }}
-      </For>
-      <For each={Object.entries(props.app.state.viewportElements)}>
+    <div class="workspace-view">
+      <Entries of={props.app.project.nodes}>
+        {(nodeId, node) => (
+          <Show when={node().type === "frame"}>
+            <FrameType.render app={props.app} node={node() as FrameNode} id={nodeId} />
+          </Show>
+        )}
+      </Entries>
+      <Entries of={props.app.state.viewportElements}>
         {([_, element]) => (
           <Dynamic component={element} app={props.app} />
         )}
-      </For>
+      </Entries>
     </div>
   )
 }

@@ -20,7 +20,6 @@ export const Select = (): Tool => {
   }
 
   const createMouseDown = (app: Application) => (e: MouseEvent) => {
-    console.log("Mouse down", e.target)
     if (!(e.target as Element)?.closest(".workspace-view")) {
       return;
     }
@@ -29,7 +28,6 @@ export const Select = (): Tool => {
 
     const nodeId = (e.target as Element)?.closest("[data-node-id]")?.getAttribute("data-node-id") ?? null
     if (nodeId) {
-      console.log("Selecting", nodeId)
       const isTitle = (e.target as Element)?.hasAttribute("data-node-title")
 
       if (isTitle) {
@@ -195,7 +193,7 @@ export const Pencil = (): Tool => {
     if (nodeId) {
       const node = app.project.nodes[nodeId]
       if (!node) {
-        console.error("Node not found", nodeId)
+        console.log("Node not found", nodeId)
         return
       }
       const nodeType = app.resources.nodeTypes[node.type]
@@ -209,14 +207,18 @@ export const Pencil = (): Tool => {
         nodeType.addRasterAction!(node, nodeId, action, app)
 
         const handleMouseMove = (e: MouseEvent) => {
+          const node = app.project.nodes[nodeId]
+
           const { x: x1, y: y1 } = nodeType.transformPosition!(node, e.clientX, e.clientY)
 
           const action1 = {
             ...action,
             points: [...action.points, { x: x1, y: y1 }]
           }
-          // TODO: replace with replaceRasterAction once implemented
-          nodeType.replaceRasterAction!(node, nodeId, action, action1, app)
+          // TODO: use once pencil action handles replacement effectively,
+          // currently action deletion triggers complete rerenders
+          // nodeType.replaceOrAddRasterAction!(node, nodeId, action, action1, app)
+          nodeType.addRasterAction!(node, nodeId, action1, app)
 
           x = x1
           y = y1
