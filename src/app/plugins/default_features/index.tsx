@@ -1,6 +1,6 @@
 import { Plugin, ResourceBuilder, Tool } from '../../api'
 import { Actions, Frame, Pencil, Select } from './tools'
-import { DeleteSelected, SelectAll, canvasTest, createSelectToolCommand } from './commands'
+import { DeleteSelected, ResetZoom, SelectAll, ZoomIn, ZoomOut, canvasTest, createSelectToolCommand } from './commands'
 import { CanvasType, FrameType } from './nodes'
 
 export const DefaultFeaturesPlugin: Plugin = {
@@ -18,6 +18,11 @@ export const DefaultFeaturesPlugin: Plugin = {
     defaultTools.map(createSelectToolCommand).forEach(builder.addCommand)
     builder.addCommand(SelectAll)
     builder.addCommand(DeleteSelected)
+
+    builder.addCommand(ZoomIn)
+    builder.addCommand(ZoomOut)
+    builder.addCommand(ResetZoom)
+
     builder.addCommand(canvasTest)
 
     builder.addNodeType('frame', FrameType)

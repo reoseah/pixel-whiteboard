@@ -18,9 +18,9 @@ export function FrameIcon() {
 
 export function PencilIcon() {
   return (
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M8.5 3.5L1.5 10.5L0.5 15.5L5.5 14.5L12.5 7.5M8.5 3.5L10.2929 1.70711C10.6834 1.31658 11.3166 1.31658 11.7071 1.70711L14.2929 4.29289C14.6834 4.68342 14.6834 5.31658 14.2929 5.70711L12.5 7.5M8.5 3.5L12.5 7.5" stroke="currentColor" stroke-linejoin="round" />
-      </svg>
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M8.5 3.5L1.5 10.5L0.5 15.5L5.5 14.5L12.5 7.5M8.5 3.5L10.2929 1.70711C10.6834 1.31658 11.3166 1.31658 11.7071 1.70711L14.2929 4.29289C14.6834 4.68342 14.6834 5.31658 14.2929 5.70711L12.5 7.5M8.5 3.5L12.5 7.5" stroke="currentColor" stroke-linejoin="round" />
+    </svg>
   )
 }
 
@@ -48,10 +48,29 @@ export function AddSelectionIcon() {
     </svg>
   )
 }
+
 export function DeleteIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M6.5 6.5V10.5M9.5 6.5V10.5M2.5 3.5H13.5M3.5 3.5L4.40995 12.5995C4.46107 13.1107 4.89124 13.5 5.40499 13.5H10.595C11.1088 13.5 11.5389 13.1107 11.59 12.5995L12.5 3.5M5.5 3V3C5.5 2.17157 6.17157 1.5 7 1.5H9C9.82843 1.5 10.5 2.17157 10.5 3V3" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  )
+}
+
+export function ZoomInIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="7.5" cy="7.5" r="5" stroke="currentColor" />
+      <path d="M11.25 11.25L14.5 14.5M5.5 7.5H9.5M7.5 5.5V9.5" stroke="currentColor" stroke-linecap="round" />
+    </svg>
+  )
+}
+
+export function ZoomOutIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="7.5" cy="7.5" r="5" stroke="currentColor" />
+      <path d="M11.25 11.25L14.5 14.5M5.5 7.5H9.5" stroke="currentColor" stroke-linecap="round" />
     </svg>
   )
 }

@@ -60,5 +60,9 @@ export type Command = {
 }
 
 export const toViewportX = (app: Application, clientX: number) => clientX - app.state.viewportX()
-
 export const toViewportY = (app: Application, clientY: number) => clientY - app.state.viewportY()
+
+export const toNodePosition = (app: Application, node: ProjectNode, clientX: number, clientY: number) => {
+  const nodeType = app.resources.nodeTypes[node.type]
+  return nodeType.transformPosition!(node, toViewportX(app, clientX), toViewportY(app, clientY))
+}

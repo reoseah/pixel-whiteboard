@@ -1,7 +1,9 @@
+export * from './zoom'
+
 import { produce } from "solid-js/store"
-import { Command, Tool } from "../../api"
-import { AddSelectionIcon, DeleteIcon } from "./components/icons"
-import { CanvasNode, FrameNode } from "./nodes"
+import { Command, Tool } from "../../../api"
+import { AddSelectionIcon, DeleteIcon } from "../components/icons"
+import { CanvasNode, FrameNode } from "../nodes"
 
 export const SelectAll: Command = {
   label: "Select all",
@@ -22,6 +24,10 @@ export const DeleteSelected: Command = {
       while (nodesToDelete.length > 0) {
         const id = nodesToDelete.pop()!
         const node = draft[id]
+
+        if (!node) {
+          continue
+        }
 
         if (node.type === "frame") {
           nodesToDelete.push(...node.children)

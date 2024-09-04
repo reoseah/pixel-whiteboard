@@ -1,4 +1,4 @@
-import { Application, Tool, toViewportX, toViewportY } from "../../api"
+import { Application, toNodePosition, Tool, toViewportX, toViewportY } from "../../api"
 import { CommandIcon, CursorIcon, FrameIcon, PencilIcon } from "./components/icons"
 import CommandPalette from "./components/CommandPalette"
 import { batch, createSignal } from "solid-js"
@@ -201,7 +201,7 @@ export const Pencil = (): Tool => {
       const nodeType = app.resources.nodeTypes[node.type]
 
       if (nodeType.supportsRasterActions) {
-        let { x, y } = nodeType.transformPosition!(node, toViewportX(app, e.clientX), toViewportY(app, e.clientY))
+        let { x, y } = toNodePosition(app, node, e.clientX, e.clientY)
         let action: PencilAction = {
           type: "pencil",
           points: [{ x, y }]
@@ -215,7 +215,7 @@ export const Pencil = (): Tool => {
             return
           }
 
-          const { x: newX, y: newY } = nodeType.transformPosition!(node, toViewportX(app, e.clientX), toViewportY(app, e.clientY))
+          const { x: newX, y: newY } = toNodePosition(app, node, e.clientX, e.clientY)
           if (newX === x && newY === y) {
             return
           }
