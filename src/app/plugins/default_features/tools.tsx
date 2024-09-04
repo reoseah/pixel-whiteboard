@@ -20,9 +20,7 @@ export const Select = (): Tool => {
   }
 
   const createMouseDown = (app: Application) => (e: MouseEvent) => {
-    console.log('select', e)
-
-    if (!(e.target as Element)?.closest(".workspace-view")) {
+        if (!(e.target as Element)?.closest(".workspace-view")) {
       return;
     }
 
@@ -73,7 +71,7 @@ export const Frame = (): Tool => {
 
   const createMouseDown = (app: Application) => (e: MouseEvent) => {
     if (!(e.target as Element)?.closest(".workspace-view")) {
-      return;
+      return
     }
 
     e.preventDefault()
@@ -99,7 +97,8 @@ export const Frame = (): Tool => {
             width: `${width()}px`,
             height: `${height()}px`,
             outline: "1px solid var(--primary-400)",
-          }} />
+          }}>
+          </div>
         )
       })
     })

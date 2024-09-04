@@ -59,8 +59,8 @@ export function Viewport(props: { app: Application }) {
           )}
         </Entries>
         <Entries of={props.app.state.viewportElements}>
-          {([_, element]) => (
-            <Dynamic component={element} app={props.app} />
+          {(_, element) => (
+            <Dynamic component={element()} app={props.app} />
           )}
         </Entries>
       </div>
