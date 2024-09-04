@@ -1,5 +1,5 @@
 import { Command } from "../../../api";
-import { ZoomInIcon, ZoomOutIcon } from "../components/icons";
+import { ResetZoomIcon, ZoomInIcon, ZoomOutIcon } from "../components/icons";
 
 export const zoomLevels = [1, 2, 3, 4, 5, 7, 10, 15, 20, 25, 30, 40, 50, 75, 100]
 
@@ -32,6 +32,7 @@ export const findNextZoom = (current: number): number => {
 export const ResetZoom: Command = {
   label: "Reset zoom",
   keybinds: [{ key: "0", ctrl: true }],
+  icon: ResetZoomIcon,
   execute: app => app.state.setViewportZoom(1)
   // TODO: draw icon
 }
