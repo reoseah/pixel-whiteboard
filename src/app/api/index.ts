@@ -19,7 +19,14 @@ export type Application = {
     setSubToolbar: Setter<Component<{ app: Application }> | undefined>
     viewportElements: Store<Record<string, Component<{ app: Application }>>>
     setViewportElements: SetStoreFunction<Record<string, Component<{ app: Application }>>>
+    viewportX: Accessor<number>
+    setViewportX: Setter<number>
+    viewportY: Accessor<number>
+    setViewportY: Setter<number>
+    viewportZoom: Accessor<number>
+    setViewportZoom: Setter<number>
     shiftHeld: Accessor<boolean>
+    spaceHeld: Accessor<boolean>
   }
   ydoc: Y.Doc
 }
@@ -51,3 +58,7 @@ export type Command = {
   execute: (app: Application) => void
   // keywords?: string[]
 }
+
+export const toViewportX = (app: Application, clientX: number) => clientX - app.state.viewportX()
+
+export const toViewportY = (app: Application, clientY: number) => clientY - app.state.viewportY()

@@ -148,6 +148,50 @@ export const Canvas = (props: {
   }
 
   const onDataChange = (event: Y.YEvent<Y.Array<RasterAction>>) => {
+    // TODO wip 
+
+    // const isReplacementOfLastAction = (): boolean => {
+    //   if (event.changes.delta.length <= 1 || event.changes.delta.length > 3) {
+    //     return false
+    //   }
+
+    //   const lastChange = event.changes.delta.at(-1)!
+    //   if (lastChange.insert === undefined || lastChange.insert!.length !== 1) {
+    //     return false
+    //   }
+    //   const secondToLastChange = event.changes.delta.at(-2)!
+    //   if (secondToLastChange.delete === undefined || secondToLastChange.delete !== 1) {
+    //     return false
+    //   }
+    //   if (event.changes.delta.length === 3) {
+    //     const thirdToLastChange = event.changes.delta.at(0)!
+    //     if (thirdToLastChange.retain === undefined) {
+    //       return false
+    //     }
+    //   }
+    //   return true
+    // }
+
+    // console.log('is replacement of last action', isReplacementOfLastAction())
+
+    // const getChunksAffectedByDeletions = (): Map<number, Set<number>> => {
+    //   const chunks = new Map<number, Set<number>>()
+    //   event.changes.deleted.forEach((item) => {
+    //     item.content.getContent().forEach((action) => {
+    //       getAffectedChunks(action).forEach((chunk) => {
+    //         const { column, row } = chunk
+    //         if (!chunks.has(column)) {
+    //           chunks.set(column, new Set<number>())
+    //         }
+    //         chunks.get(column)!.add(row)
+    //       })
+    //     })
+    //   })
+    //   return chunks
+    // }
+
+    // console.log('chunks affected by deletions', getChunksAffectedByDeletions())
+
     const chunksToRerender = new Map<number, Set<number>>()
 
     event.changes.deleted.forEach((item) => {

@@ -1,4 +1,4 @@
-import { Application, Tool } from "../../api"
+import { Application, Tool, toViewportX, toViewportY } from "../../api"
 import { CommandIcon, CursorIcon, FrameIcon, PencilIcon } from "./components/icons"
 import CommandPalette from "./components/CommandPalette"
 import { batch, createSignal } from "solid-js"
@@ -20,6 +20,8 @@ export const Select = (): Tool => {
   }
 
   const createMouseDown = (app: Application) => (e: MouseEvent) => {
+    console.log('select', e)
+
     if (!(e.target as Element)?.closest(".workspace-view")) {
       return;
     }
@@ -199,7 +201,7 @@ export const Pencil = (): Tool => {
       const nodeType = app.resources.nodeTypes[node.type]
 
       if (nodeType.supportsRasterActions) {
-        let { x, y } = nodeType.transformPosition!(node, e.clientX, e.clientY)
+        let { x, y } = nodeType.transformPosition!(node, toViewportX(app, e.clientX), toViewportY(app, e.clientY))
         let action: PencilAction = {
           type: "pencil",
           points: [{ x, y }]
@@ -208,21 +210,28 @@ export const Pencil = (): Tool => {
 
         const handleMouseMove = (e: MouseEvent) => {
           const node = app.project.nodes[nodeId]
+          if (!node) {
+            handleMouseUp()
+            return
+          }
 
-          const { x: x1, y: y1 } = nodeType.transformPosition!(node, e.clientX, e.clientY)
+          const { x: newX, y: newY } = nodeType.transformPosition!(node, toViewportX(app, e.clientX), toViewportY(app, e.clientY))
+          if (newX === x && newY === y) {
+            return
+          }
 
-          const action1 = {
+          const newAction = {
             ...action,
-            points: [...action.points, { x: x1, y: y1 }]
+            points: [...action.points, { x: newX, y: newY }]
           }
           // TODO: use once pencil action handles replacement effectively,
           // currently action deletion triggers complete rerenders
-          // nodeType.replaceOrAddRasterAction!(node, nodeId, action, action1, app)
-          nodeType.addRasterAction!(node, nodeId, action1, app)
+          nodeType.replaceOrAddRasterAction!(node, nodeId, action, newAction, app)
+          // nodeType.addRasterAction!(node, nodeId, action1, app)
 
-          x = x1
-          y = y1
-          action = action1
+          x = newX
+          y = newY
+          action = newAction
         }
 
         const handleMouseUp = () => {

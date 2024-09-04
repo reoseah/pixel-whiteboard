@@ -27,7 +27,12 @@ function App() {
   const [subToolbar, setSubToolbar] = createSignal<Component<{ app: Application }> | undefined>()
   const [viewportElements, setViewportElements] = createStore<Record<string, Component<{ app: Application }>>>()
 
+  const [viewportX, setViewportX] = createSignal(0)
+  const [viewportY, setViewportY] = createSignal(0)
+  const [viewportZoom, setViewportZoom] = createSignal(1)
+
   const shiftHeld = useHeldKey("Shift")
+  const spaceHeld = useHeldKey(" ")
 
   const ydoc = new Y.Doc()
   new IndexeddbPersistence('pixel-art-editor', ydoc)
@@ -42,7 +47,14 @@ function App() {
       setSubToolbar,
       viewportElements,
       setViewportElements,
-      shiftHeld
+      viewportX,
+      setViewportX,
+      viewportY,
+      setViewportY,
+      viewportZoom,
+      setViewportZoom,
+      shiftHeld,
+      spaceHeld
     },
     ydoc
   }
