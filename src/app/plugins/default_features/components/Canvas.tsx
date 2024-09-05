@@ -36,6 +36,50 @@ export const getAffectedChunks = (action: RasterAction) => {
   return chunks
 }
 
+const isReplacementOfLastElement = (event: Y.YEvent<Y.Array<any>>): boolean => {
+  if (event.changes.delta.length <= 1 || event.changes.delta.length > 3) {
+    return false
+  }
+
+  const lastChange = event.changes.delta.at(-1)!
+  if (lastChange.insert === undefined || lastChange.insert!.length !== 1) {
+    return false
+  }
+  const secondToLastChange = event.changes.delta.at(-2)!
+  if (secondToLastChange.delete === undefined || secondToLastChange.delete !== 1) {
+    return false
+  }
+  if (event.changes.delta.length === 3) {
+    const thirdToLastChange = event.changes.delta.at(0)!
+    if (thirdToLastChange.retain === undefined) {
+      return false
+    }
+  }
+  return true
+}
+
+const getChunksAffectedByDeletions = (event: Y.YEvent<Y.Array<RasterAction>>): Map<number, Set<number>> => {
+  const chunks = new Map<number, Set<number>>()
+  event.changes.deleted.forEach((item) => {
+    item.content.getContent().forEach((action) => {
+      getAffectedChunks(action).forEach((chunk) => {
+        const { column, row } = chunk
+        if (!chunks.has(column)) {
+          chunks.set(column, new Set<number>())
+        }
+        chunks.get(column)!.add(row)
+      })
+    })
+  })
+  return chunks
+}
+
+const containsPoint = (x: number, y: number, chunks: Map<number, Set<number>>, chunkSize: number) => {
+  const column = Math.floor(x / chunkSize)
+  const row = Math.floor(y / chunkSize)
+  return chunks.has(column) && chunks.get(column)!.has(row)
+}
+
 export const Canvas = (props: {
   app: Application,
   id: string,
@@ -148,64 +192,23 @@ export const Canvas = (props: {
   }
 
   const onDataChange = (event: Y.YEvent<Y.Array<RasterAction>>) => {
-    // TODO wip 
+    if (isReplacementOfLastElement(event)) {
+      const oldAction = event.changes.deleted.values().next().value.content.getContent()[0]
+      const newAction = event.changes.added.values().next().value.content.getContent()[0]
 
-    // const isReplacementOfLastAction = (): boolean => {
-    //   if (event.changes.delta.length <= 1 || event.changes.delta.length > 3) {
-    //     return false
-    //   }
-
-    //   const lastChange = event.changes.delta.at(-1)!
-    //   if (lastChange.insert === undefined || lastChange.insert!.length !== 1) {
-    //     return false
-    //   }
-    //   const secondToLastChange = event.changes.delta.at(-2)!
-    //   if (secondToLastChange.delete === undefined || secondToLastChange.delete !== 1) {
-    //     return false
-    //   }
-    //   if (event.changes.delta.length === 3) {
-    //     const thirdToLastChange = event.changes.delta.at(0)!
-    //     if (thirdToLastChange.retain === undefined) {
-    //       return false
-    //     }
-    //   }
-    //   return true
-    // }
-
-    // console.log('is replacement of last action', isReplacementOfLastAction())
-
-    // const getChunksAffectedByDeletions = (): Map<number, Set<number>> => {
-    //   const chunks = new Map<number, Set<number>>()
-    //   event.changes.deleted.forEach((item) => {
-    //     item.content.getContent().forEach((action) => {
-    //       getAffectedChunks(action).forEach((chunk) => {
-    //         const { column, row } = chunk
-    //         if (!chunks.has(column)) {
-    //           chunks.set(column, new Set<number>())
-    //         }
-    //         chunks.get(column)!.add(row)
-    //       })
-    //     })
-    //   })
-    //   return chunks
-    // }
-
-    // console.log('chunks affected by deletions', getChunksAffectedByDeletions())
-
-    const chunksToRerender = new Map<number, Set<number>>()
-
-    event.changes.deleted.forEach((item) => {
-      item.content.getContent().forEach((action) => {
-        getAffectedChunks(action).forEach((chunk) => {
-          const { column, row } = chunk
-          if (!chunksToRerender.has(column)) {
-            chunksToRerender.set(column, new Set<number>())
-          }
-          chunksToRerender.get(column)!.add(row)
+      const type = actionTypes[newAction.type]
+      if (type.handleReplacement) {
+        type.handleReplacement(oldAction, newAction, {
+          get,
+          set
         })
-      })
-    })
+        return
+      }
+    }
 
+
+
+    const chunksToRerender = getChunksAffectedByDeletions(event)
     if (chunksToRerender.size !== 0) {
       const chunks = Array.from(chunksToRerender.entries()).map(([column, rows]) => {
         return Array.from(rows).map((row) => {
@@ -218,6 +221,18 @@ export const Canvas = (props: {
     event.changes.added.forEach((item) => {
       item.content.getContent().forEach((action) => {
         const type = actionTypes[action.type]
+
+        const set = (x: number, y: number, rgba: number) => {
+          if (containsPoint(x, y, chunksToRerender, chunkSize)) {
+            return
+          }
+          const ctx = getContext(x, y)
+          const localX = ((x % chunkSize) + chunkSize) % chunkSize
+          const localY = ((y % chunkSize) + chunkSize) % chunkSize
+          ctx.fillStyle = `rgba(${(rgba >> 24) & 0xff}, ${(rgba >> 16) & 0xff}, ${(rgba >> 8) & 0xff}, ${rgba & 0xff})`
+          ctx.fillRect(localX, localY, 1, 1)
+        }
+
         type.draw(action, {
           // TODO: optimize this
           get,
@@ -242,4 +257,13 @@ export const Canvas = (props: {
     >
     </div>
   )
+}
+
+const createCanvasHelper = (
+  getOrCreateCanvas: (x: number, y: number) => HTMLCanvasElement,
+  getContext: (x: number, y: number) => CanvasRenderingContext2D,
+  chunks?: Map<number, Set<number>>,
+  chunkMode?: "blacklist" | "whitelist"
+): RasterHelper => {
+
 }

@@ -34,32 +34,42 @@ export const PencilActionType: RasterActionType<PencilAction> = {
       })
       prev = point
     }
+  },
+  handleReplacement: (oldAction, newAction, helper) => {
+    if (newAction.points.length === oldAction.points.length + 1) {
+      const prev = newAction.points[newAction.points.length - 2]
+      const last = newAction.points[newAction.points.length - 1]
+      drawPixelLine(prev.x, prev.y, last.x, last.y, (x, y) => {
+        helper.set(x, y, 0xffffffff)
+      })
+      return
+    }
   }
 }
 
 export function drawPixelLine(startX: number, startY: number, endX: number, endY: number, drawPixel: (x: number, y: number) => void) {
-  const deltaX = Math.abs(endX - startX);
-  const deltaY = Math.abs(endY - startY);
-  const signX = startX < endX ? 1 : -1;
-  const signY = startY < endY ? 1 : -1;
-  let error = deltaX - deltaY;
+  const deltaX = Math.abs(endX - startX)
+  const deltaY = Math.abs(endY - startY)
+  const signX = startX < endX ? 1 : -1
+  const signY = startY < endY ? 1 : -1
+  let error = deltaX - deltaY
 
   while (true) {
-    drawPixel(startX, startY);
+    drawPixel(startX, startY)
 
     if (startX === endX && startY === endY) {
-      break;
+      break
     }
-    const error2 = 2 * error;
+    const error2 = 2 * error
 
     if (error2 > -deltaY) {
-      error -= deltaY;
-      startX += signX;
+      error -= deltaY
+      startX += signX
     }
 
     if (error2 < deltaX) {
-      error += deltaX;
-      startY += signY;
+      error += deltaX
+      startY += signY
     }
   }
 }

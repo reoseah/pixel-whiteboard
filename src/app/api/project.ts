@@ -32,7 +32,8 @@ export type RasterAction = {
 
 export type RasterActionType<T extends RasterAction> = {
   getBounds: (action: T) => { left: number, top: number, right: number, bottom: number }
-  draw: (action: T, helper: RasterHelper) => void
+  draw: (action: T, helper: RasterHelper) => void,
+  handleReplacement?: (oldAction: T, newAction: T, helper: RasterHelper) => void
 }
 
 export type RasterHelper = {

@@ -9,13 +9,11 @@ export function Viewport(props: { app: Application }) {
   const [dragging, setDragging] = createSignal(false)
 
   const handleMouseDown = (e: MouseEvent) => {
-    console.log('viewport', e)
-
     if (!props.app.state.spaceHeld() && e.button !== 1) {
       return
     }
     e.preventDefault()
-    // prevent tools from handling the click
+    // prevent selected tool from handling the click
     e.stopImmediatePropagation()
 
     setDragging(true)
