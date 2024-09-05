@@ -8,6 +8,7 @@ import * as Y from "yjs"
 export * from './tool'
 export * from './keybind'
 export * from './project'
+export * from './util'
 
 export type Application = {
   resources: Resources
@@ -25,6 +26,7 @@ export type Application = {
     setViewportY: Setter<number>
     viewportZoom: Accessor<number>
     setViewportZoom: Setter<number>
+    ctrlHeld: Accessor<boolean>
     shiftHeld: Accessor<boolean>
     spaceHeld: Accessor<boolean>
   }

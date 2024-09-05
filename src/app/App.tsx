@@ -5,7 +5,7 @@ import { createStore } from 'solid-js/store'
 import { Dynamic } from 'solid-js/web';
 import * as Y from "yjs"
 import { IndexeddbPersistence } from 'y-indexeddb';
-import { Application, Command, NodeType, Plugin, ProjectNode, ProjectState, Resources, Tool } from './api'
+import { Application, Command, findNextZoom, findPreviousZoom, NodeType, Plugin, ProjectNode, ProjectState, Resources, Tool } from './api'
 import DefaultFeaturesPlugin from './plugins/default_features';
 import Toolbar from './components/Toolbar';
 import Viewport from './components/Viewport';
@@ -29,8 +29,9 @@ function App() {
 
   const [viewportX, setViewportX] = createSignal(0)
   const [viewportY, setViewportY] = createSignal(0)
-  const [viewportZoom, setViewportZoom] = createSignal(1)
+  const [viewportZoom, setViewportZoom] = createSignal(10)
 
+  const ctrlHeld = useHeldKey("Control")
   const shiftHeld = useHeldKey("Shift")
   const spaceHeld = useHeldKey(" ")
 
@@ -53,6 +54,7 @@ function App() {
       setViewportY,
       viewportZoom,
       setViewportZoom,
+      ctrlHeld,
       shiftHeld,
       spaceHeld
     },
@@ -60,6 +62,7 @@ function App() {
   }
 
   useCommandKeybinds(app)
+  useZoomWithMouseWheel(app)
 
   return (
     <>
@@ -132,4 +135,27 @@ const useCommandKeybinds = (app: Application) => {
   }
   document.addEventListener("keydown", handleKeydown)
   onCleanup(() => document.removeEventListener("keydown", handleKeydown))
+}
+
+const useZoomWithMouseWheel = (app: Application) => {
+  const handler = (event: WheelEvent) => {
+    if (!app.state.ctrlHeld()) {
+      return
+    }
+    event.preventDefault();
+
+    const currentZoom = app.state.viewportZoom();
+    let newZoom: number;
+
+    if (event.deltaY < 0) {
+      newZoom = findNextZoom(currentZoom)
+    } else {
+      newZoom = findPreviousZoom(currentZoom)
+    }
+
+    app.state.setViewportZoom(newZoom)
+  }
+
+  document.addEventListener("wheel", handler, { passive: false })
+  onCleanup(() => document.removeEventListener("wheel", handler))
 }
