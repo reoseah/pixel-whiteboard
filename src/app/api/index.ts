@@ -26,6 +26,8 @@ export type Application = {
     setViewportY: Setter<number>
     viewportZoom: Accessor<number>
     setViewportZoom: Setter<number>
+    titleBeingEdited: Accessor<string | null>
+    setTitleBeingEdited: Setter<string | null>
     ctrlHeld: Accessor<boolean>
     shiftHeld: Accessor<boolean>
     spaceHeld: Accessor<boolean>

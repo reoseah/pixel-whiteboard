@@ -2,6 +2,8 @@ import { Tool, Application } from "../../../api"
 import { CursorIcon } from "../components/icons"
 
 export const Select = (): Tool => {
+  let titleClickTime = 0
+
   const toggleSelection = (app: Application, nodeId: string) => {
     const shift = app.state.shiftHeld()
     const selected = app.project.selectedNodes()
@@ -31,7 +33,12 @@ export const Select = (): Tool => {
       const isTitle = (e.target as Element)?.hasAttribute("data-node-title")
 
       if (isTitle) {
-        toggleSelection(app, nodeId)
+        if (Date.now() - titleClickTime < 300) {
+          app.state.setTitleBeingEdited(nodeId)
+        } else {
+          toggleSelection(app, nodeId)
+          titleClickTime = Date.now()
+        }
       } else {
         // TODO: implement drag to move
         toggleSelection(app, nodeId)

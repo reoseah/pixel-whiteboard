@@ -35,6 +35,8 @@ function App() {
   const shiftHeld = useHeldKey("Shift")
   const spaceHeld = useHeldKey(" ")
 
+  const [titleBeingEdited, setTitleBeingEdited] = createSignal<string | null>(null)
+
   const ydoc = new Y.Doc()
   new IndexeddbPersistence('pixel-art-editor', ydoc)
 
@@ -54,6 +56,8 @@ function App() {
       setViewportY,
       viewportZoom,
       setViewportZoom,
+      titleBeingEdited,
+      setTitleBeingEdited,
       ctrlHeld,
       shiftHeld,
       spaceHeld
