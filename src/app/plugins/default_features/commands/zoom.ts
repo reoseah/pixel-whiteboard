@@ -33,7 +33,12 @@ export const ResetZoom: Command = {
   label: "Reset zoom",
   keybinds: [{ key: "0", ctrl: true }],
   icon: ResetZoomIcon,
-  execute: app => app.state.setViewportZoom(1)
+  execute: app => {
+    const prevZoom = app.state.viewportZoom()
+    app.state.setViewportZoom(1)
+
+  }
+    
   // TODO: draw icon
 }
 

@@ -59,8 +59,8 @@ export type Command = {
   // keywords?: string[]
 }
 
-export const toViewportX = (app: Application, clientX: number) => clientX - app.state.viewportX()
-export const toViewportY = (app: Application, clientY: number) => clientY - app.state.viewportY()
+export const toViewportX = (app: Application, clientX: number) => Math.round((clientX - window.innerWidth / 2) / app.state.viewportZoom() - app.state.viewportX() - .5)
+export const toViewportY = (app: Application, clientY: number) => Math.round((clientY - window.innerHeight / 2) / app.state.viewportZoom() - app.state.viewportY() - .5)
 
 export const toNodePosition = (app: Application, node: ProjectNode, clientX: number, clientY: number) => {
   const nodeType = app.resources.nodeTypes[node.type]

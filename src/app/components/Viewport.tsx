@@ -22,8 +22,8 @@ export function Viewport(props: { app: Application }) {
     let lastY = e.clientY
 
     const handleMouseMove = (event: MouseEvent) => {
-      props.app.state.setViewportX(props.app.state.viewportX() + event.clientX - lastX)
-      props.app.state.setViewportY(props.app.state.viewportY() + event.clientY - lastY)
+      props.app.state.setViewportX(props.app.state.viewportX() + (event.clientX - lastX) / props.app.state.viewportZoom())
+      props.app.state.setViewportY(props.app.state.viewportY() + (event.clientY - lastY) / props.app.state.viewportZoom())
       lastX = event.clientX
       lastY = event.clientY
     }
@@ -47,7 +47,7 @@ export function Viewport(props: { app: Application }) {
       onmousedown={handleMouseDown}
     >
       <div style={{
-        transform: `translate(${props.app.state.viewportX()}px, ${props.app.state.viewportY()}px) scale(${props.app.state.viewportZoom()})`
+        transform: `translate(${Math.round(window.innerWidth / 2 + props.app.state.viewportX() * props.app.state.viewportZoom())}px, ${Math.round(window.innerHeight / 2 + props.app.state.viewportY() * props.app.state.viewportZoom())}px)`
       }}>
         <Entries of={props.app.project.nodes}>
           {(nodeId, node) => (

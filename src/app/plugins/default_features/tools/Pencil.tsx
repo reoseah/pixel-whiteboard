@@ -35,6 +35,7 @@ export const Pencil = (): Tool => {
           }
 
           const { x: newX, y: newY } = toNodePosition(app, node, e.clientX, e.clientY)
+          console.log('mouse: ', e.clientX, e.clientY, 'calculated:', newX, newY, 'previous:', x, y)
           if (newX === x && newY === y) {
             return
           }

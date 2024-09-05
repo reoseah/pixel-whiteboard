@@ -19,10 +19,10 @@ export const Frame = (props: {
       data-node-id={props.id}
       data-drawable
       style={{
-        left: `${props.node.x}px`,
-        top: `${props.node.y}px`,
-        width: `${props.node.width}px`,
-        height: `${props.node.height}px`,
+        left: `${props.node.x * props.app.state.viewportZoom()}px`,
+        top: `${props.node.y * props.app.state.viewportZoom()}px`,
+        width: `${props.node.width * props.app.state.viewportZoom()}px`,
+        height: `${props.node.height * props.app.state.viewportZoom()}px`,
       }}
     >
       <div

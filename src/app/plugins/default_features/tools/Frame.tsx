@@ -37,10 +37,10 @@ export const Frame = (): Tool => {
         return (
           <div style={{
             position: "absolute",
-            left: `${left()}px`,
-            top: `${top()}px`,
-            width: `${width()}px`,
-            height: `${height()}px`,
+            left: `${left() * app.state.viewportZoom()}px`,
+            top: `${top() * app.state.viewportZoom()}px`,
+            width: `${width() * app.state.viewportZoom()}px`,
+            height: `${height() * app.state.viewportZoom()}px`,
             outline: "1px solid var(--primary-400)",
           }}>
           </div>
