@@ -1,5 +1,5 @@
 import "./Viewport.css"
-import { createSignal, Show } from "solid-js"
+import { createMemo, createSignal, Show } from "solid-js"
 import { Application } from "../api"
 import { Dynamic } from "solid-js/web"
 import { Entries } from "@solid-primitives/keyed"
@@ -38,6 +38,9 @@ export function Viewport(props: { app: Application }) {
     window.addEventListener("mouseup", handleMouseUp)
   }
 
+  const translateX = createMemo(() => Math.round(window.innerWidth / 2 + props.app.state.viewportX() * props.app.state.viewportZoom()))
+  const translateY = createMemo(() => Math.round(window.innerHeight / 2 + props.app.state.viewportY() * props.app.state.viewportZoom()))
+
   return (
     <div
       class="workspace-view"
@@ -46,8 +49,40 @@ export function Viewport(props: { app: Application }) {
       }}
       onmousedown={handleMouseDown}
     >
+      <Show when={props.app.state.viewportZoom() > 5}>
+        <svg
+          width={window.innerWidth}
+          height={window.innerHeight}
+          style={{
+            position: "absolute",
+            "z-index": -1,
+          }}
+        >
+          <defs>
+            <pattern
+              id="pixelCornersGrid"
+              width={props.app.state.viewportZoom()}
+              height={props.app.state.viewportZoom()}
+              patternUnits="userSpaceOnUse"
+            >
+              <rect width="1" height="1" fill="#505050" />
+            </pattern>
+          </defs>
+          <rect
+            width="100%"
+            height="100%"
+            fill="url(#pixelCornersGrid)"
+            transform={`translate(${
+              translateX() - Math.floor(translateX() / props.app.state.viewportZoom()) * props.app.state.viewportZoom() - 1
+            } ${
+              translateY() - Math.floor(translateY() / props.app.state.viewportZoom()) * props.app.state.viewportZoom() - 1
+            })`}
+          />
+        </svg>
+      </Show>
+
       <div style={{
-        transform: `translate(${Math.round(window.innerWidth / 2 + props.app.state.viewportX() * props.app.state.viewportZoom())}px, ${Math.round(window.innerHeight / 2 + props.app.state.viewportY() * props.app.state.viewportZoom())}px)`
+        transform: `translate(${translateX()}px, ${translateY()}px)`
       }}>
         <Entries of={props.app.project.nodes}>
           {(nodeId, node) => (
