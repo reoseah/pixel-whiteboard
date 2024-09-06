@@ -38,8 +38,16 @@ export function Viewport(props: { app: Application }) {
     window.addEventListener("mouseup", handleMouseUp)
   }
 
-  const translateX = createMemo(() => Math.round(window.innerWidth / 2 + props.app.state.viewportX() * props.app.state.viewportZoom()))
-  const translateY = createMemo(() => Math.round(window.innerHeight / 2 + props.app.state.viewportY() * props.app.state.viewportZoom()))
+  const [innerWidth, setInnerWidth] = createSignal(window.innerWidth)
+  const [innerHeight, setInnerHeight] = createSignal(window.innerHeight)
+
+  window.addEventListener("resize", () => {
+    setInnerWidth(window.innerWidth)
+    setInnerHeight(window.innerHeight)
+  })
+
+  const translateX = createMemo(() => Math.round(innerWidth() / 2 + props.app.state.viewportX() * props.app.state.viewportZoom()))
+  const translateY = createMemo(() => Math.round(innerHeight() / 2 + props.app.state.viewportY() * props.app.state.viewportZoom()))
 
   return (
     <div
@@ -49,10 +57,10 @@ export function Viewport(props: { app: Application }) {
       }}
       onmousedown={handleMouseDown}
     >
-      <Show when={props.app.state.viewportZoom() > 5}>
+      <Show when={props.app.state.viewportZoom() >= 10}>
         <svg
-          width={window.innerWidth}
-          height={window.innerHeight}
+          width={innerWidth()}
+          height={innerHeight()}
           style={{
             position: "absolute",
             "z-index": -1,
@@ -72,11 +80,9 @@ export function Viewport(props: { app: Application }) {
             width="100%"
             height="100%"
             fill="url(#pixelCornersGrid)"
-            transform={`translate(${
-              translateX() - Math.floor(translateX() / props.app.state.viewportZoom()) * props.app.state.viewportZoom() - 1
-            } ${
-              translateY() - Math.floor(translateY() / props.app.state.viewportZoom()) * props.app.state.viewportZoom() - 1
-            })`}
+            transform={`translate(${translateX() - Math.floor(translateX() / props.app.state.viewportZoom()) * props.app.state.viewportZoom() - 1
+              } ${translateY() - Math.floor(translateY() / props.app.state.viewportZoom()) * props.app.state.viewportZoom() - 1
+              })`}
           />
         </svg>
       </Show>

@@ -2,8 +2,15 @@ import { createSignal, onCleanup } from "solid-js"
 
 export const useHeldKey = (key: string): () => boolean => {
   const [held, setHeld] = createSignal(false)
-  
+
   const handleKeydown = (e: KeyboardEvent) => {
+    const target = e.target as HTMLElement;
+    const isEditable = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
+
+    if (isEditable) {
+      return
+    }
+
     if (e.key === key) {
       setHeld(true)
     }

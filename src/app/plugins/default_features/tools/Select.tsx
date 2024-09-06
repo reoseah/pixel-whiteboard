@@ -25,12 +25,17 @@ export const Select = (): Tool => {
     if (e.button !== 0) {
       return
     }
+    const target = e.target as HTMLElement;
+    const isEditable = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
+    if (isEditable) {
+      return
+    }
 
     e.preventDefault()
 
     const nodeId = (e.target as Element)?.closest("[data-node-id]")?.getAttribute("data-node-id") ?? null
     if (nodeId) {
-      const isTitle = (e.target as Element)?.hasAttribute("data-node-title")
+      const isTitle = (e.target as Element)?.hasAttribute("data-frame-title")
 
       if (isTitle) {
         if (Date.now() - titleClickTime < 300) {

@@ -1,4 +1,4 @@
-export const zoomLevels = [1, 2, 3, 4, 5, 7, 10, 15, 20, 25, 30, 40, 50, 75, 100]
+export const zoomLevels = [1, 2, 3, 4, 5, 7, 10, 15, 20, 25, 30, 40, 50, 75, 100, 150]
 
 export const findPreviousZoom = (current: number): number => {
   let nextZoom = current
