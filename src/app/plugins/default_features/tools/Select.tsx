@@ -33,7 +33,7 @@ export const Select = (): Tool => {
 
     e.preventDefault()
 
-    const nodeId = (e.target as Element)?.closest("[data-node-id]")?.getAttribute("data-node-id") ?? null
+    const nodeId = (e.target as Element)?.closest("[data-selectable][data-node-id]")?.getAttribute("data-node-id") ?? null
     if (nodeId) {
       const isTitle = (e.target as Element)?.hasAttribute("data-frame-title")
 

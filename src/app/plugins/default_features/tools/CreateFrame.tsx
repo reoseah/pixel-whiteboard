@@ -53,13 +53,17 @@ export const CreateFrame = (): Tool => {
     }
 
     const handleRelease = (e: MouseEvent) => {
+      document.removeEventListener("mousemove", handleMove)
+      document.removeEventListener("mouseup", handleRelease)
+
       const x = toViewportX(app, e.clientX)
       const y = toViewportY(app, e.clientY)
 
-      const left = Math.min(x1(), x)
-      const top = Math.min(y1(), y)
       const width = Math.abs(x - x1())
       const height = Math.abs(y - y1())
+
+      const left = Math.min(x1(), x)
+      const top = Math.min(y1(), y)
 
       const id = crypto.randomUUID()
 
@@ -69,27 +73,27 @@ export const CreateFrame = (): Tool => {
         setX2(0)
         setY2(0)
 
-        app.project.setNodes(id,
-          {
-            type: "frame",
-            children: [],
-            title: "Frame",
-            x: left,
-            y: top,
-            width,
-            height,
-          }
-        )
-        app.project.setSelectedNodes([id])
         app.state.setViewportElements({
           "frame-preview": undefined
         })
+        if (width !== 0 && height !== 0) {
+          app.project.setNodes(id,
+            {
+              type: "frame",
+              children: [],
+              title: "Frame",
+              x: left,
+              y: top,
+              width,
+              height,
+            }
+          )
+          app.project.setSelectedNodes([id])
+        }
         // TODO: add an option to maintain selected tool instead of switching to select
         app.state.selectTool(app.resources.tools.select)
       })
 
-      document.removeEventListener("mousemove", handleMove)
-      document.removeEventListener("mouseup", handleRelease)
     }
 
     document.addEventListener("mousemove", handleMove)

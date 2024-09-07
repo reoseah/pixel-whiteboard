@@ -1,6 +1,6 @@
 .toolbar {
     background: var(--neutral-800);
-    border-radius: .5rem;
+    border-radius: .375rem;
     border: .0625rem solid var(--neutral-750);
     padding: .1875rem;
 }
@@ -21,8 +21,8 @@
     grid-auto-flow: column;
     position: relative;
 
-    min-width: 2rem;
-    min-height: 2rem;
+    min-width: 1.75rem;
+    min-height: 1.75rem;
     border-radius: .25rem;
     color: var(--neutral-200);
     transition: background-color .1s;

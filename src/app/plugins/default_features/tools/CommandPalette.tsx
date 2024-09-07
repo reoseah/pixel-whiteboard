@@ -3,10 +3,25 @@ import "./CommandPalette.css"
 import { createMemo, createSignal, For, type JSX, onCleanup, Show } from "solid-js"
 import { Dynamic } from "solid-js/web"
 import { Application, Command, stringifyKeybind, Tool } from "../../../api"
-import { SearchIcon } from "./icons"
 import useClickOutside from "../../../hooks/useClickOutside"
+import { CommandIcon, SearchIcon } from "../components/icons"
 
-export const CommandPalette = (previousTool: Tool) => (props: { app: Application }) => {
+export const CommandPalette = (): Tool => {
+  return {
+    id: "actions",
+    label: "Actions",
+    icon: CommandIcon,
+    keybinds: [{ key: "K", ctrl: true }],
+    onSelect: (app, previousTool) => {
+      app.state.setSubToolbar(() => CommandPaletteComponent(previousTool ?? app.resources.tools.select))
+    },
+    onDeselect: (app) => {
+      app.state.setSubToolbar(undefined)
+    }
+  }
+}
+
+export const CommandPaletteComponent = (previousTool: Tool) => (props: { app: Application }) => {
   const [query, setQuery] = createSignal("")
 
   const filteredCommands = createMemo(() => {
@@ -20,14 +35,14 @@ export const CommandPalette = (previousTool: Tool) => (props: { app: Application
   const [wrapper, setWrapper] = createSignal<HTMLDivElement>()
   useClickOutside(wrapper, () => { props.app.state.selectTool(previousTool) })
 
-  const handleEscape = (event: KeyboardEvent) => {
+  const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === "Escape") {
       props.app.state.selectTool(previousTool)
     }
     // TODO: handle arrow keys to navigate the list
   }
-  document.addEventListener("keydown", handleEscape)
-  onCleanup(() => document.removeEventListener("keydown", handleEscape))
+  document.addEventListener("keydown", handleKeyDown)
+  onCleanup(() => document.removeEventListener("keydown", handleKeyDown))
 
   const handleInput: JSX.InputEventHandlerUnion<HTMLInputElement, InputEvent> = (event) => {
     setQuery(event.target.value)
@@ -85,5 +100,3 @@ export const CommandPalette = (previousTool: Tool) => (props: { app: Application
     </div>
   )
 }
-
-export default CommandPalette

@@ -10,8 +10,8 @@ export function CursorIcon(props: {
 
 export function FrameIcon() {
   return (
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M1.5 4.5H14.5M1.5 11.5H14.5M4.5 14.5V1.5M11.5 1.5V14.5" stroke="currentColor" stroke-linecap="round" />
+    <svg class="changing-svg-fix" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0.5 4.5H14.5M0.5 12.5H14.5M3.5 15.5V1.5M11.5 1.5V15.5" stroke="currentColor" stroke-linecap="round" />
     </svg>
   )
 }
@@ -37,6 +37,15 @@ export function CommandIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M2.5 3.5L7.5 8.5L2.5 13.5M7.5 13.5H14.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  )
+}
+
+export function SelectionWithCrosshairIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="7.5" cy="7.5" r="0.5" fill="currentColor" />
+      <path d="M7.5 10C6.11929 10 5 8.88071 5 7.5M7.5 10C8.87311 10 9.98767 8.893 9.9999 7.52277M7.5 10V11.5M5 7.5C5 6.11929 6.11929 5 7.5 5M5 7.5H3.5M7.5 5C8.88071 5 10 6.11929 10 7.5C10 7.5076 9.99997 7.51519 9.9999 7.52277M7.5 5V3.5M9.9999 7.52277L11.5 7.5M0.5 3.5V1.5C0.5 0.947715 0.947715 0.5 1.5 0.5H3.5M6.5 0.5H8.5M11.5 0.5H13.5C14.0523 0.5 14.5 0.947715 14.5 1.5V3.5M14.5 6.5V8.5M14.5 11.5V13.5C14.5 14.0523 14.0523 14.5 13.5 14.5H11.5M8.5 14.5H6.5M3.5 14.5H1.5C0.947715 14.5 0.5 14.0523 0.5 13.5V11.5M0.5 8.5V6.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
     </svg>
   )
 }

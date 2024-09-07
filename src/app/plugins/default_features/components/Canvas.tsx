@@ -5,10 +5,9 @@ import { CanvasNode } from "../nodes"
 import { createEffect, onCleanup, onMount } from "solid-js"
 import { actionTypes } from '../actions'
 
-// TODO: don't expose this somehow, maybe pass as parameter wherever it's needed
-export const chunkSize = 64
+const chunkSize = 32
 
-export const Canvas = (props: {
+export const CanvasComponent = (props: {
   app: Application,
   id: string,
   node: CanvasNode

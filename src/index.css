@@ -26,23 +26,26 @@
   --primary-900: #15427c;
   --primary-950: #0f294e;
 
-  --infused-50: #F6F9FD;
-  --infused-100: #ECF4FB;
-  --infused-200: #D8E6F3;
-  --infused-300: #BAD3E8;
-  --infused-400: #82A6C8;
-  --infused-500: #547CA4;
-  --infused-600: #3A5D85;
-  --infused-700: #2A486F;
-  --infused-800: #1B3252;
-  --infused-900: #10223E;
-  --infused-950: #050E25;
+  /* Primary 20% + Neutral 80% */
+  --infused-50: #F8FAFB;
+  --infused-100: #F0F4F7;
+  --infused-200: #DDE4EA;
+  --infused-300: #C5D3DC;
+  --infused-400: #91A5B4;
+  --infused-500: #637A8C;
+  --infused-600: #46596D;
+  --infused-700: #364559;
+  --infused-800: #222D3D;
+  --infused-900: #161F2B;
+  --infused-950: #0B1018;
 
   font-family: system-ui, sans-serif;
   font-feature-settings: 'liga' 1, 'calt' 1, 'tnum' 1;
   font-optical-sizing: auto;
   font-style: normal;
   font-variation-settings: "slnt" 0;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 
   color-scheme: dark;
   background: var(--neutral-900);
@@ -84,6 +87,10 @@ img {
 
 kbd {
   font-family: inherit;
+}
+
+.changing-svg-fix {
+  transform: translateZ(0);
 }
 
 .scr-only {

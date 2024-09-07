@@ -3,11 +3,9 @@ import { createMemo, createSignal, Show } from "solid-js"
 import { Application } from "../api"
 import { Dynamic } from "solid-js/web"
 import { Entries } from "@solid-primitives/keyed"
-import { FrameNode, FrameType } from "../plugins/default_features/nodes"
 
 export function Viewport(props: { app: Application }) {
   const [dragging, setDragging] = createSignal(false)
-
 
   const [innerWidth, setInnerWidth] = createSignal(window.innerWidth)
   const [innerHeight, setInnerHeight] = createSignal(window.innerHeight)
@@ -98,7 +96,7 @@ export function Viewport(props: { app: Application }) {
         <Entries of={props.app.project.nodes}>
           {(nodeId, node) => (
             <Show when={node().type === "frame"}>
-              <FrameType.render app={props.app} node={node() as FrameNode} id={nodeId} />
+              <Dynamic component={props.app.resources.nodeTypes["frame"].render} app={props.app} node={node()} id={nodeId} />
             </Show>
           )}
         </Entries>

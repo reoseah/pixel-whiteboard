@@ -58,6 +58,7 @@
   margin-top: .5rem;
   padding-inline: .5rem;
   font-size: .75rem;
+  font-weight: normal;
   color: var(--neutral-400);
 }
 
