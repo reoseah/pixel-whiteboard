@@ -120,6 +120,7 @@ const FrameTitleEditor = (props: {
           setValue(e.currentTarget.value)
           updateWidth()
         }}
+        autocomplete='off'
         onchange={updateTitle}
         onblur={updateTitle}
         onkeydown={(e) => {

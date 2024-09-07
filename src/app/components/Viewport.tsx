@@ -8,6 +8,21 @@ import { FrameNode, FrameType } from "../plugins/default_features/nodes"
 export function Viewport(props: { app: Application }) {
   const [dragging, setDragging] = createSignal(false)
 
+
+  const [innerWidth, setInnerWidth] = createSignal(window.innerWidth)
+  const [innerHeight, setInnerHeight] = createSignal(window.innerHeight)
+
+  window.addEventListener("resize", () => {
+    setInnerWidth(window.innerWidth)
+    setInnerHeight(window.innerHeight)
+  })
+
+  const translateX = createMemo(() => Math.round(innerWidth() / 2 + props.app.state.viewportX() * props.app.state.viewportZoom()))
+  const translateY = createMemo(() => Math.round(innerHeight() / 2 + props.app.state.viewportY() * props.app.state.viewportZoom()))
+
+  const gridOffsetX = createMemo(() => translateX() % props.app.state.viewportZoom());
+  const gridOffsetY = createMemo(() => translateY() % props.app.state.viewportZoom());
+
   const handleMouseDown = (e: MouseEvent) => {
     if (!props.app.state.spaceHeld() && e.button !== 1) {
       return
@@ -38,17 +53,10 @@ export function Viewport(props: { app: Application }) {
     window.addEventListener("mouseup", handleMouseUp)
   }
 
-  const [innerWidth, setInnerWidth] = createSignal(window.innerWidth)
-  const [innerHeight, setInnerHeight] = createSignal(window.innerHeight)
-
-  window.addEventListener("resize", () => {
-    setInnerWidth(window.innerWidth)
-    setInnerHeight(window.innerHeight)
-  })
-
-  const translateX = createMemo(() => Math.round(innerWidth() / 2 + props.app.state.viewportX() * props.app.state.viewportZoom()))
-  const translateY = createMemo(() => Math.round(innerHeight() / 2 + props.app.state.viewportY() * props.app.state.viewportZoom()))
-
+  // `transition: transform 0.Xs` won't work here
+  // can't animate the background grid pattern
+  // animating only the contents make them look like they're lagging
+  // so we're not using transitions at all
   return (
     <div
       class="workspace-view"
@@ -57,35 +65,32 @@ export function Viewport(props: { app: Application }) {
       }}
       onmousedown={handleMouseDown}
     >
-      <Show when={props.app.state.viewportZoom() >= 10}>
-        <svg
-          width={innerWidth()}
-          height={innerHeight()}
-          style={{
-            position: "absolute",
-            "z-index": -1,
-          }}
-        >
-          <defs>
-            <pattern
-              id="pixelCornersGrid"
-              width={props.app.state.viewportZoom()}
-              height={props.app.state.viewportZoom()}
-              patternUnits="userSpaceOnUse"
-            >
-              <rect width="1" height="1" fill="#505050" />
-            </pattern>
-          </defs>
-          <rect
-            width="100%"
-            height="100%"
-            fill="url(#pixelCornersGrid)"
-            transform={`translate(${translateX() - Math.floor(translateX() / props.app.state.viewportZoom()) * props.app.state.viewportZoom() - 1
-              } ${translateY() - Math.floor(translateY() / props.app.state.viewportZoom()) * props.app.state.viewportZoom() - 1
-              })`}
-          />
-        </svg>
-      </Show>
+      <svg
+        width={innerWidth()}
+        height={innerHeight()}
+        style={{
+          display: props.app.state.viewportZoom() >= 10 ? "block" : "none",
+          position: "absolute",
+          "z-index": -1,
+        }}
+      >
+        <defs>
+          <pattern
+            id="pixelCornersGrid"
+            width={props.app.state.viewportZoom()}
+            height={props.app.state.viewportZoom()}
+            patternUnits="userSpaceOnUse"
+          >
+            <rect width="1" height="1" fill="#505050" />
+          </pattern>
+        </defs>
+        <rect
+          width="100%"
+          height="100%"
+          fill="url(#pixelCornersGrid)"
+          transform={`translate(${gridOffsetX()} ${gridOffsetY()})`}
+        />
+      </svg>
 
       <div style={{
         transform: `translate(${translateX()}px, ${translateY()}px)`

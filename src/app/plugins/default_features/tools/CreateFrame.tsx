@@ -2,7 +2,7 @@ import { createSignal, batch } from "solid-js"
 import { Tool, Application, toViewportX, toViewportY } from "../../../api"
 import { FrameIcon } from "../components/icons"
 
-export const Frame = (): Tool => {
+export const CreateFrame = (): Tool => {
   const [x1, setX1] = createSignal(0)
   const [y1, setY1] = createSignal(0)
   const [x2, setX2] = createSignal(0)
@@ -17,7 +17,6 @@ export const Frame = (): Tool => {
     }
 
     e.preventDefault()
-
 
     batch(() => {
       const x = toViewportX(app, e.clientX)
