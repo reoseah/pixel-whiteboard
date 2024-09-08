@@ -1,4 +1,4 @@
-import { Accessor, onCleanup, onMount } from "solid-js"
+import { Accessor, onCleanup } from "solid-js"
 
 export const useClickOutside = (ref: Accessor<HTMLElement | undefined | null>, callback: (e: Event) => void) => {
   const handleClick = (event: Event) => {

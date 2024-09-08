@@ -19,8 +19,8 @@ export const CreateFrame = (): Tool => {
     e.preventDefault()
 
     batch(() => {
-      const x = getCanvasX(app, e.clientX)
-      const y = getCanvasY(app, e.clientY)
+      const x = Math.round(getCanvasX(app, e.clientX))
+      const y = Math.round(getCanvasY(app, e.clientY))
       setX1(x)
       setX2(x)
       setY1(y)
@@ -48,16 +48,16 @@ export const CreateFrame = (): Tool => {
     })
 
     const handleMove = (e: MouseEvent) => {
-      setX2(getCanvasX(app, e.clientX))
-      setY2(getCanvasY(app, e.clientY))
+      setX2(Math.round(getCanvasX(app, e.clientX)))
+      setY2(Math.round(getCanvasY(app, e.clientY)))
     }
 
     const handleRelease = (e: MouseEvent) => {
       document.removeEventListener("mousemove", handleMove)
       document.removeEventListener("mouseup", handleRelease)
 
-      const x = getCanvasX(app, e.clientX)
-      const y = getCanvasY(app, e.clientY)
+      const x = Math.round(getCanvasX(app, e.clientX))
+      const y = Math.round(getCanvasY(app, e.clientY))
 
       const width = Math.abs(x - x1())
       const height = Math.abs(y - y1())

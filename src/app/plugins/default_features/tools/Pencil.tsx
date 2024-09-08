@@ -1,5 +1,5 @@
 import "./Pencil.css"
-import { Tool, Application, getNodePosition } from "../../../api"
+import { Tool, Application, floorComponents, getNodePosition } from "../../../api"
 import { PencilAction } from "../actions"
 import { PencilIcon } from "../components/icons"
 
@@ -40,7 +40,7 @@ const createMouseDownHandler = (app: Application) => (e: MouseEvent) => {
     const nodeType = app.resources.nodes[node.type]
 
     if (nodeType.supportsCanvasActions) {
-      let { x, y } = getNodePosition(app, node, e.clientX, e.clientY)
+      let { x, y } = floorComponents(getNodePosition(app, node, e.clientX, e.clientY))
       let action: PencilAction = {
         type: "pencil",
         points: [{ x, y }]
@@ -54,7 +54,7 @@ const createMouseDownHandler = (app: Application) => (e: MouseEvent) => {
           return
         }
 
-        const { x: newX, y: newY } = getNodePosition(app, node, e.clientX, e.clientY)
+        let { x: newX, y: newY } = floorComponents(getNodePosition(app, node, e.clientX, e.clientY))
         if (newX === x && newY === y) {
           return
         }

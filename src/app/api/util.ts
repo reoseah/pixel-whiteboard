@@ -28,8 +28,8 @@ export const findNextZoom = (current: number): number => {
   return nextZoom
 }
 
-export const getCanvasX = (app: Application, clientX: number) => Math.round((clientX - window.innerWidth / 2) / app.state.viewportZoom() - app.state.viewportX() - .5)
-export const getCanvasY = (app: Application, clientY: number) => Math.round((clientY - window.innerHeight / 2) / app.state.viewportZoom() - app.state.viewportY() - .5)
+export const getCanvasX = (app: Application, clientX: number) => (clientX - window.innerWidth / 2) / app.state.viewportZoom() - app.state.viewportX()
+export const getCanvasY = (app: Application, clientY: number) => (clientY - window.innerHeight / 2) / app.state.viewportZoom() - app.state.viewportY()
 
 export const getNodePosition = (app: Application, node: NodeData, clientX: number, clientY: number) => {
   const canvasX = getCanvasX(app, clientX)
@@ -42,4 +42,12 @@ export const getNodePosition = (app: Application, node: NodeData, clientX: numbe
   }
 
   return { x: canvasX, y: canvasY }
+}
+
+export const floorComponents = (point: { x: number, y: number }) => {
+  return { x: Math.floor(point.x), y: Math.floor(point.y) }
+}
+
+export const roundComponents = (point: { x: number, y: number }) => {
+  return { x: Math.round(point.x), y: Math.round(point.y) }
 }
