@@ -1,4 +1,4 @@
-import { RasterActionType } from "../../api";
+import { CanvasAction } from "../../api";
 
 export type PencilAction = {
   type: "pencil"
@@ -11,7 +11,7 @@ export const getUniquePoints = (points: Array<{ column: number, row: number }>):
   )
 }
 
-export const PencilActionType: RasterActionType<PencilAction> = {
+export const PencilActionType: CanvasAction<PencilAction> = {
   getBounds: (action) => {
     const left = Math.min(...action.points.map((point) => point.x))
     const top = Math.min(...action.points.map((point) => point.y))
@@ -75,6 +75,6 @@ export function drawPixelLine(startX: number, startY: number, endX: number, endY
 }
 
 // TODO: make it a resource added through plugins
-export const actionTypes: Record<string, RasterActionType<any>> = {
+export const actionTypes: Record<string, CanvasAction<any>> = {
   'pencil': PencilActionType
 }

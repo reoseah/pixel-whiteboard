@@ -1,9 +1,13 @@
 .frame {
     position: absolute;
-}
 
-.frame[data-selected="true"] {
-    outline: .125rem solid var(--primary-500);
+    [data-active-tool="select"] &:where(:hover) {
+        outline: .0625rem solid var(--primary-500);
+    }
+
+    &[data-selected="true"] {
+        outline: .125rem solid var(--primary-500);
+    }
 }
 
 .frame-children {
@@ -25,10 +29,14 @@
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-}
 
-.frame[data-selected="true"] .frame-title {
-    color: var(--primary-400);
+    .frame[data-selected="true"] & {
+        color: var(--primary-400);
+    }
+
+    [data-active-tool="select"] :where(.frame:hover) & {
+        color: var(--primary-400);
+    }
 }
 
 .frame-title-editor {

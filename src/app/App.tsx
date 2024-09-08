@@ -5,7 +5,7 @@ import { createStore } from 'solid-js/store'
 import { Dynamic } from 'solid-js/web';
 import * as Y from "yjs"
 import { IndexeddbPersistence } from 'y-indexeddb';
-import { Application, Command, findNextZoom, findPreviousZoom, NodeType, Plugin, ProjectNode, ProjectState, Resources, Tool } from './api'
+import { Application, Command, findNextZoom, findPreviousZoom, NodeType, Plugin, NodeData, ProjectState, Resources, Tool } from './api'
 import DefaultFeaturesPlugin from './plugins/default_features';
 import Toolbar from './components/Toolbar';
 import Viewport from './components/Viewport';
@@ -99,12 +99,12 @@ function useResources(plugins: Plugin[]): Resources {
   return {
     tools: Object.freeze(tools),
     commands: Object.freeze(commands),
-    nodeTypes: Object.freeze(nodeTypes)
+    nodes: Object.freeze(nodeTypes)
   }
 }
 
 const useProject = (): ProjectState => {
-  const [nodes, setNodes] = createStore<Record<string, ProjectNode>>({})
+  const [nodes, setNodes] = createStore<Record<string, NodeData>>({})
   const [selectedNodes, setSelectedNodes] = createSignal<string[]>([])
 
   return {

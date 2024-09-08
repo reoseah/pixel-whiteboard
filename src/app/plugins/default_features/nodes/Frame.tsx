@@ -2,8 +2,8 @@ import './Frame.css'
 import { createSignal, JSX, onMount, Show } from 'solid-js'
 import { Dynamic } from 'solid-js/web'
 import useClickOutside from '../../../hooks/useClickOutside'
-import { Application, NodeType, RasterAction } from "../../../api"
-import { CanvasNode, CanvasType } from "../nodes"
+import { Application, NodeType, CanvasActionData } from "../../../api"
+import { Canvas, CanvasType } from "../nodes"
 
 export type Frame = {
   type: "frame"
@@ -23,20 +23,20 @@ export const FrameType: NodeType<Frame> = {
       y: y - node.y
     }
   },
-  supportsRasterActions: true,
-  addRasterAction: (node: Frame, nodeId: string, action: RasterAction, app: Application) => {
+  supportsCanvasActions: true,
+  addCanvasAction: (node: Frame, nodeId: string, action: CanvasActionData, app: Application) => {
     const { canvasId, canvas } = getOrCreateChildCanvas(node, nodeId, app)
-    CanvasType.addRasterAction!(canvas, canvasId, action, app)
+    CanvasType.addCanvasAction!(canvas, canvasId, action, app)
   },
-  replaceOrAddRasterAction: (node: Frame, nodeId: string, previous: RasterAction, replacement: RasterAction, app: Application) => {
+  replaceOrAddCanvasAction: (node: Frame, nodeId: string, previous: CanvasActionData, replacement: CanvasActionData, app: Application) => {
     const { canvasId, canvas } = getOrCreateChildCanvas(node, nodeId, app)
-    CanvasType.replaceOrAddRasterAction!(canvas, canvasId, previous, replacement, app)
+    CanvasType.replaceOrAddCanvasAction!(canvas, canvasId, previous, replacement, app)
   }
 }
 
 const getOrCreateChildCanvas = (node: Frame, nodeId: string, app: Application) => {
   if (node.children.length === 0) {
-    const canvas: CanvasNode = { type: "canvas", children: [] }
+    const canvas: Canvas = { type: "canvas", children: [] }
     const canvasId = crypto.randomUUID()
 
     app.project.setNodes({
@@ -52,7 +52,7 @@ const getOrCreateChildCanvas = (node: Frame, nodeId: string, app: Application) =
     return {
       canvasId: node.children[0],
       // TODO: check if the node is a canvas
-      canvas: app.project.nodes[node.children[0]] as CanvasNode
+      canvas: app.project.nodes[node.children[0]] as Canvas
     }
   }
 }
@@ -88,7 +88,7 @@ export const FrameComponent = (props: {
       <Show when={child()}>
         <div class="frame-children">
           <Dynamic
-            component={props.app.resources.nodeTypes[child()!.type].render}
+            component={props.app.resources.nodes[child()!.type].render}
             id={props.node.children[0]!}
             node={child()}
             app={props.app}
@@ -105,7 +105,6 @@ const FrameTitle = (props: {
   node: Frame
 }) => {
   const style = (): JSX.CSSProperties => props.app.state.tool().interactsWithTitles ? {
-    cursor: "pointer",
     "pointer-events": "auto"
   } : {
     "pointer-events": "none"
@@ -145,7 +144,7 @@ const FrameTitleEditor = (props: {
     updateWidth()
   })
 
-  useClickOutside(() => input.closest<HTMLElement>(".frame-title-wrapper") || input, () => {
+  useClickOutside(() => input, () => {
     updateTitle()
   })
 

@@ -1,5 +1,5 @@
 import { createSignal, batch } from "solid-js"
-import { Tool, Application, toViewportX, toViewportY } from "../../../api"
+import { Tool, Application, getCanvasX, getCanvasY } from "../../../api"
 import { FrameIcon } from "../components/icons"
 
 export const CreateFrame = (): Tool => {
@@ -19,8 +19,8 @@ export const CreateFrame = (): Tool => {
     e.preventDefault()
 
     batch(() => {
-      const x = toViewportX(app, e.clientX)
-      const y = toViewportY(app, e.clientY)
+      const x = getCanvasX(app, e.clientX)
+      const y = getCanvasY(app, e.clientY)
       setX1(x)
       setX2(x)
       setY1(y)
@@ -48,16 +48,16 @@ export const CreateFrame = (): Tool => {
     })
 
     const handleMove = (e: MouseEvent) => {
-      setX2(toViewportX(app, e.clientX))
-      setY2(toViewportY(app, e.clientY))
+      setX2(getCanvasX(app, e.clientX))
+      setY2(getCanvasY(app, e.clientY))
     }
 
     const handleRelease = (e: MouseEvent) => {
       document.removeEventListener("mousemove", handleMove)
       document.removeEventListener("mouseup", handleRelease)
 
-      const x = toViewportX(app, e.clientX)
-      const y = toViewportY(app, e.clientY)
+      const x = getCanvasX(app, e.clientX)
+      const y = getCanvasY(app, e.clientY)
 
       const width = Math.abs(x - x1())
       const height = Math.abs(y - y1())
@@ -107,6 +107,7 @@ export const CreateFrame = (): Tool => {
     label: "Frame",
     icon: FrameIcon,
     keybinds: [{ key: "F" }],
+    cursor: "crosshair",
     onSelect: (app) => {
       handleMouseDown = createMouseDown(app)
       document.addEventListener("mousedown", handleMouseDown)

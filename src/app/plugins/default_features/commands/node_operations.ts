@@ -39,7 +39,7 @@ export const DeleteSelected: Command = {
         if (node.type === "frame") {
           nodesToDelete.push(...node.children)
         }
-        app.resources.nodeTypes[node.type].onDelete?.(node, id, app)
+        app.resources.nodes[node.type].onDelete?.(node, id, app)
         delete draft[id]
       }
     }))

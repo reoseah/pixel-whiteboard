@@ -58,8 +58,9 @@ export function Viewport(props: { app: Application }) {
   return (
     <div
       class="workspace-view"
+      data-active-tool={props.app.state.tool().id}
       style={{
-        cursor: dragging() ? 'grabbing' : props.app.state.spaceHeld() ? 'grab' : 'default'
+        cursor: dragging() ? 'grabbing' : props.app.state.spaceHeld() ? 'grab' : (props.app.state.tool().cursor ?? 'default'),
       }}
       onmousedown={handleMouseDown}
     >
@@ -96,7 +97,7 @@ export function Viewport(props: { app: Application }) {
         <Entries of={props.app.project.nodes}>
           {(nodeId, node) => (
             <Show when={node().type === "frame"}>
-              <Dynamic component={props.app.resources.nodeTypes["frame"].render} app={props.app} node={node()} id={nodeId} />
+              <Dynamic component={props.app.resources.nodes["frame"].render} app={props.app} node={node()} id={nodeId} />
             </Show>
           )}
         </Entries>
