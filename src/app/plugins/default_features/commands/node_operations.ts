@@ -1,18 +1,18 @@
 import { produce } from "solid-js/store"
 import { Command } from "../../../api"
-import { DeleteIcon, SelectionWithCrosshairIcon } from "../components/icons"
+import { DeleteIcon, SelectionCrosshairIcon } from "../components/icons"
 
 export const SelectAll: Command = {
   label: "Select all",
   keybinds: [{ key: "A", ctrl: true }],
-  icon: SelectionWithCrosshairIcon,
+  icon: SelectionCrosshairIcon,
   execute: app => app.project.setSelectedNodes(Object.keys(app.project.nodes))
 }
 
 export const InvertSelection: Command = {
   label: "Invert selection",
-  keybinds: [{ key: "I", ctrl: true }],
-  icon: SelectionWithCrosshairIcon,
+  keybinds: [{ key: "A", ctrl: true, shift: true }],
+  icon: SelectionCrosshairIcon,
   execute: app => {
     const selected = app.project.selectedNodes
     app.project.setSelectedNodes(Object.keys(app.project.nodes).filter(id => !selected().includes(id)))

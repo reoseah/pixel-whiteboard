@@ -1,3 +1,5 @@
+import { Show } from "solid-js"
+
 export function CursorIcon(props: {
   filled?: boolean
 }) {
@@ -41,11 +43,12 @@ export function CommandIcon() {
   )
 }
 
-export function SelectionWithCrosshairIcon() {
+export function SelectionCrosshairIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="7.5" cy="7.5" r="0.5" fill="currentColor" />
-      <path d="M7.5 10C6.11929 10 5 8.88071 5 7.5M7.5 10C8.87311 10 9.98767 8.893 9.9999 7.52277M7.5 10V11.5M5 7.5C5 6.11929 6.11929 5 7.5 5M5 7.5H3.5M7.5 5C8.88071 5 10 6.11929 10 7.5C10 7.5076 9.99997 7.51519 9.9999 7.52277M7.5 5V3.5M9.9999 7.52277L11.5 7.5M0.5 3.5V1.5C0.5 0.947715 0.947715 0.5 1.5 0.5H3.5M6.5 0.5H8.5M11.5 0.5H13.5C14.0523 0.5 14.5 0.947715 14.5 1.5V3.5M14.5 6.5V8.5M14.5 11.5V13.5C14.5 14.0523 14.0523 14.5 13.5 14.5H11.5M8.5 14.5H6.5M3.5 14.5H1.5C0.947715 14.5 0.5 14.0523 0.5 13.5V11.5M0.5 8.5V6.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M0.5 3.5V0.5H3.5M6.5 0.5H8.5M11.5 0.5H14.5V3.5M14.5 6.5V8.5M14.5 11.5V14.5H11.5M8.5 14.5H6.5M3.5 14.5H0.5V11.5M0.5 8.5V6.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M10.5 7.50002C10.5 9.15687 9.15686 10.5 7.5 10.5M10.5 7.50002C10.5 5.84316 9.15686 4.50002 7.5 4.50002M10.5 7.50002L12.5 7.5M7.5 10.5C5.84315 10.5 4.5 9.15687 4.5 7.50002M7.5 10.5V12.5M4.5 7.50002C4.5 5.84316 5.84315 4.50002 7.5 4.50002M4.5 7.50002L2.5 7.5M7.5 4.50002V2.5" stroke="currentColor" stroke-linecap="round" />
     </svg>
   )
 }
@@ -89,6 +92,44 @@ export function ResetZoomIcon() {
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="7.5" cy="7.5" r="5" stroke="currentColor" />
       <path d="M11.25 11.25L14.5 14.5" stroke="currentColor" stroke-linecap="round" />
+    </svg>
+  )
+}
+
+export function CircleIcon(props: {
+  filled?: boolean
+}) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+      <Show
+        when={props.filled}
+        fallback={<circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" />}
+      >
+        <circle cx="8" cy="8" r="7" fill="currentColor" />
+      </Show>
+    </svg>
+  )
+}
+
+export function SquareIcon(props: {
+  filled?: boolean
+}) {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+      <Show
+        when={props.filled}
+        fallback={<rect x="2.5" y="2.5" width="11" height="11" rx="0.5" fill="none" stroke="currentColor" />}
+      >
+        <rect x="2" y="2" width="12" height="12" rx="1" fill="currentColor" />
+      </Show>
+    </svg>
+  )
+}
+
+export function StrokeWidthIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M2.5 2.5H13.5M2.5 5.5V7.5H13.5V5.5H2.5ZM2.5 10.5V13.5H13.5V10.5H2.5Z" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
     </svg>
   )
 }

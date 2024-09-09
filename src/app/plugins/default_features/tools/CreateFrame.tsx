@@ -51,7 +51,7 @@ export const CreateFrame = (): Tool => {
                   left: `calc(${width() * app.state.viewportZoom()}px + .5rem)`,
                   top: `calc(${height() * app.state.viewportZoom()}px + .5rem)`,
                 }}>
-                {width()} x {height()}
+                {width()} × {height()}
               </div>
             </div>
           )

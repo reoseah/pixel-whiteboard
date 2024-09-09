@@ -1,5 +1,5 @@
 .toolbar {
-    background: var(--neutral-800);
+    background: var(--neutral-825);
     border-radius: .375rem;
     border: .0625rem solid var(--neutral-750);
     padding: .1875rem;
@@ -28,8 +28,12 @@
     transition: background-color .1s;
 
     &:hover {
-        background-color: var(--neutral-700);
+        background-color: var(--neutral-750);
         color: var(--neutral-100);
+    }
+
+    &:active {
+        background-color: var(--neutral-700);
     }
 
     &:focus-visible {

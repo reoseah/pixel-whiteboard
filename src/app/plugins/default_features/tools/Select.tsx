@@ -152,7 +152,6 @@ export const Select = (): Tool => {
   }
 
   const handleMouseUp = (e: MouseEvent) => {
-
     if (toolState() === "move") {
       const selectedNodes = app.project.selectedNodes()
       batch(() => {
@@ -189,10 +188,14 @@ export const Select = (): Tool => {
       document.addEventListener("mousemove", handleMouseMove)
       document.addEventListener("mouseup", handleMouseUp)
     },
-    onDeselect: () => {
+    onDeselect: (app) => {
       document.removeEventListener("mousedown", handleMouseDown)
       document.removeEventListener("mousemove", handleMouseMove)
       document.removeEventListener("mouseup", handleMouseUp)
+
+      setToolState("idle")
+      app.state.setHighlightedNodes([])
+      app.state.setViewportElements({ "selection_box": undefined })
     }
   }
 }

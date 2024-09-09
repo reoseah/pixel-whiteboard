@@ -12,6 +12,8 @@
   --neutral-900: #171717;
   --neutral-950: #0a0a0a;
   --neutral-750: #333333;
+  --neutral-675: #444444;
+  --neutral-825: #222222;
 
   /* Tailwind 50% Sky Blue + 50% Blue */
   --primary-50: #eff7ff;
@@ -61,6 +63,11 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+::selection {
+  background: var(--primary-700);
+  color: white;
 }
 
 input,

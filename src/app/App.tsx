@@ -18,6 +18,9 @@ function App() {
   const [toolId, setToolId] = createSignal("select")
   const tool = () => resources.tools[toolId()] ?? resources.tools["select"]
   const selectTool = (next: Tool) => {
+    if (toolId() === next.id) {
+      return
+    }
     const prev = tool();
     prev.onDeselect?.(app)
     next.onSelect?.(app, prev)

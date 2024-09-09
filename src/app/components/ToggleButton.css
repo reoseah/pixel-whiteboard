@@ -1,0 +1,29 @@
+.toggle-button {
+    display: flex;
+    min-width: 1.5rem;
+    height: 1.5rem;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    outline: none;
+
+    background-color: var(--neutral-750);
+    color: var(--neutral-200);
+    border-radius: .25rem;
+    cursor: pointer;
+    transition: background-color .1s;
+
+    &:hover,
+    &:active {
+        background-color: var(--neutral-675);
+    }
+
+    &[aria-pressed="true"] {
+        background-color: var(--primary-600);
+        color: var(--primary-100);
+    }
+
+    &[aria-pressed="true"]:active {
+        background-color: var(--primary-700);
+    }
+}
