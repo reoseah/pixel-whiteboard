@@ -7,7 +7,7 @@ export const Select = (): Tool => {
   let app!: Application
 
   let clickTime = 0
-  const [toolState, setToolState] = createSignal<"idle" | "move" | "select_box" /* | "resize" */>("idle")
+  const [toolState, setToolState] = createSignal<"idle" | "move" | "selection_box" /* | "resize" */>("idle")
   const [initialMousePos, setInitialMousePos] = createSignal({ x: 0, y: 0 })
   const [currentMousePos, setCurrentMousePos] = createSignal({ x: 0, y: 0 })
 
@@ -57,28 +57,31 @@ export const Select = (): Tool => {
           clickTime = Date.now()
         }
       }
-
+      let selection!: string[]
       const shift = app.state.shiftHeld()
       if (shift) {
-        const selected = app.project.selectedNodes()
-        if (selected.includes(nodeId)) {
-          app.project.setSelectedNodes(selected.filter(id => id !== nodeId))
+        const currentSelection = app.project.selectedNodes()
+        if (currentSelection.includes(nodeId)) {
+          selection = currentSelection.filter(id => id !== nodeId)
         } else {
-          app.project.setSelectedNodes([...selected, nodeId])
+          selection = [...currentSelection, nodeId]
         }
       } else {
-        app.project.setSelectedNodes([nodeId])
+        selection = [nodeId]
       }
-      if (app.project.selectedNodes().length > 0) {
-        setCurrentMousePos({ x: getCanvasX(app, e.clientX), y: getCanvasY(app, e.clientY) })
-        setToolState("move")
-      }
+      batch(() => {
+        app.project.setSelectedNodes(selection)
+        if (selection.length > 0) {
+          setCurrentMousePos({ x: getCanvasX(app, e.clientX), y: getCanvasY(app, e.clientY) })
+          setToolState("move")
+        }
+      })
     } else {
       const x = getCanvasX(app, e.clientX)
       const y = getCanvasY(app, e.clientY)
 
       batch(() => {
-        setToolState("select_box")
+        setToolState("selection_box")
         setInitialMousePos({ x, y })
         setCurrentMousePos({ x, y })
         app.project.setSelectedNodes([])
@@ -116,6 +119,8 @@ export const Select = (): Tool => {
         break
       }
       case "move": {
+        // TODO: helper lines when aligning with other nodes
+
         const x = getCanvasX(app, e.clientX)
         const y = getCanvasY(app, e.clientY)
 
@@ -135,7 +140,7 @@ export const Select = (): Tool => {
 
         break
       }
-      case "select_box": {
+      case "selection_box": {
         const selectedNodes = getNodesInSelection()
 
         app.state.setHighlightedNodes(selectedNodes)
@@ -159,7 +164,7 @@ export const Select = (): Tool => {
           }
         })
       })
-    } else if (toolState() === "select_box") {
+    } else if (toolState() === "selection_box") {
       const selectedNodes = getNodesInSelection()
 
       batch(() => {
