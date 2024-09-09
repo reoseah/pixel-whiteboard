@@ -23,6 +23,6 @@ export type NodeType<T extends NodeData = any> = {
   transformPosition?: (node: T, x: number, y: number) => { x: number, y: number }
   supportsCanvasActions?: boolean
   addCanvasAction?: (node: T, id: string, action: CanvasActionData, app: Application) => void
-  replaceOrAddCanvasAction?: (node: T, id: string, previous: CanvasActionData, replacement: CanvasActionData, app: Application) => void
+  replaceCanvasAction?: (node: T, id: string, previous: CanvasActionData, replacement: CanvasActionData, app: Application) => void
   onDelete?: (node: T, id: string, app: Application) => void
 }

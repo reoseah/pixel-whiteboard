@@ -1,21 +1,26 @@
 import "./Pencil.css"
-import { Tool, Application, floorComponents, getNodePosition, NodeType } from "../../../api"
+import { createSignal } from "solid-js"
+import { Tool, Application, floorComponents, getNodePosition } from "../../../api"
 import { PencilAction } from "../actions"
 import { PencilIcon } from "../components/icons"
-import { createSignal } from "solid-js"
+
+type DrawingState = {
+  nodeId: string,
+  action: PencilAction,
+}
 
 export const Pencil = (): Tool => {
   let app!: Application
 
-  const [toolState, setToolState] = createSignal<"idle" | "drawing">("idle")
   const [currentMousePos, setCurrentMousePos] = createSignal<{ x: number, y: number }>({ x: 0, y: 0 })
-  let nodeId: string | null = null
-  let nodeType: NodeType | null = null
-  let action: PencilAction | null = null
+  const [drawingState, setDrawingState] = createSignal<DrawingState | null>(null)
 
   const handleMouseDown = (e: MouseEvent) => {
     if (!(e.target as Element)?.closest(".workspace-view")) {
-      return;
+      return
+    }
+    if (e.button !== 0) {
+      return
     }
 
     e.preventDefault()
@@ -26,26 +31,24 @@ export const Pencil = (): Tool => {
       const type = app.resources.nodes[node.type]
 
       if (type.supportsCanvasActions) {
-        nodeId = targetedId
-        nodeType = type
         const pos = floorComponents(getNodePosition(app, node, e.clientX, e.clientY))
         setCurrentMousePos(pos)
-        action = {
+        const action: PencilAction = {
           type: "pencil",
           points: [pos]
         }
+        setDrawingState({ nodeId: targetedId, action })
         type.addCanvasAction!(node, targetedId, action, app)
-        setToolState("drawing")
       }
     }
   }
 
   const handleMouseMove = (e: MouseEvent) => {
-    if (toolState() === "drawing") {
-      const node = app.project.nodes[nodeId!]
+    const state = drawingState()
+    if (state) {
+      const node = app.project.nodes[state.nodeId]
       if (!node) {
-        setToolState("idle")
-        nodeId = null
+        setDrawingState(null)
         return
       }
 
@@ -55,21 +58,18 @@ export const Pencil = (): Tool => {
       }
 
       const newAction: PencilAction = {
-        ...action!,
-        points: [...action!.points, { x: newX, y: newY }]
+        ...state.action,
+        points: [...state.action.points, { x: newX, y: newY }]
       }
-      nodeType!.replaceOrAddCanvasAction!(node, nodeId!, action!, newAction, app)
+      app.resources.nodes[node.type].replaceCanvasAction!(node, state.nodeId, state.action, newAction, app)
 
       setCurrentMousePos({ x: newX, y: newY })
-      action = newAction
+      setDrawingState({ ...state, action: newAction })
     }
   }
 
   const handleMouseUp = () => {
-    setToolState("idle")
-    nodeId = null
-    nodeType = null
-    action = null
+    setDrawingState(null)
   }
 
   return {
@@ -78,8 +78,8 @@ export const Pencil = (): Tool => {
     icon: PencilIcon,
     cursor: "crosshair",
     keybinds: [{ key: "P" }],
-    onSelect: (ap) => {
-      app = ap
+    onSelect: (a) => {
+      app = a
       document.addEventListener("mousedown", handleMouseDown)
       document.addEventListener("mousemove", handleMouseMove)
       document.addEventListener("mouseup", handleMouseUp)

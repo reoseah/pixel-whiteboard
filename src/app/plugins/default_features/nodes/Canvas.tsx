@@ -15,15 +15,20 @@ export const CanvasType: NodeType<Canvas> = {
         const actions = getOrCreateRasterActions(nodeId, app)
         actions.push([action])
     },
-    replaceOrAddCanvasAction: (_: Canvas, nodeId: string, previous: CanvasActionData, replacement: CanvasActionData, app: Application) => {
+    replaceCanvasAction: (_: Canvas, nodeId: string, previous: CanvasActionData, replacement: CanvasActionData, app: Application) => {
         const actions = getOrCreateRasterActions(nodeId, app)
-        if (actions.get(actions.length - 1) === previous) {
+        let idx = -1
+        for (let i = 0; i < actions.length; i++) {
+            if (actions.get(i) === previous) {
+                idx = i
+                break
+            }
+        }
+        if (idx !== -1) {
             app.ydoc.transact(() => {
-                actions.delete(actions.length - 1)
-                actions.push([replacement])
+                actions.delete(idx)
+                actions.insert(idx, [replacement])
             })
-        } else {
-            actions.push([replacement])
         }
     },
     onDelete: (_: Canvas, nodeId: string, app: Application) => {

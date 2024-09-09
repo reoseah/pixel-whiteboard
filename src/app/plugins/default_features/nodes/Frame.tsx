@@ -50,9 +50,9 @@ export const FrameType: NodeType<Frame> = {
     const { canvasId, canvas } = getOrCreateChildCanvas(node, nodeId, app)
     CanvasType.addCanvasAction!(canvas, canvasId, action, app)
   },
-  replaceOrAddCanvasAction: (node: Frame, nodeId: string, previous: CanvasActionData, replacement: CanvasActionData, app: Application) => {
+  replaceCanvasAction: (node: Frame, nodeId: string, previous: CanvasActionData, replacement: CanvasActionData, app: Application) => {
     const { canvasId, canvas } = getOrCreateChildCanvas(node, nodeId, app)
-    CanvasType.replaceOrAddCanvasAction!(canvas, canvasId, previous, replacement, app)
+    CanvasType.replaceCanvasAction!(canvas, canvasId, previous, replacement, app)
   }
 }
 

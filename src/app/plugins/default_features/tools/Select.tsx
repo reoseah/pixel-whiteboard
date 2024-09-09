@@ -178,8 +178,8 @@ export const Select = (): Tool => {
     icon: props => (<CursorIcon filled={props.selected} />),
     keybinds: [{ key: "V" }],
     interactsWithTitles: true,
-    onSelect: (ap) => {
-      app = ap
+    onSelect: (a) => {
+      app = a
       document.addEventListener("mousedown", handleMouseDown)
       document.addEventListener("mousemove", handleMouseMove)
       document.addEventListener("mouseup", handleMouseUp)
