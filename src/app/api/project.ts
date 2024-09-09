@@ -15,7 +15,7 @@ export type NodeData = {
   [data: string]: unknown
 }
 
-export type NodeType<T extends NodeData> = {
+export type NodeType<T extends NodeData = any> = {
   render: Component<{ node: T, id: string, app: Application }>
   getBounds?: (node: T) => { x: number, y: number, width: number, height: number }
   move?: (node: T, dx: number, dy: number) => T
