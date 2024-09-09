@@ -23,6 +23,28 @@ export const FrameType: NodeType<Frame> = {
       y: y - node.y
     }
   },
+  getBounds: (node: Frame) => {
+    return {
+      x: node.x,
+      y: node.y,
+      width: node.width,
+      height: node.height
+    }
+  },
+  move: (node: Frame, dx: number, dy: number) => {
+    return {
+      ...node,
+      x: node.x + dx,
+      y: node.y + dy
+    }
+  },
+  onFinishedMoving: (node: Frame) => {
+    return {
+      ...node,
+      x: Math.round(node.x),
+      y: Math.round(node.y)
+    }
+  },
   supportsCanvasActions: true,
   addCanvasAction: (node: Frame, nodeId: string, action: CanvasActionData, app: Application) => {
     const { canvasId, canvas } = getOrCreateChildCanvas(node, nodeId, app)
@@ -69,6 +91,7 @@ export const FrameComponent = (props: {
     <div
       class="frame"
       data-selected={selected()}
+      data-highlighted={props.app.state.highlightedNodes().includes(props.id)}
       data-node-id={props.id}
       data-drawable
       data-selectable

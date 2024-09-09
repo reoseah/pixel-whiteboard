@@ -16,18 +16,28 @@ export type Application = {
   state: {
     tool: Accessor<Tool>
     selectTool: (tool: Tool) => void
+
     subToolbar: Accessor<Component<{ app: Application }> | undefined>
     setSubToolbar: Setter<Component<{ app: Application }> | undefined>
+
     viewportElements: Store<Record<string, Component<{ app: Application }>>>
     setViewportElements: SetStoreFunction<Record<string, Component<{ app: Application }>>>
+
     viewportX: Accessor<number>
     setViewportX: Setter<number>
+
     viewportY: Accessor<number>
     setViewportY: Setter<number>
+
     viewportZoom: Accessor<number>
     setViewportZoom: Setter<number>
+
     titleBeingEdited: Accessor<string | null>
     setTitleBeingEdited: Setter<string | null>
+
+    highlightedNodes: Accessor<string[]>
+    setHighlightedNodes: Setter<string[]>
+
     ctrlHeld: Accessor<boolean>
     shiftHeld: Accessor<boolean>
     spaceHeld: Accessor<boolean>

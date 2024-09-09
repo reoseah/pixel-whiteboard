@@ -51,3 +51,10 @@ export const floorComponents = (point: { x: number, y: number }) => {
 export const roundComponents = (point: { x: number, y: number }) => {
   return { x: Math.round(point.x), y: Math.round(point.y) }
 }
+
+export const containsRectangle = (bounds: { x: number, y: number, width: number, height: number }, rect: { x: number, y: number, width: number, height: number }) => {
+  return bounds.x <= rect.x 
+    && bounds.y <= rect.y 
+    && bounds.x + bounds.width >= rect.x + rect.width 
+    && bounds.y + bounds.height >= rect.y + rect.height
+}

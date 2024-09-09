@@ -1,32 +1,46 @@
-import { Tool, Application } from "../../../api"
+import './Select.css'
+import { Tool, Application, getCanvasX, getCanvasY, containsRectangle } from "../../../api"
 import { CursorIcon } from "../components/icons"
+import { batch, createSignal } from "solid-js"
 
 export const Select = (): Tool => {
-  let titleClickTime = 0
+  let app!: Application
 
-  const toggleSelection = (app: Application, nodeId: string) => {
-    const shift = app.state.shiftHeld()
-    const selected = app.project.selectedNodes()
-    if (shift) {
-      if (selected.includes(nodeId)) {
-        app.project.setSelectedNodes(selected.filter(id => id !== nodeId))
-      } else {
-        app.project.setSelectedNodes([...selected, nodeId])
-      }
-    } else {
-      app.project.setSelectedNodes([nodeId])
+  let clickTime = 0
+  const [toolState, setToolState] = createSignal<"idle" | "move" | "select_box" /* | "resize" */>("idle")
+  const [initialMousePos, setInitialMousePos] = createSignal({ x: 0, y: 0 })
+  const [currentMousePos, setCurrentMousePos] = createSignal({ x: 0, y: 0 })
+
+  const getNodesInSelection = () => {
+    const selectionBox = {
+      x: Math.min(initialMousePos().x, currentMousePos().x),
+      y: Math.min(initialMousePos().y, currentMousePos().y),
+      width: Math.abs(currentMousePos().x - initialMousePos().x),
+      height: Math.abs(currentMousePos().y - initialMousePos().y)
     }
+
+    let selectedNodes: string[] = []
+    Object.entries(app.project.nodes).forEach(([id, node]) => {
+      const type = app.resources.nodes[node.type]
+      if (type.getBounds) {
+        const bounds = type.getBounds(node)
+        if (containsRectangle(selectionBox, bounds)) {
+          selectedNodes.push(id)
+        }
+      }
+    })
+    return selectedNodes
   }
 
-  const createMouseDown = (app: Application) => (e: MouseEvent) => {
+  const handleMouseDown = (e: MouseEvent) => {
     if (!(e.target as Element)?.closest(".workspace-view")) {
       return;
     }
     if (e.button !== 0) {
       return
     }
-    const target = e.target as HTMLElement;
-    const isEditable = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
+    const target = e.target as HTMLElement
+    const isEditable = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable
     if (isEditable) {
       return
     }
@@ -36,27 +50,127 @@ export const Select = (): Tool => {
     const nodeId = (e.target as Element)?.closest("[data-selectable][data-node-id]")?.getAttribute("data-node-id") ?? null
     if (nodeId) {
       const isTitle = (e.target as Element)?.hasAttribute("data-frame-title")
-
       if (isTitle) {
-        if (Date.now() - titleClickTime < 300) {
+        if (Date.now() - clickTime < 300) {
           app.state.setTitleBeingEdited(nodeId)
         } else {
-          toggleSelection(app, nodeId)
-          titleClickTime = Date.now()
+          clickTime = Date.now()
+        }
+      }
+
+      const shift = app.state.shiftHeld()
+      if (shift) {
+        const selected = app.project.selectedNodes()
+        if (selected.includes(nodeId)) {
+          app.project.setSelectedNodes(selected.filter(id => id !== nodeId))
+        } else {
+          app.project.setSelectedNodes([...selected, nodeId])
         }
       } else {
-        // TODO: implement drag to move
-        toggleSelection(app, nodeId)
+        app.project.setSelectedNodes([nodeId])
+      }
+      if (app.project.selectedNodes().length > 0) {
+        setCurrentMousePos({ x: getCanvasX(app, e.clientX), y: getCanvasY(app, e.clientY) })
+        setToolState("move")
       }
     } else {
-      // TODO: implement drag to select
-      if (!app.state.shiftHeld()) {
+      const x = getCanvasX(app, e.clientX)
+      const y = getCanvasY(app, e.clientY)
+
+      batch(() => {
+        setToolState("select_box")
+        setInitialMousePos({ x, y })
+        setCurrentMousePos({ x, y })
         app.project.setSelectedNodes([])
+        app.state.setViewportElements("selection_box", () => () => {
+          const left = () => Math.min(initialMousePos().x, currentMousePos().x)
+          const top = () => Math.min(initialMousePos().y, currentMousePos().y)
+          const width = () => Math.abs(currentMousePos().x - initialMousePos().x)
+          const height = () => Math.abs(currentMousePos().y - initialMousePos().y)
+
+          return (
+            <div
+              style={{
+                left: `${left() * app.state.viewportZoom()}px`,
+                top: `${top() * app.state.viewportZoom()}px`,
+                width: `${width() * app.state.viewportZoom()}px`,
+                height: `${height() * app.state.viewportZoom()}px`,
+              }}
+              class="selection-box"
+            ></div>
+          )
+        })
+      })
+    }
+  }
+
+  const handleMouseMove = (e: MouseEvent) => {
+    switch (toolState()) {
+      case "idle": {
+        const nodeId = (e.target as Element)?.closest("[data-selectable][data-node-id]")?.getAttribute("data-node-id") ?? null
+        if (nodeId) {
+          app.state.setHighlightedNodes([nodeId])
+        } else {
+          app.state.setHighlightedNodes([])
+        }
+        break
+      }
+      case "move": {
+        const x = getCanvasX(app, e.clientX)
+        const y = getCanvasY(app, e.clientY)
+
+        const dx = x - currentMousePos().x
+        const dy = y - currentMousePos().y
+        console.log(dx, dy)
+        setCurrentMousePos({ x, y })
+
+        const selectedNodes = app.project.selectedNodes()
+        selectedNodes.forEach(id => {
+          const node = app.project.nodes[id]
+          const type = app.resources.nodes[node.type]
+          if (type.move) {
+            app.project.setNodes({ [id]: type.move(node, dx, dy) })
+          }
+        })
+
+        break
+      }
+      case "select_box": {
+        const selectedNodes = getNodesInSelection()
+
+        app.state.setHighlightedNodes(selectedNodes)
+        setCurrentMousePos({ x: getCanvasX(app, e.clientX), y: getCanvasY(app, e.clientY) })
+
+        break
       }
     }
   }
 
-  let handleMouseDown: ((e: MouseEvent) => void) | undefined
+  const handleMouseUp = (e: MouseEvent) => {
+
+    if (toolState() === "move") {
+      const selectedNodes = app.project.selectedNodes()
+      batch(() => {
+        selectedNodes.forEach(id => {
+          const node = app.project.nodes[id]
+          const type = app.resources.nodes[node.type]
+          if (type.onFinishedMoving) {
+            app.project.setNodes({ [id]: type.onFinishedMoving(node) })
+          }
+        })
+      })
+    } else if (toolState() === "select_box") {
+      const selectedNodes = getNodesInSelection()
+
+      batch(() => {
+        app.state.setHighlightedNodes([])
+        app.project.setSelectedNodes(selectedNodes)
+        app.state.setViewportElements({ "selection_box": undefined })
+      })
+    }
+
+    setToolState("idle")
+  }
 
   return {
     id: "select",
@@ -64,13 +178,16 @@ export const Select = (): Tool => {
     icon: props => (<CursorIcon filled={props.selected} />),
     keybinds: [{ key: "V" }],
     interactsWithTitles: true,
-    onSelect: (app) => {
-      handleMouseDown = createMouseDown(app)
+    onSelect: (ap) => {
+      app = ap
       document.addEventListener("mousedown", handleMouseDown)
+      document.addEventListener("mousemove", handleMouseMove)
+      document.addEventListener("mouseup", handleMouseUp)
     },
     onDeselect: () => {
-      document.removeEventListener("mousedown", handleMouseDown!)
-      handleMouseDown = undefined
+      document.removeEventListener("mousedown", handleMouseDown)
+      document.removeEventListener("mousemove", handleMouseMove)
+      document.removeEventListener("mouseup", handleMouseUp)
     }
   }
 }

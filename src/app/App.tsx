@@ -36,6 +36,7 @@ function App() {
   const spaceHeld = useHeldKey(" ")
 
   const [titleBeingEdited, setTitleBeingEdited] = createSignal<string | null>(null)
+  const [nodesBeingSelected, setNodesBeingSelected] = createSignal<string[]>([])
 
   const ydoc = new Y.Doc()
   new IndexeddbPersistence('pixel-art-editor', ydoc)
@@ -58,12 +59,16 @@ function App() {
       setViewportZoom,
       titleBeingEdited,
       setTitleBeingEdited,
+      highlightedNodes: nodesBeingSelected,
+      setHighlightedNodes: setNodesBeingSelected,
       ctrlHeld,
       shiftHeld,
       spaceHeld
     },
     ydoc
   }
+
+  tool().onSelect?.(app, null!)
 
   useCommandKeybinds(app)
   useZoomWithMouseWheel(app)

@@ -26,6 +26,8 @@
   --primary-900: #15427c;
   --primary-950: #0f294e;
 
+  --primary-500\/20: rgba(36, 147, 239, 0.2);
+
   /* Primary 20% + Neutral 80% */
   --infused-50: #F8FAFB;
   --infused-100: #F0F4F7;

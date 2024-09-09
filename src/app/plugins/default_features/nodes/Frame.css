@@ -1,7 +1,7 @@
 .frame {
     position: absolute;
 
-    [data-active-tool="select"] &:where(:hover) {
+    &[data-highlighted="true"] {
         outline: .0625rem solid var(--primary-500);
     }
 
@@ -30,11 +30,11 @@
     text-overflow: ellipsis;
     overflow: hidden;
 
-    .frame[data-selected="true"] & {
+    .frame[data-highlighted="true"] & {
         color: var(--primary-400);
     }
 
-    [data-active-tool="select"] :where(.frame:hover) & {
+    .frame[data-selected="true"] & {
         color: var(--primary-400);
     }
 }
