@@ -52,9 +52,19 @@ export const Pencil = (): Tool => {
 
     e.preventDefault()
 
-    const targetedId = (e.target as Element)?.closest("[data-drawable]")?.getAttribute("data-node-id") ?? null
-    if (targetedId) {
-      const node = app.project.nodes[targetedId]
+    let nodeId: string | null = null
+
+    if (autoSelect()) {
+      nodeId = (e.target as Element)?.closest("[data-drawable]")?.getAttribute("data-node-id") ?? null
+      app.project.setSelectedNodes(nodeId ? [nodeId] : [])
+    } else {
+      const selected = app.project.selectedNodes()
+      if (selected.length === 1) {
+        nodeId = selected[0]
+      }
+    }
+    if (nodeId) {
+      const node = app.project.nodes[nodeId]
       const type = app.resources.nodes[node.type]
 
       if (type.supportsCanvasActions) {
@@ -66,8 +76,8 @@ export const Pencil = (): Tool => {
           shape: shape(),
           size: size(),
         }
-        setDrawingState({ nodeId: targetedId, action })
-        type.addCanvasAction!(node, targetedId, action, app)
+        setDrawingState({ nodeId, action })
+        type.addCanvasAction!(node, nodeId, action, app)
       }
     }
 
@@ -96,6 +106,11 @@ export const Pencil = (): Tool => {
 
       setCurrentMousePos({ x: newX, y: newY })
       setDrawingState({ ...state, action: newAction })
+    } else {
+      if (autoSelect()) {
+        const nodeId = (e.target as Element)?.closest("[data-drawable]")?.getAttribute("data-node-id")
+        app.state.setHighlightedNodes(nodeId ? [nodeId] : [])
+      }
     }
   }
 
@@ -104,10 +119,102 @@ export const Pencil = (): Tool => {
   }
 
   const handleWheel = (e: WheelEvent) => {
+    if (app.state.ctrlHeld()) {
+      return
+    }
     e.preventDefault()
     const newValue = size() - Math.sign(e.deltaY)
     setSize(Math.max(1, Math.min(100, newValue)))
   }
+
+  const toolbar = () => {
+    return (
+      <SubToolbar>
+        <ToggleButton
+          title="Auto-select element under cursor"
+          pressed={autoSelect()}
+          onClick={() => setAutoSelect(!autoSelect())}
+        >
+          <SelectionCrosshairIcon />
+        </ToggleButton>
+
+        <InputGroup>
+          <ToggleButton
+            title="Round brush shape"
+            pressed={shape() === 'circle'}
+            onClick={() => setShape('circle')}
+          >
+            <CircleIcon filled={shape() === 'circle'} />
+          </ToggleButton>
+          <ToggleButton
+            title="Square brush shape"
+            pressed={shape() === 'square'}
+            onClick={() => setShape('square')}
+          >
+            <SquareIcon filled={shape() === 'square'} />
+          </ToggleButton>
+        </InputGroup>
+
+        <NumberInput
+          value={size()}
+          onChange={value => setSize(value)}
+          min={1}
+          max={100}
+          step={1}
+          icon={<StrokeWidthIcon />}
+          title="Stroke width"
+          class={"w-3.5rem"}
+        />
+
+        <InputGroup>
+          <CustomSelect
+            class={"w-5.5rem"}
+            value={modeNames[mode()]}
+            onChange={value => setMode(value as Mode)}
+            icon={<DropIcon />}
+          >
+            {(close) => (
+              <For each={modeGroups}>{(group, idx) => (
+                <>
+                  <For each={group}>
+                    {m => (
+                      <CustomOption
+                        value={modeNames[m]}
+                        selected={m === mode()}
+                        onClick={() => {
+                          setMode(m)
+                          close()
+                        }}
+                        disabled={m !== "normal"}
+                        title={m !== "normal" ? "Not implemented yet" : undefined}
+                      >
+                        {modeNames[m]}
+                      </CustomOption>
+                    )}
+                  </For>
+                  <Show when={idx() != modeGroups.length - 1}>
+                    <OptionDivider />
+                  </Show>
+                </>
+              )}
+              </For>
+            )}
+          </CustomSelect>
+          <NumberInput
+            class={"w-3rem"}
+            value={opacity()}
+            onChange={value => setOpacity(value)}
+            title="Not implemented yet"
+            min={0}
+            max={100}
+            step={1}
+            size={3}
+            unit={'%'} />
+        </InputGroup>
+      </SubToolbar>
+    )
+  }
+  
 
   return {
     id: "pencil",
@@ -122,93 +229,7 @@ export const Pencil = (): Tool => {
       document.addEventListener("mouseup", handleMouseUp)
       document.addEventListener("wheel", handleWheel)
 
-      app.state.setSubToolbar(() => () => {
-        return (
-          <SubToolbar>
-            <ToggleButton
-              title="Auto-select element under cursor"
-              pressed={autoSelect()}
-              onClick={() => setAutoSelect(!autoSelect())}
-            >
-              <SelectionCrosshairIcon />
-            </ToggleButton>
-
-            <InputGroup>
-              <ToggleButton
-                title="Round brush shape"
-                pressed={shape() === 'circle'}
-                onClick={() => setShape('circle')}
-              >
-                <CircleIcon filled={shape() === 'circle'} />
-              </ToggleButton>
-              <ToggleButton
-                title="Square brush shape"
-                pressed={shape() === 'square'}
-                onClick={() => setShape('square')}
-              >
-                <SquareIcon filled={shape() === 'square'} />
-              </ToggleButton>
-            </InputGroup>
-
-            <NumberInput
-              value={size()}
-              onChange={value => setSize(value)}
-              min={1}
-              max={100}
-              step={1}
-              icon={<StrokeWidthIcon />}
-              title="Stroke width"
-              class={"w-3.5rem"}
-            />
-
-            <InputGroup>
-              <CustomSelect
-                class={"w-5.5rem"}
-                value={modeNames[mode()]}
-                onChange={value => setMode(value as Mode)}
-                icon={<DropIcon />}
-              >
-                {(close) => (
-                  <For each={modeGroups}>{(group, idx) => (
-                    <>
-                      <For each={group}>
-                        {m => (
-                          <CustomOption
-                            value={modeNames[m]}
-                            selected={m === mode()}
-                            onClick={() => {
-                              setMode(m)
-                              close()
-                            }}
-                            disabled={m !== "normal"}
-                            title={m !== "normal" ? "Not implemented yet" : undefined}
-                          >
-                            {modeNames[m]}
-                          </CustomOption>
-                        )}
-                      </For>
-                      <Show when={idx() != modeGroups.length - 1}>
-                        <OptionDivider />
-                      </Show>
-                    </>
-                  )}
-                  </For>
-                )}
-              </CustomSelect>
-              <NumberInput
-                class={"w-3rem"}
-                value={opacity()}
-                onChange={value => setOpacity(value)}
-                title="Not implemented yet"
-                min={0}
-                max={100}
-                step={1}
-                size={3}
-                unit={'%'} />
-            </InputGroup>
-          </SubToolbar>
-        )
-      })
+      app.state.setSubToolbar(() => toolbar)
     },
     onDeselect: () => {
       document.removeEventListener("mousedown", handleMouseDown)
@@ -217,6 +238,7 @@ export const Pencil = (): Tool => {
       document.removeEventListener("wheel", handleWheel)
 
       app.state.setSubToolbar(undefined)
+      app.state.setHighlightedNodes([])
     }
   }
 }
