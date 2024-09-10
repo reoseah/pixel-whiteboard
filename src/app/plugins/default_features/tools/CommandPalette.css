@@ -1,7 +1,7 @@
 .command-palette {
   /* padding: .5rem; */
   border: .0625rem solid var(--neutral-750);
-  padding: .4375rem;
+  padding: .3125rem;
   background: var(--neutral-825);
   border-radius: .5rem;
   width: 20rem;
@@ -49,6 +49,17 @@
       opacity: 1;
     }
   }
+}
+
+.command-palette-no-results {
+  display: flex;
+  align-items: center;
+  height: 1.5rem;
+  margin-top: .5rem;
+  padding-inline: .5rem;
+  font-size: .75rem;
+  color: var(--neutral-400); 
+  font-style: italic;
 }
 
 .command-palette-heading {

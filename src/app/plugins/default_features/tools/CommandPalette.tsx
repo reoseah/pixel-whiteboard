@@ -70,7 +70,10 @@ export const CommandPaletteComponent = (previousTool: Tool) => (props: { app: Ap
           autocomplete="off"
         />
       </div>
-      <Show when={filteredCommands().length}>
+      <Show
+        when={filteredCommands().length}
+        fallback={<p class="command-palette-no-results">No results found</p>}
+      >
         <h2 class="command-palette-heading">Actions</h2>
         <ul class="command-palette-entries">
           <For each={filteredCommands()}>

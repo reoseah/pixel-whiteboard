@@ -122,7 +122,6 @@ export const Pencil = (): Tool => {
     if (app.state.ctrlHeld()) {
       return
     }
-    e.preventDefault()
     const newValue = size() - Math.sign(e.deltaY)
     setSize(Math.max(1, Math.min(100, newValue)))
   }
