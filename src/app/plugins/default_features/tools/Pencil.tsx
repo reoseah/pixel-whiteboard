@@ -214,7 +214,6 @@ export const Pencil = (): Tool => {
       </SubToolbar>
     )
   }
-  
 
   return {
     id: "pencil",
