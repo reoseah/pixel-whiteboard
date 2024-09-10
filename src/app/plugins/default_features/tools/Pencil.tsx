@@ -117,7 +117,7 @@ export const Pencil = (): Tool => {
         return (
           <SubToolbar>
             <ToggleButton
-              tooltip="Auto-select element beneath cursor"
+              title="Auto-select element under cursor"
               pressed={autoSelect()}
               onClick={() => setAutoSelect(!autoSelect())}
             >
@@ -126,14 +126,14 @@ export const Pencil = (): Tool => {
 
             <InputGroup>
               <ToggleButton
-                tooltip="Round brush shape"
+                title="Round brush shape"
                 pressed={shape() === 'circle'}
                 onClick={() => setShape('circle')}
               >
                 <CircleIcon filled={shape() === 'circle'} />
               </ToggleButton>
               <ToggleButton
-                tooltip="Square brush shape"
+                title="Square brush shape"
                 pressed={shape() === 'square'}
                 onClick={() => setShape('square')}
               >
@@ -148,7 +148,7 @@ export const Pencil = (): Tool => {
               max={100}
               step={1}
               icon={<StrokeWidthIcon />}
-              tooltip="Stroke width"
+              title="Stroke width"
             />
 
             <InputGroup>
@@ -172,6 +172,7 @@ export const Pencil = (): Tool => {
                             }}
                             // TODO: enable once implemented
                             disabled={m !== "normal"}
+                            title={m !== "normal" ? "Not implemented yet" : undefined}
                           >
                             {modeNames[m]}
                           </CustomOption>
@@ -188,6 +189,7 @@ export const Pencil = (): Tool => {
               <NumberInput
                 value={opacity()}
                 onChange={value => setOpacity(value)}
+                title="Not implemented yet"
                 min={0}
                 max={100}
                 step={1}
@@ -195,7 +197,7 @@ export const Pencil = (): Tool => {
                 unit={'%'}
                 class={"w-1.5rem"} />
             </InputGroup>
-          </SubToolbar >
+          </SubToolbar>
         )
       })
     },

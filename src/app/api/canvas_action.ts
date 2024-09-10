@@ -1,6 +1,5 @@
 export type CanvasActionData = {
   type: string
-  uuid?: string
   [data: string]: any
 }
 

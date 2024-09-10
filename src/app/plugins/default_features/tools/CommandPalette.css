@@ -2,7 +2,7 @@
   /* padding: .5rem; */
   border: .0625rem solid var(--neutral-750);
   padding: .4375rem;
-  background: var(--neutral-800);
+  background: var(--neutral-825);
   border-radius: .5rem;
   width: 20rem;
 }
@@ -12,7 +12,6 @@
   height: 32px;
   border-radius: .25rem;
   background: var(--neutral-750);
-  color: var(--neutral-500);
 
   svg {
     display: flex;
@@ -22,6 +21,7 @@
     box-sizing: content-box;
     position: absolute;
     pointer-events: none;
+    color: var(--neutral-400);
   }
 
   input {
@@ -41,11 +41,11 @@
     }
 
     &:focus {
-      outline: .125rem solid var(--primary-500);
+      outline: .0625rem solid var(--primary-500);
     }
 
     &::placeholder {
-      color: var(--neutral-500);
+      color: var(--neutral-400);
       opacity: 1;
     }
   }

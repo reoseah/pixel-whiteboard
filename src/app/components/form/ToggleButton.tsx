@@ -7,7 +7,7 @@ export const ToggleButton = (props: {
   children: JSXElement
   class?: string
   disabled?: boolean
-  tooltip?: string
+  title?: string
   ref?: (el: HTMLButtonElement) => void
 }) => {
   return (
@@ -15,9 +15,9 @@ export const ToggleButton = (props: {
       type="button"
       class={`toggle-button ${props.class ?? ''}`}
       disabled={props.disabled}
-      title={props.tooltip}
+      title={props.title}
       aria-pressed={props.pressed}
-      onClick={props.onClick}
+      onclick={props.onClick}
       ref={props.ref}
     >
       {props.children}

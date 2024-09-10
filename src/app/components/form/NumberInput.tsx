@@ -11,12 +11,12 @@ export const NumberInput = (props: {
   class?: string
   icon?: JSX.Element
   unit?: JSX.Element
-  tooltip?: string
+  title?: string
 }) => {
   return (
     <label
       class="number-input-container"
-      title={props.tooltip}
+      title={props.title}
     >
       <Show when={props.icon}>
         <div class="input-icon">
@@ -31,13 +31,13 @@ export const NumberInput = (props: {
         max={props.max}
         step={props.step}
         size={props.size}
-        onClick={event => (event.target as HTMLInputElement).select()}
-        onKeyDown={event => {
+        onclick={event => (event.target as HTMLInputElement).select()}
+        onkeydown={event => {
           if (event.key === 'Enter' || event.key === 'Escape') {
             (event.target as HTMLInputElement).blur();
           }
         }}
-        onFocus={event => {
+        onfocus={event => {
           const handleClickOutside = (event: MouseEvent) => {
             if (!event.composedPath().includes(event.target!)) {
               (event.target as HTMLInputElement).blur();
@@ -48,7 +48,7 @@ export const NumberInput = (props: {
             document.removeEventListener('click', handleClickOutside)
           }, { once: true })
         }}
-        onChange={event => props.onChange(Number((event.target as HTMLInputElement).value))}
+        onchange={event => props.onChange(Number((event.target as HTMLInputElement).value))}
       />
       <Show when={props.unit}>
         <div class="number-input-unit">

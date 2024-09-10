@@ -67,12 +67,14 @@ export const CustomOption = (props: {
   onClick: () => void
   children: string
   disabled?: boolean
+  title?: string
 }) => {
   return (
     <button
       class={`custom-option`}
       onClick={props.onClick}
       disabled={props.disabled}
+      title={props.title}
       aria-selected={props.selected}
     >
       <Show when={props.selected}>
