@@ -3,7 +3,11 @@ import { CanvasAction, getPointsOnPath } from "../../../api"
 export type PencilAction = {
   type: "pencil"
   points: Array<{ x: number, y: number }>
+  shape: "circle" | "square"
+  size: number
 }
+
+const interval = 1 // TODO: Make this configurable by the user
 
 export const PencilActionType: CanvasAction<PencilAction> = {
   getBounds: (action) => {
@@ -15,13 +19,32 @@ export const PencilActionType: CanvasAction<PencilAction> = {
   },
   draw: (action, helper) => {
     if (action.points.length === 1) {
-      const point = action.points[0]
-      helper.set(point.x, point.y, 0xffffffff)
+      for (let x = Math.round(action.points[0].x - action.size / 2); x < action.points[0].x + action.size / 2; x++) {
+        for (let y = Math.round(action.points[0].y - action.size / 2); y < action.points[0].y + action.size / 2; y++) {
+          helper.set(x, y, 0xffffffff)
+        }
+      }
       return
     }
 
-    getPointsOnPath(action.points, 1).forEach((point) => {
-      helper.set(point.x, point.y, 0xffffffff)
+    const { shape, size } = action
+
+    const visited = new Map<number, Set<number>>()
+    getPointsOnPath(action.points, interval).forEach((point) => {
+      for (let x = Math.round(point.x - size / 2); x < point.x + size / 2; x++) {
+        for (let y = Math.round(point.y - size / 2); y < point.y + size / 2; y++) {
+          const filled = shape === "circle" && Math.hypot(x - point.x, y - point.y) < size / 2 || shape === "square"
+          if (filled) {
+            if (!visited.has(x)) {
+              visited.set(x, new Set())
+            } else if (visited.get(x)!.has(y)) {
+              continue
+            }
+            helper.set(x, y, 0xffffffff)
+            visited.get(x)!.add(y)
+          }
+        }
+      }
     })
   },
   handleReplacement: (oldAction, newAction, helper) => {
@@ -29,16 +52,24 @@ export const PencilActionType: CanvasAction<PencilAction> = {
       const prev = newAction.points[newAction.points.length - 2]
       const last = newAction.points[newAction.points.length - 1]
 
-      getPointsOnPath([prev, last], 1).forEach((point) => {
-        helper.set(point.x, point.y, 0xffffffff)
+      const visited = new Map<number, Set<number>>()
+      getPointsOnPath([prev, last], interval).forEach((point) => {
+        for (let x = Math.round(point.x - newAction.size / 2); x < point.x + newAction.size / 2; x++) {
+          for (let y = Math.round(point.y - newAction.size / 2); y < point.y + newAction.size / 2; y++) {
+            const filled = newAction.shape === "circle" && Math.hypot(x - point.x, y - point.y) < newAction.size / 2 || newAction.shape === "square"
+            if (filled) {
+              if (!visited.has(x)) {
+                visited.set(x, new Set())
+              } else if (visited.get(x)!.has(y)) {
+                continue
+              }
+              helper.set(x, y, 0xffffffff)
+              visited.get(x)!.add(y)
+            }
+          }
+        }
       })
       return
     }
   }
-}
-
-export const getUniquePoints = (points: Array<{ column: number, row: number }>): Array<{ column: number, row: number }> => {
-  return points.filter((point, index, self) =>
-    index === self.findIndex((p) => p.column === point.column && p.row === point.row)
-  )
 }

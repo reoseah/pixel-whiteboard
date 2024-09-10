@@ -151,7 +151,7 @@ export const Select = (): Tool => {
     }
   }
 
-  const handleMouseUp = (e: MouseEvent) => {
+  const handleMouseUp = () => {
     if (toolState() === "move") {
       const selectedNodes = app.project.selectedNodes()
       batch(() => {

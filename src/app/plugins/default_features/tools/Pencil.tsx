@@ -62,7 +62,9 @@ export const Pencil = (): Tool => {
         setCurrentMousePos(pos)
         const action: PencilAction = {
           type: "pencil",
-          points: [pos]
+          points: [pos],
+          shape: shape(),
+          size: size(),
         }
         setDrawingState({ nodeId: targetedId, action })
         type.addCanvasAction!(node, targetedId, action, app)
