@@ -39,7 +39,7 @@ function App() {
   const spaceHeld = useHeldKey(" ")
 
   const [titleBeingEdited, setTitleBeingEdited] = createSignal<string | null>(null)
-  const [nodesBeingSelected, setNodesBeingSelected] = createSignal<string[]>([])
+  const [highlightedNodes, setHighlightedNodes] = createSignal<string[]>([])
 
   const ydoc = new Y.Doc()
   new IndexeddbPersistence('pixel-art-editor', ydoc)
@@ -62,8 +62,8 @@ function App() {
       setViewportZoom,
       titleBeingEdited,
       setTitleBeingEdited,
-      highlightedNodes: nodesBeingSelected,
-      setHighlightedNodes: setNodesBeingSelected,
+      highlightedNodes,
+      setHighlightedNodes,
       ctrlHeld,
       shiftHeld,
       spaceHeld

@@ -1,5 +1,5 @@
 import "./CustomSelect.css"
-import { createSignal, onMount, onCleanup, Show, JSX } from "solid-js"
+import { createSignal, onCleanup, Show, JSX } from "solid-js"
 import { CheckIcon, ChevronDownIcon } from "./icons"
 
 export const CustomSelect = (props: {
@@ -17,12 +17,17 @@ export const CustomSelect = (props: {
       setExpanded(false)
     }
   }
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (expanded() && event.key === 'Escape') {
+      setExpanded(false)
+    }
+  }
 
-  onMount(() => {
-    document.addEventListener('click', handleClickOutside)
-  })
+  document.addEventListener('click', handleClickOutside)
+  document.addEventListener('keydown', handleKeyDown)
   onCleanup(() => {
     document.removeEventListener('click', handleClickOutside)
+    document.removeEventListener('keydown', handleKeyDown)
   })
 
   return (

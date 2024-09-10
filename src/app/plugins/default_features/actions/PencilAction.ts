@@ -84,7 +84,6 @@ const drawShape = (shape: "circle" | "square", size: number, x: number, y: numbe
       } else if (visited.get(ix)!.has(iy)) {
         continue
       }
-      // canvas.set(ix, iy, 0xffffffff)
       visited.get(ix)!.add(iy)
     }
   }
