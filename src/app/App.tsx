@@ -115,7 +115,12 @@ function useResources(plugins: Plugin[]): Resources {
 }
 
 const useProject = (): ProjectState => {
-  const [nodes, setNodes] = createStore<Record<string, NodeData>>({})
+  const [nodes, setNodes] = createStore<Record<string, NodeData>>({
+    whiteboard: {
+      type: "whiteboard",
+      children: []
+    }
+  })
   const [selectedNodes, setSelectedNodes] = createSignal<string[]>([])
 
   return {

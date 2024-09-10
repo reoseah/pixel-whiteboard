@@ -55,8 +55,8 @@ export const Pencil = (): Tool => {
     let nodeId: string | null = null
 
     if (autoSelect()) {
-      nodeId = (e.target as Element)?.closest("[data-drawable]")?.getAttribute("data-node-id") ?? null
-      app.project.setSelectedNodes(nodeId ? [nodeId] : [])
+      nodeId = (e.target as Element)?.closest("[data-drawable]")?.getAttribute("data-node-id") ?? "whiteboard"
+      app.project.setSelectedNodes([nodeId])
     } else {
       const selected = app.project.selectedNodes()
       if (selected.length === 1) {
@@ -108,8 +108,8 @@ export const Pencil = (): Tool => {
       setDrawingState({ ...state, action: newAction })
     } else {
       if (autoSelect()) {
-        const nodeId = (e.target as Element)?.closest("[data-drawable]")?.getAttribute("data-node-id")
-        app.state.setHighlightedNodes(nodeId ? [nodeId] : [])
+        const nodeId = (e.target as Element)?.closest("[data-drawable]")?.getAttribute("data-node-id") ?? "whiteboard"
+        app.state.setHighlightedNodes([nodeId])
       }
     }
   }

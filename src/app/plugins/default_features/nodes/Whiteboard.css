@@ -1,0 +1,5 @@
+.whiteboard {
+    &[data-highlighted] {
+        border: 1px solid red;
+    }
+}

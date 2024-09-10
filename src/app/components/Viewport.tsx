@@ -1,6 +1,6 @@
 import "./Viewport.css"
-import { createMemo, createSignal, Show } from "solid-js"
-import { Application } from "../api"
+import { createMemo, createSignal, For, Show } from "solid-js"
+import { Application, NodeData } from "../api"
 import { Dynamic } from "solid-js/web"
 import { Entries } from "@solid-primitives/keyed"
 
@@ -51,6 +51,22 @@ export function Viewport(props: { app: Application }) {
     window.addEventListener("mouseup", handleMouseUp)
   }
 
+  const topLevelNodes = createMemo(() => {
+    const children = new Set<string>()
+    for (const node of Object.values(props.app.project.nodes)) {
+      for (const child of node.children) {
+        children.add(child)
+      }
+    }
+    const topLevelNodes = []
+    for (const nodeId in props.app.project.nodes) {
+      if (!children.has(nodeId)) {
+        topLevelNodes.push(nodeId)
+      }
+    }
+    return topLevelNodes
+  })
+
   // `transition: transform 0.Xs` won't work here
   // can't animate the background grid pattern
   // animating only the contents make them look like they're lagging
@@ -94,13 +110,17 @@ export function Viewport(props: { app: Application }) {
       <div style={{
         transform: `translate(${translateX()}px, ${translateY()}px)`
       }}>
-        <Entries of={props.app.project.nodes}>
-          {(nodeId, node) => (
-            <Show when={node().type === "frame"}>
-              <Dynamic component={props.app.resources.nodes["frame"].render} app={props.app} node={node()} id={nodeId} />
-            </Show>
-          )}
-        </Entries>
+        <For each={topLevelNodes()}>
+          {(nodeId) => {
+            const node = () => props.app.project.nodes[nodeId]
+
+            return (
+              <Show when={props.app.resources.nodes[node().type].render}>
+                <Dynamic component={props.app.resources.nodes[node().type].render} app={props.app} node={node()} id={nodeId} />
+              </Show>
+            )
+          }}
+        </For>
         <Entries of={props.app.state.viewportElements}>
           {(_, element) => (
             <Dynamic component={element()} app={props.app} />
