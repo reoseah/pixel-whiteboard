@@ -15,7 +15,7 @@ export const NumberInput = (props: {
 }) => {
   return (
     <label
-      class="number-input-container"
+        class={`number-input-container ${props.class ?? ''}`}
       title={props.title}
     >
       <Show when={props.icon}>
@@ -25,7 +25,7 @@ export const NumberInput = (props: {
       </Show>
       <input
         type="number"
-        class={`number-input ${props.class ?? ''}`}
+        class="number-input"
         value={props.value}
         min={props.min}
         max={props.max}

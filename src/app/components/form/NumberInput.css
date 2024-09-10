@@ -4,7 +4,6 @@
   display: flex;
   border-radius: .25rem;
   background: var(--neutral-750);
-  width: min-content;
   cursor: text;
   padding-inline: .25rem;
   gap: .25rem;

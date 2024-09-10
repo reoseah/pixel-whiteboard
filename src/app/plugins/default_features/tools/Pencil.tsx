@@ -158,14 +158,15 @@ export const Pencil = (): Tool => {
               step={1}
               icon={<StrokeWidthIcon />}
               title="Stroke width"
+              class={"w-3.5rem"}
             />
 
             <InputGroup>
               <CustomSelect
+                class={"w-5.5rem"}
                 value={modeNames[mode()]}
                 onChange={value => setMode(value as Mode)}
                 icon={<DropIcon />}
-                class={"w-5.5rem"}
               >
                 {(close) => (
                   <For each={modeGroups}>{(group, idx) => (
@@ -179,7 +180,6 @@ export const Pencil = (): Tool => {
                               setMode(m)
                               close()
                             }}
-                            // TODO: enable once implemented
                             disabled={m !== "normal"}
                             title={m !== "normal" ? "Not implemented yet" : undefined}
                           >
@@ -196,6 +196,7 @@ export const Pencil = (): Tool => {
                 )}
               </CustomSelect>
               <NumberInput
+                class={"w-3rem"}
                 value={opacity()}
                 onChange={value => setOpacity(value)}
                 title="Not implemented yet"
@@ -203,8 +204,7 @@ export const Pencil = (): Tool => {
                 max={100}
                 step={1}
                 size={3}
-                unit={'%'}
-                class={"w-1.5rem"} />
+                unit={'%'} />
             </InputGroup>
           </SubToolbar>
         )
