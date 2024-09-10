@@ -6,7 +6,7 @@ export type CanvasActionData = {
 export type CanvasAction<T extends CanvasActionData = any> = {
   getBounds: (action: T) => { left: number, top: number, right: number, bottom: number }
   draw: (action: T, helper: VirtualCanvas) => void,
-  handleReplacement?: (oldAction: T, newAction: T, helper: VirtualCanvas) => void
+  handleReplacement?: (oldAction: T, newAction: T, helper: VirtualCanvas) => boolean
 }
 
 export type VirtualCanvas = {

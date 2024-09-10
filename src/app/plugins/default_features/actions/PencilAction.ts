@@ -1,4 +1,4 @@
-import { CanvasAction, getPointsOnPath } from "../../../api"
+import { CanvasAction, getPointsOnPath, VirtualCanvas } from "../../../api"
 
 export type PencilAction = {
   type: "pencil"
@@ -19,11 +19,15 @@ export const PencilActionType: CanvasAction<PencilAction> = {
   },
   draw: (action, helper) => {
     if (action.points.length === 1) {
-      for (let x = Math.round(action.points[0].x - action.size / 2); x < action.points[0].x + action.size / 2; x++) {
-        for (let y = Math.round(action.points[0].y - action.size / 2); y < action.points[0].y + action.size / 2; y++) {
+      const { x, y } = action.points[0]
+
+      const visited = new Map<number, Set<number>>()
+      drawShape(action.shape, action.size, x, y, visited)
+      visited.forEach((set, x) => {
+        set.forEach((y) => {
           helper.set(x, y, 0xffffffff)
-        }
-      }
+        })
+      })
       return
     }
 
@@ -31,20 +35,12 @@ export const PencilActionType: CanvasAction<PencilAction> = {
 
     const visited = new Map<number, Set<number>>()
     getPointsOnPath(action.points, interval).forEach((point) => {
-      for (let x = Math.round(point.x - size / 2); x < point.x + size / 2; x++) {
-        for (let y = Math.round(point.y - size / 2); y < point.y + size / 2; y++) {
-          const filled = shape === "circle" && Math.hypot(x - point.x, y - point.y) < size / 2 || shape === "square"
-          if (filled) {
-            if (!visited.has(x)) {
-              visited.set(x, new Set())
-            } else if (visited.get(x)!.has(y)) {
-              continue
-            }
-            helper.set(x, y, 0xffffffff)
-            visited.get(x)!.add(y)
-          }
-        }
-      }
+      drawShape(shape, size, point.x, point.y, visited)
+    })
+    visited.forEach((set, x) => {
+      set.forEach((y) => {
+        helper.set(x, y, 0xffffffff)
+      })
     })
   },
   handleReplacement: (oldAction, newAction, helper) => {
@@ -54,22 +50,42 @@ export const PencilActionType: CanvasAction<PencilAction> = {
 
       const visited = new Map<number, Set<number>>()
       getPointsOnPath([prev, last], interval).forEach((point) => {
-        for (let x = Math.round(point.x - newAction.size / 2); x < point.x + newAction.size / 2; x++) {
-          for (let y = Math.round(point.y - newAction.size / 2); y < point.y + newAction.size / 2; y++) {
-            const filled = newAction.shape === "circle" && Math.hypot(x - point.x, y - point.y) < newAction.size / 2 || newAction.shape === "square"
-            if (filled) {
-              if (!visited.has(x)) {
-                visited.set(x, new Set())
-              } else if (visited.get(x)!.has(y)) {
-                continue
-              }
-              helper.set(x, y, 0xffffffff)
-              visited.get(x)!.add(y)
-            }
-          }
-        }
+        drawShape(newAction.shape, newAction.size, point.x, point.y, visited)
       })
-      return
+      visited.forEach((set, x) => {
+        set.forEach((y) => {
+          helper.set(x, y, 0xffffffff)
+        })
+      })
+      return true
+    }
+    return false
+  }
+}
+
+const drawShape = (shape: "circle" | "square", size: number, x: number, y: number, visited: Map<number, Set<number>>) => {
+  const minX = x - Math.floor(size / 2)
+  const minY = y - Math.floor(size / 2)
+  const maxX = x + Math.ceil(size / 2)
+  const maxY = y + Math.ceil(size / 2)
+
+  const cx = (size % 2 === 0) ? x - 0.5 : x
+  const cy = (size % 2 === 0) ? y - 0.5 : y
+
+  for (let ix = minX; ix < maxX; ix++) {
+    for (let iy = minY; iy < maxY; iy++) {
+      if (shape === "circle") {
+        if (Math.hypot(ix - cx, iy - cy) > size / 2) {
+          continue
+        }
+      }
+      if (!visited.has(ix)) {
+        visited.set(ix, new Set())
+      } else if (visited.get(ix)!.has(iy)) {
+        continue
+      }
+      // canvas.set(ix, iy, 0xffffffff)
+      visited.get(ix)!.add(iy)
     }
   }
 }

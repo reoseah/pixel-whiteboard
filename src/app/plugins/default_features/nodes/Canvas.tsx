@@ -97,8 +97,9 @@ export const CanvasComponent = (props: {
       const type = props.app.resources.actions[newAction.type]
       if (type.handleReplacement) {
         const helper = new VirtualCanvasImpl(tileSize, containerRef, canvasRefs, contexts, props.app)
-        type.handleReplacement(oldAction, newAction, helper)
-        return
+        if (type.handleReplacement(oldAction, newAction, helper)) {
+          return
+        }
       }
     }
 

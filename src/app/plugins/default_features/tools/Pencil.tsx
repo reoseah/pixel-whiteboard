@@ -103,6 +103,12 @@ export const Pencil = (): Tool => {
     setDrawingState(null)
   }
 
+  const handleWheel = (e: WheelEvent) => {
+    e.preventDefault()
+    const newValue = size() - Math.sign(e.deltaY)
+    setSize(Math.max(1, Math.min(100, newValue)))
+  }
+
   return {
     id: "pencil",
     label: "Pencil",
@@ -114,6 +120,7 @@ export const Pencil = (): Tool => {
       document.addEventListener("mousedown", handleMouseDown)
       document.addEventListener("mousemove", handleMouseMove)
       document.addEventListener("mouseup", handleMouseUp)
+      document.addEventListener("wheel", handleWheel)
 
       app.state.setSubToolbar(() => () => {
         return (
@@ -207,6 +214,7 @@ export const Pencil = (): Tool => {
       document.removeEventListener("mousedown", handleMouseDown)
       document.removeEventListener("mousemove", handleMouseMove)
       document.removeEventListener("mouseup", handleMouseUp)
+      document.removeEventListener("wheel", handleWheel)
 
       app.state.setSubToolbar(undefined)
     }
