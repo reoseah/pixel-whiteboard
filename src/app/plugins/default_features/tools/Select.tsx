@@ -1,6 +1,6 @@
 import './Select.css'
 import { Tool, Application, getCanvasX, getCanvasY, containsRectangle } from "../../../api"
-import { CursorIcon } from "../components/icons"
+import { CursorIcon } from "../../../components/form/icons"
 import { batch, createSignal } from "solid-js"
 
 export const Select = (): Tool => {

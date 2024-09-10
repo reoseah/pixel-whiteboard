@@ -4,7 +4,7 @@ import { createMemo, createSignal, For, type JSX, onCleanup, Show } from "solid-
 import { Dynamic } from "solid-js/web"
 import { Application, Command, stringifyKeybind, Tool } from "../../../api"
 import useClickOutside from "../../../hooks/useClickOutside"
-import { CommandIcon, SearchIcon } from "../components/icons"
+import { CommandIcon, SearchIcon } from "../../../components/form/icons"
 
 export const CommandPalette = (): Tool => {
   return {

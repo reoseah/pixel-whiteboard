@@ -58,3 +58,5 @@ export const NumberInput = (props: {
     </label>
   )
 }
+
+export default NumberInput

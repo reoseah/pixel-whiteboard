@@ -1,7 +1,7 @@
 import "./CreateFrame.css"
 import { createSignal, batch } from "solid-js"
 import { Tool, Application, getCanvasX, getCanvasY } from "../../../api"
-import { FrameIcon } from "../components/icons"
+import { FrameIcon } from "../../../components/form/icons"
 
 export const CreateFrame = (): Tool => {
   const [x1, setX1] = createSignal(0)

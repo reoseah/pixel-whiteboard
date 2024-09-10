@@ -133,3 +133,27 @@ export function StrokeWidthIcon() {
     </svg>
   )
 }
+
+export function DropIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M2.5 9.49919V9C2.5 7 5 4 7.5 1.5C10 4 12.5 7 12.5 9V9.49919C12.5 12.2606 10.2614 14.5 7.5 14.5C4.73858 14.5 2.5 12.2606 2.5 9.49919Z" stroke="currentColor" />
+    </svg>
+  )
+}
+
+export function CheckIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M3.5 8.5L6.29289 11.2929C6.68342 11.6834 7.31658 11.6834 7.70711 11.2929L14.5 4.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  )
+}
+
+export function ChevronDownIcon() {
+  return (
+      <svg width="7" height="4" viewBox="0 0 7 4" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0.5 0.5L3.5 3.5L6.5 0.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+  )
+}

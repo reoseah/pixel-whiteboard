@@ -1,17 +1,34 @@
 import "./Pencil.css"
-import { createSignal } from "solid-js"
+import { createSignal, For, Show } from "solid-js"
 import { Tool, Application, floorComponents, getNodePosition } from "../../../api"
 import { PencilAction } from "../actions"
-import { CircleIcon, PencilIcon, SelectionCrosshairIcon, SquareIcon, StrokeWidthIcon } from "../components/icons"
+import { CircleIcon, DropIcon, PencilIcon, SelectionCrosshairIcon, SquareIcon, StrokeWidthIcon } from "../../../components/form/icons"
 import SubToolbar from "../../../components/SubToolbar"
-import ToggleButton from "../../../components/ToggleButton"
-import InputGroup from "../../../components/InputGroup"
-import { NumberInput } from "../../../components/NumberInput"
+import ToggleButton from "../../../components/form/ToggleButton"
+import InputGroup from "../../../components/form/InputGroup"
+import NumberInput from "../../../components/form/NumberInput"
+import { CustomOption, CustomSelect, OptionDivider } from "../../../components/form/CustomSelect"
 
 type DrawingState = {
   nodeId: string,
   action: PencilAction,
 }
+
+export type Mode = keyof typeof modeNames
+
+const modeNames = {
+  normal: 'Normal',
+  darker: 'Darker',
+  multiply: 'Multiply',
+  lighter: 'Lighter',
+  screen: 'Screen',
+} as const
+
+const modeGroups = [
+  ['normal'],
+  ['darker', 'multiply'],
+  ['lighter', 'screen'],
+] as const
 
 export const Pencil = (): Tool => {
   let app!: Application
@@ -22,6 +39,8 @@ export const Pencil = (): Tool => {
   const [autoSelect, setAutoSelect] = createSignal(true)
   const [shape, setShape] = createSignal<'circle' | 'square'>('circle')
   const [size, setSize] = createSignal(1)
+  const [mode, setMode] = createSignal<Mode>('normal')
+  const [opacity, setOpacity] = createSignal(100)
 
   const handleMouseDown = (e: MouseEvent) => {
     if (!(e.target as Element)?.closest(".workspace-view")) {
@@ -131,7 +150,52 @@ export const Pencil = (): Tool => {
               icon={<StrokeWidthIcon />}
               tooltip="Stroke width"
             />
-          </SubToolbar>
+
+            <InputGroup>
+              <CustomSelect
+                value={modeNames[mode()]}
+                onChange={value => setMode(value as Mode)}
+                icon={<DropIcon />}
+                class={"w-5.5rem"}
+              >
+                {(close) => (
+                  <For each={modeGroups}>{(group, idx) => (
+                    <>
+                      <For each={group}>
+                        {m => (
+                          <CustomOption
+                            value={modeNames[m]}
+                            selected={m === mode()}
+                            onClick={() => {
+                              setMode(m)
+                              close()
+                            }}
+                            // TODO: enable once implemented
+                            disabled={m !== "normal"}
+                          >
+                            {modeNames[m]}
+                          </CustomOption>
+                        )}
+                      </For>
+                      <Show when={idx() != modeGroups.length - 1}>
+                        <OptionDivider />
+                      </Show>
+                    </>
+                  )}
+                  </For>
+                )}
+              </CustomSelect>
+              <NumberInput
+                value={opacity()}
+                onChange={value => setOpacity(value)}
+                min={0}
+                max={100}
+                step={1}
+                size={3}
+                unit={'%'}
+                class={"w-1.5rem"} />
+            </InputGroup>
+          </SubToolbar >
         )
       })
     },
