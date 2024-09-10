@@ -2,6 +2,7 @@ import { Plugin, ResourceBuilder, Tool } from '../../api'
 import { CommandPalette, CreateFrame, Pencil, Select } from './tools'
 import { DeleteSelected, InvertSelection, ResetZoom, SelectAll, ZoomIn, ZoomOut, createSelectToolCommand } from './commands'
 import { CanvasType, FrameType } from './nodes'
+import { PencilActionType } from './actions'
 
 export const DefaultFeaturesPlugin: Plugin = {
   id: 'default_features',
@@ -26,6 +27,8 @@ export const DefaultFeaturesPlugin: Plugin = {
 
     builder.addNodeType('frame', FrameType)
     builder.addNodeType('canvas', CanvasType)
+
+    builder.addActionType('pencil', PencilActionType)
   }
 }
 

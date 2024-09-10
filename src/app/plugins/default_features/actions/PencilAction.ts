@@ -1,14 +1,8 @@
-import { CanvasAction, getPointsOnPath } from "../../api";
+import { CanvasAction, getPointsOnPath } from "../../../api"
 
 export type PencilAction = {
   type: "pencil"
   points: Array<{ x: number, y: number }>
-}
-
-export const getUniquePoints = (points: Array<{ column: number, row: number }>): Array<{ column: number, row: number }> => {
-  return points.filter((point, index, self) =>
-    index === self.findIndex((p) => p.column === point.column && p.row === point.row)
-  )
 }
 
 export const PencilActionType: CanvasAction<PencilAction> = {
@@ -43,6 +37,8 @@ export const PencilActionType: CanvasAction<PencilAction> = {
   }
 }
 
-export const actionTypes: Record<string, CanvasAction<any>> = {
-  'pencil': PencilActionType
+export const getUniquePoints = (points: Array<{ column: number, row: number }>): Array<{ column: number, row: number }> => {
+  return points.filter((point, index, self) =>
+    index === self.findIndex((p) => p.column === point.column && p.row === point.row)
+  )
 }

@@ -5,7 +5,7 @@ import { createStore } from 'solid-js/store'
 import { Dynamic } from 'solid-js/web';
 import * as Y from "yjs"
 import { IndexeddbPersistence } from 'y-indexeddb';
-import { Application, Command, findNextZoom, findPreviousZoom, NodeType, Plugin, NodeData, ProjectState, Resources, Tool } from './api'
+import { Application, Command, findNextZoom, findPreviousZoom, NodeType, Plugin, NodeData, ProjectState, Resources, Tool, CanvasAction } from './api'
 import DefaultFeaturesPlugin from './plugins/default_features';
 import Toolbar from './components/Toolbar';
 import Viewport from './components/Viewport';
@@ -96,18 +96,21 @@ export default App
 function useResources(plugins: Plugin[]): Resources {
   let tools: Record<string, Tool> = {}
   let commands: Command[] = []
-  let nodeTypes: Record<string, NodeType<any>> = {}
+  let nodeTypes: Record<string, NodeType> = {}
+  let actions: Record<string, CanvasAction> = {}
 
   plugins.forEach(plugin => plugin.initialize({
     addTool: tool => tools[tool.id] = tool,
     addCommand: command => commands.push(command),
-    addNodeType: (type, nodeType) => nodeTypes[type] = nodeType
+    addNodeType: (type, nodeType) => nodeTypes[type] = nodeType,
+    addActionType: (type, action) => actions[type] = action
   }))
 
   return {
     tools: Object.freeze(tools),
     commands: Object.freeze(commands),
-    nodes: Object.freeze(nodeTypes)
+    nodes: Object.freeze(nodeTypes),
+    actions: Object.freeze(actions)
   }
 }
 

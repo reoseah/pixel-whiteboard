@@ -1,10 +1,11 @@
 import { Component } from "solid-js";
-import { Application, Keybind, NodeType, NodeData } from ".";
+import { Application, Keybind, NodeType, NodeData, CanvasAction } from ".";
 
 export type Resources = {
   readonly tools: Readonly<Record<string, Tool>>
   readonly commands: readonly Command[]
-  readonly nodes: Readonly<Record<string, NodeType<any>>>
+  readonly nodes: Readonly<Record<string, NodeType>>
+  readonly actions: Readonly<Record<string, CanvasAction>>
 }
 
 export type Plugin = {
@@ -17,6 +18,7 @@ export type ResourceBuilder = {
   addTool: (tool: Tool) => void
   addCommand: (command: Command) => void
   addNodeType: <T extends NodeData>(type: string, nodeType: NodeType<T>) => void
+  addActionType: (type: string, action: CanvasAction) => void
 }
 
 export type Tool = {
