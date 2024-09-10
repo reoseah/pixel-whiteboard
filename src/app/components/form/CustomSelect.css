@@ -22,7 +22,6 @@
 }
 
 .custom-select-value {
-  padding-top: 0.0625rem;
   display: flex;
   align-items: center;
   flex: 1;
@@ -33,7 +32,6 @@
   justify-content: center;
   align-items: center;
   color: var(--neutral-400);
-  padding-top: 0.0625rem;
 }
 
 .custom-select-options {

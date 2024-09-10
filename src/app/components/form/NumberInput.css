@@ -28,7 +28,6 @@
 }
 
 .number-input-unit {
-  padding-top: 0.0625rem;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -37,7 +36,6 @@
 
 .number-input {
   display: flex;
-  padding-top: 0.0625rem;
   border: none;
   background: transparent;
   outline: none;
