@@ -1,61 +1,61 @@
 .toolbar {
-    background: var(--neutral-825);
-    border-radius: .375rem;
-    border: .0625rem solid var(--neutral-750);
-    padding: .1875rem;
+  background: var(--neutral-825);
+  border-radius: .375rem;
+  border: .0625rem solid var(--neutral-750);
+  padding: .1875rem;
 }
 
 .toolbar-layout {
-    display: grid;
-    grid-auto-flow: column;
-    gap: .25rem;
+  display: grid;
+  grid-auto-flow: column;
+  gap: .25rem;
 }
 
 .toolbar-button {
-    appearance: none;
-    border: none;
-    background: none;
+  appearance: none;
+  border: none;
+  background: none;
 
-    display: grid;
-    place-content: center;
-    grid-auto-flow: column;
-    position: relative;
+  display: grid;
+  place-content: center;
+  grid-auto-flow: column;
+  position: relative;
 
-    min-width: 1.75rem;
-    min-height: 1.75rem;
-    border-radius: .25rem;
-    color: var(--neutral-200);
-    transition: background-color .1s;
+  min-width: 1.75rem;
+  min-height: 1.75rem;
+  border-radius: .25rem;
+  color: var(--neutral-200);
+  transition: background-color .1s;
 
-    &:hover {
-        background-color: var(--neutral-750);
-        color: var(--neutral-100);
-    }
+  &:hover {
+    background-color: var(--neutral-750);
+    color: var(--neutral-100);
+  }
 
-    &:active {
-        background-color: var(--neutral-700);
-    }
+  &:active {
+    background-color: var(--neutral-700);
+  }
 
-    &:focus-visible {
-        outline: none;
-        background-color: var(--infused-700);
-    }
+  &:focus-visible {
+    outline: none;
+    background-color: var(--infused-700);
+  }
 
-    &[aria-pressed="true"] {
-        background-color: var(--primary-600);
-        color: var(--primary-100);
-    }
+  &[aria-pressed="true"] {
+    background-color: var(--primary-600);
+    color: var(--primary-100);
+  }
 }
 
 .toolbar-button-hint {
-    position: absolute;
-    right: .1875rem;
-    bottom: .1875rem;
-    font-size: .625rem;
-    line-height: 1;
-    color: var(--neutral-400);
+  position: absolute;
+  right: .1875rem;
+  bottom: .1875rem;
+  font-size: .625rem;
+  line-height: 1;
+  color: var(--neutral-400);
 
-    .toolbar-button[aria-pressed="true"] & {
-        color: var(--infused-400);
-    }
+  .toolbar-button[aria-pressed="true"] & {
+    color: var(--infused-400);
+  }
 }

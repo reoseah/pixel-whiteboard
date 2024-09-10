@@ -1,11 +1,11 @@
 .sub-toolbar {
-    position: relative;
-    display: flex;
-    width: fit-content;
-    margin-inline: auto;
-    padding: .1875rem;
-    border-radius: .375rem;
-    gap: .25rem;
-    background: var(--neutral-825);
-    border: 1px solid var(--neutral-750);
+  position: relative;
+  display: flex;
+  width: fit-content;
+  margin-inline: auto;
+  padding: .1875rem;
+  border-radius: .375rem;
+  gap: .25rem;
+  background: var(--neutral-825);
+  border: 1px solid var(--neutral-750);
 }

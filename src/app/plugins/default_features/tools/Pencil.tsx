@@ -128,9 +128,9 @@ export const Pencil = (): Tool => {
               min={1}
               max={100}
               step={1}
-              icon={<StrokeWidthIcon />} 
+              icon={<StrokeWidthIcon />}
               tooltip="Stroke width"
-              />
+            />
           </SubToolbar>
         )
       })

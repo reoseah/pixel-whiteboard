@@ -1,16 +1,16 @@
 .frame-preview {
-    position: absolute;
-    outline: 1px solid var(--primary-400);
-    z-index: 150;
+  position: absolute;
+  outline: 1px solid var(--primary-400);
+  z-index: 150;
 }
 
 .frame-preview-dimensions {
-    position: absolute;
-    padding: .25rem .5rem;
-    border-radius: .25rem;
-    background: var(--primary-600);
-    color: white;
-    font-size: .75rem;
-    white-space: nowrap;
-    z-index: 150;
+  position: absolute;
+  padding: .25rem .5rem;
+  border-radius: .25rem;
+  background: var(--primary-600);
+  color: white;
+  font-size: .75rem;
+  white-space: nowrap;
+  z-index: 150;
 }

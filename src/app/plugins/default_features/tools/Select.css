@@ -1,5 +1,5 @@
 .selection-box {
-    position: absolute;
-    outline: 1px solid var(--primary-500);
-    background: var(--primary-500\/20);
+  position: absolute;
+  outline: 1px solid var(--primary-500);
+  background: var(--primary-500\/20);
 }
