@@ -1,5 +1,7 @@
-.whiteboard {
-    &[data-highlighted] {
-        border: 1px solid red;
-    }
+.workspace-view:has(.whiteboard[data-highlighted="true"]:not([data-selected="true"]))::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border: 1px solid var(--primary-500);
 }

@@ -1,5 +1,5 @@
 import "./Pencil.css"
-import { createSignal, For, Show } from "solid-js"
+import { createEffect, createSignal, For, Show } from "solid-js"
 import { Tool, Application, floorComponents, getNodePosition } from "../../../api"
 import { PencilAction } from "../actions"
 import { CircleIcon, DropIcon, PencilIcon, SelectionCrosshairIcon, SquareIcon, StrokeWidthIcon } from "../../../components/form/icons"
@@ -41,6 +41,12 @@ export const Pencil = (): Tool => {
   const [size, setSize] = createSignal(1)
   const [mode, setMode] = createSignal<Mode>('normal')
   const [opacity, setOpacity] = createSignal(100)
+
+  createEffect(() => {
+    if (!autoSelect() && app) {
+      app.state.setHighlightedNodes([])
+    }
+  })
 
   const handleMouseDown = (e: MouseEvent) => {
     if (!(e.target as Element)?.closest(".workspace-view")) {

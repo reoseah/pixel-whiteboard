@@ -1,3 +1,4 @@
+import "./Whiteboard.css"
 import { Dynamic, Show } from "solid-js/web"
 import { Application, CanvasActionData, NodeType } from "../../../api"
 import { Canvas, CanvasType } from "./Canvas"
@@ -13,7 +14,6 @@ export const WhiteboardType: NodeType<Whiteboard> = {
     const child = () => props.node.children[0] ? props.app.project.nodes[props.node.children[0]] : undefined
     const selected = () => props.app.project.selectedNodes().includes(props.id)
     
-
     return (
       <div
         class="whiteboard"
