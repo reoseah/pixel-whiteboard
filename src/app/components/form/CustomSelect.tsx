@@ -1,6 +1,6 @@
 import "./CustomSelect.css"
 import { createSignal, onCleanup, Show, JSX } from "solid-js"
-import { CheckIcon, ChevronDownIcon } from "./icons"
+import { CheckIcon, ChevronDownIcon } from "../icons"
 
 export const CustomSelect = (props: {
   value: string

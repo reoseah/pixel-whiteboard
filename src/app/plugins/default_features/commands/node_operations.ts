@@ -1,6 +1,6 @@
 import { produce } from "solid-js/store"
 import { Command } from "../../../api"
-import { DeleteIcon, SelectionCrosshairIcon } from "../../../components/form/icons"
+import { DeleteIcon, SelectionCrosshairIcon } from "../../../components/icons"
 
 export const SelectAll: Command = {
   label: "Select all",

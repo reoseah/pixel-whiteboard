@@ -1,5 +1,5 @@
 import { Command, findNextZoom, findPreviousZoom } from "../../../api";
-import { ResetZoomIcon, ZoomInIcon, ZoomOutIcon } from "../../../components/form/icons";
+import { ResetZoomIcon, ZoomInIcon, ZoomOutIcon } from "../../../components/icons";
 
 export const ZoomIn: Command = {
   label: "Zoom in",

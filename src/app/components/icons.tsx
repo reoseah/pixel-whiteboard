@@ -43,6 +43,14 @@ export function CommandIcon() {
   )
 }
 
+export function SelectionIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M1.5 3.5V1.5H3.5M6.5 1.5H8.5M11.5 1.5H13.5V3.5M13.5 6.5V8.5M13.5 11.5V13.5H11.5M8.5 13.5H6.5M3.5 13.5H1.5V11.5M1.5 8.5V6.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  )
+}
+
 export function SelectionCrosshairIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -152,8 +160,8 @@ export function CheckIcon() {
 
 export function ChevronDownIcon() {
   return (
-      <svg width="7" height="4" viewBox="0 0 7 4" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M0.5 0.5L3.5 3.5L6.5 0.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
-      </svg>
+    <svg width="7" height="4" viewBox="0 0 7 4" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0.5 0.5L3.5 3.5L6.5 0.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
   )
 }
