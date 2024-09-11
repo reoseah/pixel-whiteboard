@@ -8,4 +8,5 @@
 
 .pixel-grid {
   position: absolute;
+  pointer-events: none;
 }

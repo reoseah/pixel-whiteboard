@@ -4,6 +4,7 @@ import { DeleteSelected, InvertSelection, ResetZoom, SelectAll, ZoomIn, ZoomOut,
 import { CanvasType, FrameType } from './nodes'
 import { PencilActionType } from './actions'
 import { WhiteboardType } from './nodes/Whiteboard'
+import { RectangleSelection } from './tools/RectangleSelection'
 
 export const DefaultFeaturesPlugin: Plugin = {
   id: 'default_features',
@@ -12,6 +13,7 @@ export const DefaultFeaturesPlugin: Plugin = {
     const defaultTools: Tool[] = [
       Select(),
       Pencil(),
+      RectangleSelection(),
       CreateFrame(),
       CommandPalette(),
     ]

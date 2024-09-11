@@ -1,6 +1,6 @@
 import "./Viewport.css"
 import { createMemo, createSignal, For, Show } from "solid-js"
-import { Application } from "../api"
+import { Application, Selection } from "../api"
 import { Dynamic } from "solid-js/web"
 import { Entries } from "@solid-primitives/keyed"
 
@@ -104,6 +104,45 @@ export function Viewport(props: { app: Application }) {
             )
           }}
         </For>
+        <Show when={props.app.state.selection().length}>
+          {(_) => {
+            const minX = () => Math.min(...props.app.state.selection().map((s: Selection) => s.x))
+            const minY = () => Math.min(...props.app.state.selection().map((s: Selection) => s.y))
+            const maxX = () => Math.max(...props.app.state.selection().map((s: Selection) => s.x + s.width))
+            const maxY = () => Math.max(...props.app.state.selection().map((s: Selection) => s.y + s.height))
+
+            return (
+              <svg
+                width={(maxX() - minX()) * props.app.state.viewportZoom() + 1}
+                height={(maxY() - minY()) * props.app.state.viewportZoom() + 1}
+                fill="none"
+                style={{
+                  position: "absolute",
+                  left: `${minX() * props.app.state.viewportZoom()}px`,
+                  top: `${minY() * props.app.state.viewportZoom()}px`,
+                  "pointer-events": "none",
+                }}
+              >
+                <For each={props.app.state.selection()}>
+                  {(selection) => (
+                    <rect
+                      x={(selection.x - minX()) * props.app.state.viewportZoom() + .5}
+                      y={(selection.y - minY()) * props.app.state.viewportZoom() + .5}
+                      width={selection.width * props.app.state.viewportZoom()}
+                      height={selection.height * props.app.state.viewportZoom()}
+                      stroke="white"
+                      stroke-width="1"
+                      stroke-dasharray="3 3"
+                      stroke-dashoffset="0"
+                    >
+                      <animate attributeName="stroke-dashoffset" from="0" to="6" dur=".5s" repeatCount="indefinite" />
+                    </rect>
+                  )}
+                </For>
+              </svg>
+            )
+          }}
+        </Show>
         <Entries of={props.app.state.viewportElements}>
           {(_, element) => (
             <Dynamic component={element()} app={props.app} />

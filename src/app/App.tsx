@@ -4,8 +4,7 @@ import { Component, createMemo, createSignal, onCleanup, Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { Dynamic } from 'solid-js/web';
 import * as Y from "yjs"
-import { IndexeddbPersistence } from 'y-indexeddb';
-import { Application, Command, findNextZoom, findPreviousZoom, NodeType, Plugin, NodeData, ProjectState, Resources, Tool, CanvasAction } from './api'
+import { Application, Command, findNextZoom, findPreviousZoom, NodeType, Plugin, NodeData, ProjectState, Resources, Tool, CanvasAction, Selection } from './api'
 import DefaultFeaturesPlugin from './plugins/default_features';
 import Toolbar from './components/Toolbar';
 import Viewport from './components/Viewport';
@@ -43,8 +42,10 @@ function App() {
   const [titleBeingEdited, setTitleBeingEdited] = createSignal<string | null>(null)
   const [highlightedNodes, setHighlightedNodes] = createSignal<string[]>([])
 
+  const [selection, setSelection] = createSignal<Selection[]>([])
+
   const ydoc = new Y.Doc()
-  new IndexeddbPersistence('pixel-art-editor', ydoc)
+  // new IndexeddbPersistence('pixel-art-editor', ydoc)
 
   const app: Application = {
     resources,
@@ -68,6 +69,8 @@ function App() {
       setTitleBeingEdited,
       highlightedNodes,
       setHighlightedNodes,
+      selection,
+      setSelection,
       ctrlHeld,
       shiftHeld,
       spaceHeld

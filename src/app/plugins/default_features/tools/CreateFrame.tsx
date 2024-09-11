@@ -1,6 +1,6 @@
 import "./CreateFrame.css"
 import { createSignal, batch } from "solid-js"
-import { Tool, Application, getCanvasX, getCanvasY } from "../../../api"
+import { Tool, Application, getCanvasX, getCanvasY, isViewportClick } from "../../../api"
 import { FrameIcon } from "../../../components/icons"
 
 export const CreateFrame = (): Tool => {
@@ -15,11 +15,8 @@ export const CreateFrame = (): Tool => {
   const height = () => Math.abs(y2() - y1())
 
   const createMouseDown = (app: Application) => (e: MouseEvent) => {
-    if (!(e.target as Element)?.closest(".viewport")) {
-      return
-    }
-    if (e.button !== 0) {
-      return
+    if (!isViewportClick(e)) {
+      return false
     }
 
     e.preventDefault()
@@ -59,14 +56,18 @@ export const CreateFrame = (): Tool => {
       })
     })
 
-    const handleMove = (e: MouseEvent) => {
+    const handleMouseMove = (e: MouseEvent) => {
       setX2(Math.round(getCanvasX(app, e.clientX)))
       setY2(Math.round(getCanvasY(app, e.clientY)))
     }
 
-    const handleRelease = (e: MouseEvent) => {
-      document.removeEventListener("mousemove", handleMove)
-      document.removeEventListener("mouseup", handleRelease)
+    const handleMouseUp = (e: MouseEvent) => {
+      if (!isViewportClick(e)) {
+        return false
+      }
+
+      document.removeEventListener("mousemove", handleMouseMove)
+      document.removeEventListener("mouseup", handleMouseUp)
 
       const x = Math.round(getCanvasX(app, e.clientX))
       const y = Math.round(getCanvasY(app, e.clientY))
@@ -108,8 +109,8 @@ export const CreateFrame = (): Tool => {
 
     }
 
-    document.addEventListener("mousemove", handleMove)
-    document.addEventListener("mouseup", handleRelease)
+    document.addEventListener("mousemove", handleMouseMove)
+    document.addEventListener("mouseup", handleMouseUp)
   }
 
   let handleMouseDown: ((e: MouseEvent) => void) | undefined

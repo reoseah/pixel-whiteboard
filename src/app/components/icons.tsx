@@ -46,17 +46,26 @@ export function CommandIcon() {
 export function SelectionIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M1.5 3.5V1.5H3.5M6.5 1.5H8.5M11.5 1.5H13.5V3.5M13.5 6.5V8.5M13.5 11.5V13.5H11.5M8.5 13.5H6.5M3.5 13.5H1.5V11.5M1.5 8.5V6.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M1.5 4.5V2.5H3.5M6.5 2.5H8.5M11.5 2.5H13.5V4.5M13.5 7.5V9.5M13.5 12.5V14.5H11.5M8.5 14.5H6.5M3.5 14.5H1.5V12.5M1.5 9.5V7.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
     </svg>
   )
 }
 
-export function SelectionCrosshairIcon() {
+// export function SelectionCrosshairIcon() {
+//   return (
+//     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+//       <circle cx="7.5" cy="7.5" r="0.5" fill="currentColor" />
+//       <path d="M0.5 3.5V0.5H3.5M6.5 0.5H8.5M11.5 0.5H14.5V3.5M14.5 6.5V8.5M14.5 11.5V14.5H11.5M8.5 14.5H6.5M3.5 14.5H0.5V11.5M0.5 8.5V6.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
+//       <path d="M10.5 7.50002C10.5 9.15687 9.15686 10.5 7.5 10.5M10.5 7.50002C10.5 5.84316 9.15686 4.50002 7.5 4.50002M10.5 7.50002L12.5 7.5M7.5 10.5C5.84315 10.5 4.5 9.15687 4.5 7.50002M7.5 10.5V12.5M4.5 7.50002C4.5 5.84316 5.84315 4.50002 7.5 4.50002M4.5 7.50002L2.5 7.5M7.5 4.50002V2.5" stroke="currentColor" stroke-linecap="round" />
+//     </svg>
+//   )
+// }
+
+export function LayersCrosshairIcon() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <circle cx="7.5" cy="7.5" r="0.5" fill="currentColor" />
-      <path d="M0.5 3.5V0.5H3.5M6.5 0.5H8.5M11.5 0.5H14.5V3.5M14.5 6.5V8.5M14.5 11.5V14.5H11.5M8.5 14.5H6.5M3.5 14.5H0.5V11.5M0.5 8.5V6.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" />
-      <path d="M10.5 7.50002C10.5 9.15687 9.15686 10.5 7.5 10.5M10.5 7.50002C10.5 5.84316 9.15686 4.50002 7.5 4.50002M10.5 7.50002L12.5 7.5M7.5 10.5C5.84315 10.5 4.5 9.15687 4.5 7.50002M7.5 10.5V12.5M4.5 7.50002C4.5 5.84316 5.84315 4.50002 7.5 4.50002M4.5 7.50002L2.5 7.5M7.5 4.50002V2.5" stroke="currentColor" stroke-linecap="round" />
+      <path d="M1.5 8L4 9.15385M1.5 11.5L8 14.5M12.5 5.7L14.3394 4.96424C14.7585 4.79661 14.7585 4.20339 14.3394 4.03576L8.37139 1.64856C8.13298 1.55319 7.86702 1.55319 7.62861 1.64856L1.6606 4.03576C1.24152 4.20339 1.24152 4.79661 1.66059 4.96424L6.5 6.9M13.5 10.5C13.5 12.1569 12.1569 13.5 10.5 13.5M13.5 10.5C13.5 8.84316 12.1569 7.50002 10.5 7.50002M13.5 10.5L15.5 10.5M10.5 13.5C8.84315 13.5 7.5 12.1569 7.5 10.5M10.5 13.5V15.5M7.5 10.5C7.5 8.84316 8.84315 7.50002 10.5 7.50002M7.5 10.5L5.5 10.5M10.5 7.50002V5.5" stroke="white" stroke-linecap="round" />
+      <circle cx="10.5" cy="10.5" r="0.5" fill="currentColor" />
     </svg>
   )
 }

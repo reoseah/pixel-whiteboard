@@ -1,8 +1,8 @@
 import "./Pencil.css"
 import { createEffect, createSignal, For, Show } from "solid-js"
-import { Tool, Application, floorComponents, getNodePosition } from "../../../api"
+import { Tool, Application, floorComponents, getNodePosition, isViewportClick } from "../../../api"
 import { PencilAction } from "../actions"
-import { CircleIcon, DropIcon, PencilIcon, SelectionCrosshairIcon, SquareIcon, StrokeWidthIcon } from "../../../components/icons"
+import { CircleIcon, DropIcon, LayersCrosshairIcon, PencilIcon, SquareIcon, StrokeWidthIcon } from "../../../components/icons"
 import SubToolbar from "../../../components/SubToolbar"
 import ToggleButton from "../../../components/form/ToggleButton"
 import InputGroup from "../../../components/form/InputGroup"
@@ -49,10 +49,7 @@ export const Pencil = (): Tool => {
   })
 
   const handleMouseDown = (e: MouseEvent) => {
-    if (!(e.target as Element)?.closest(".viewport")) {
-      return
-    }
-    if (e.button !== 0) {
+    if (!isViewportClick(e)) {
       return
     }
 
@@ -126,7 +123,10 @@ export const Pencil = (): Tool => {
     }
   }
 
-  const handleMouseUp = () => {
+  const handleMouseUp = (e: MouseEvent) => {
+    if (!isViewportClick(e)) {
+      return
+    }
     setDrawingState(null)
   }
 
@@ -146,7 +146,7 @@ export const Pencil = (): Tool => {
           pressed={autoSelect()}
           onClick={() => setAutoSelect(!autoSelect())}
         >
-          <SelectionCrosshairIcon />
+          <LayersCrosshairIcon />
         </ToggleButton>
 
         <InputGroup>

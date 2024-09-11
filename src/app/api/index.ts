@@ -41,9 +41,15 @@ export type Application = {
     highlightedNodes: Accessor<string[]>
     setHighlightedNodes: Setter<string[]>
 
+    selection: Accessor<Selection[]>
+    setSelection: Setter<Selection[]>
+
     ctrlHeld: Accessor<boolean>
     shiftHeld: Accessor<boolean>
     spaceHeld: Accessor<boolean>
   }
   ydoc: Y.Doc
 }
+
+export type Selection =
+  | { type: "rectangle", x: number, y: number, width: number, height: number }
