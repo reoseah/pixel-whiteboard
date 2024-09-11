@@ -14,6 +14,9 @@ export type Application = {
   resources: Resources
   project: Project
   state: {
+    selectedNodes: Accessor<string[]>
+    setSelectedNodes: Setter<string[]>
+
     tool: Accessor<Tool>
     selectTool: (tool: Tool) => void
 

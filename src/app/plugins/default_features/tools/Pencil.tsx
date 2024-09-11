@@ -62,9 +62,9 @@ export const Pencil = (): Tool => {
 
     if (autoSelect()) {
       nodeId = (e.target as Element)?.closest("[data-drawable]")?.getAttribute("data-node-id") ?? "whiteboard"
-      app.project.setSelectedNodes([nodeId])
+      app.state.setSelectedNodes([nodeId])
     } else {
-      const selected = app.project.selectedNodes()
+      const selected = app.state.selectedNodes()
       if (selected.length === 1) {
         nodeId = selected[0]
       }

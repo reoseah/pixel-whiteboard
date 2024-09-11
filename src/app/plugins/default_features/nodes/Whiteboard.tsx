@@ -12,7 +12,7 @@ export const WhiteboardType: NodeType<Whiteboard> = {
   render: props => {
     // should always be a virtual canvas
     const child = () => props.node.children[0] ? props.app.project.nodes[props.node.children[0]] : undefined
-    const selected = () => props.app.project.selectedNodes().includes(props.id)
+    const selected = () => props.app.state.selectedNodes().includes(props.id)
     
     return (
       <div

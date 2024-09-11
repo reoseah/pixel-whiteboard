@@ -1,12 +1,10 @@
-import { Accessor, Component, Setter } from "solid-js"
+import { Accessor, Component } from "solid-js"
 import { SetStoreFunction, Store } from "solid-js/store"
 import { Application, CanvasActionData } from "."
 
 export type ProjectState = {
   nodes: Store<Record<string, NodeData>>
   setNodes: SetStoreFunction<Record<string, NodeData>>
-  selectedNodes: Accessor<string[]>
-  setSelectedNodes: Setter<string[]>
   topLevelNodes: Accessor<string[]>
 }
 

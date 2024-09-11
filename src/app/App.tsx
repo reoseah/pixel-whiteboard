@@ -13,7 +13,9 @@ import useHeldKey from './hooks/useHeldKey';
 
 function App() {
   const resources = useResources([DefaultFeaturesPlugin])
-  const project = useProject();
+  const project = useProject()
+
+  const [selectedNodes, setSelectedNodes] = createSignal<string[]>([])
 
   const [toolId, setToolId] = createSignal("select")
   const tool = () => resources.tools[toolId()] ?? resources.tools["select"]
@@ -48,6 +50,8 @@ function App() {
     resources,
     project,
     state: {
+      selectedNodes,
+      setSelectedNodes,
       tool,
       selectTool,
       subToolbar,
@@ -121,7 +125,6 @@ const useProject = (): ProjectState => {
       children: []
     }
   })
-  const [selectedNodes, setSelectedNodes] = createSignal<string[]>([])
   const topLevelNodes = createMemo(() => {
     const children = new Set<string>()
     for (const node of Object.values(nodes)) {
@@ -141,8 +144,6 @@ const useProject = (): ProjectState => {
   return {
     nodes,
     setNodes,
-    selectedNodes,
-    setSelectedNodes,
     topLevelNodes
   }
 }

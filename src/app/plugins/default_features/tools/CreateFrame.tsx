@@ -31,7 +31,7 @@ export const CreateFrame = (): Tool => {
       setX2(x)
       setY1(y)
       setY2(y)
-      app.project.setSelectedNodes([])
+      app.state.setSelectedNodes([])
       app.state.setViewportElements({
         "frame-preview": () => {
 
@@ -100,7 +100,7 @@ export const CreateFrame = (): Tool => {
               height,
             }
           )
-          app.project.setSelectedNodes([id])
+          app.state.setSelectedNodes([id])
         }
         // TODO: add an option to maintain selected tool instead of switching to select
         app.state.selectTool(app.resources.tools.select)

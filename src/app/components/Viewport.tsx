@@ -1,6 +1,6 @@
 import "./Viewport.css"
 import { createMemo, createSignal, For, Show } from "solid-js"
-import { Application, NodeData } from "../api"
+import { Application } from "../api"
 import { Dynamic } from "solid-js/web"
 import { Entries } from "@solid-primitives/keyed"
 

@@ -1,4 +1,4 @@
-import { CanvasAction, getPointsOnPath, VirtualCanvas } from "../../../api"
+import { CanvasAction, getPointsOnPath } from "../../../api"
 
 export type PencilAction = {
   type: "pencil"

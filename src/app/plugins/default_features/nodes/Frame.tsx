@@ -84,7 +84,7 @@ export const FrameComponent = (props: {
   id: string,
   node: Frame
 }) => {
-  const selected = () => props.app.project.selectedNodes().includes(props.id)
+  const selected = () => props.app.state.selectedNodes().includes(props.id)
   const child = () => props.node.children[0] ? props.app.project.nodes[props.node.children[0]] : undefined
 
   return (

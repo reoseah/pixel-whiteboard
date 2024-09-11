@@ -60,7 +60,7 @@ export const Select = (): Tool => {
       let selection!: string[]
       const shift = app.state.shiftHeld()
       if (shift) {
-        const currentSelection = app.project.selectedNodes()
+        const currentSelection = app.state.selectedNodes()
         if (currentSelection.includes(nodeId)) {
           selection = currentSelection.filter(id => id !== nodeId)
         } else {
@@ -70,7 +70,7 @@ export const Select = (): Tool => {
         selection = [nodeId]
       }
       batch(() => {
-        app.project.setSelectedNodes(selection)
+        app.state.setSelectedNodes(selection)
         if (selection.length > 0) {
           setCurrentMousePos({ x: getCanvasX(app, e.clientX), y: getCanvasY(app, e.clientY) })
           setToolState("move")
@@ -84,7 +84,7 @@ export const Select = (): Tool => {
         setToolState("selection_box")
         setInitialMousePos({ x, y })
         setCurrentMousePos({ x, y })
-        app.project.setSelectedNodes([])
+        app.state.setSelectedNodes([])
         app.state.setViewportElements("selection_box", () => () => {
           const left = () => Math.min(initialMousePos().x, currentMousePos().x)
           const top = () => Math.min(initialMousePos().y, currentMousePos().y)
@@ -129,7 +129,7 @@ export const Select = (): Tool => {
         console.log(dx, dy)
         setCurrentMousePos({ x, y })
 
-        const selectedNodes = app.project.selectedNodes()
+        const selectedNodes = app.state.selectedNodes()
         selectedNodes.forEach(id => {
           const node = app.project.nodes[id]
           const type = app.resources.nodes[node.type]
@@ -153,7 +153,7 @@ export const Select = (): Tool => {
 
   const handleMouseUp = () => {
     if (toolState() === "move") {
-      const selectedNodes = app.project.selectedNodes()
+      const selectedNodes = app.state.selectedNodes()
       batch(() => {
         selectedNodes.forEach(id => {
           const node = app.project.nodes[id]
@@ -168,7 +168,7 @@ export const Select = (): Tool => {
 
       batch(() => {
         app.state.setHighlightedNodes([])
-        app.project.setSelectedNodes(selectedNodes)
+        app.state.setSelectedNodes(selectedNodes)
         app.state.setViewportElements({ "selection_box": undefined })
       })
     }

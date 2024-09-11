@@ -128,7 +128,7 @@ export const CanvasComponent = (props: {
     <div
       ref={containerRef}
       class="canvas-container"
-      data-selected={props.app.project.selectedNodes().includes(props.id)}
+      data-selected={props.app.state.selectedNodes().includes(props.id)}
       data-node-id={props.id}
     >
     </div>
