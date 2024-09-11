@@ -1,4 +1,4 @@
-.workspace-view:has(.whiteboard[data-highlighted="true"]:not([data-selected="true"]))::after {
+.viewport:has(.whiteboard[data-highlighted="true"]:not([data-selected="true"]))::after {
   content: "";
   position: absolute;
   inset: 0;

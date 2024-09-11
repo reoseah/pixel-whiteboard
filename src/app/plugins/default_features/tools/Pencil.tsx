@@ -49,7 +49,7 @@ export const Pencil = (): Tool => {
   })
 
   const handleMouseDown = (e: MouseEvent) => {
-    if (!(e.target as Element)?.closest(".workspace-view")) {
+    if (!(e.target as Element)?.closest(".viewport")) {
       return
     }
     if (e.button !== 0) {
@@ -113,9 +113,15 @@ export const Pencil = (): Tool => {
       setCurrentMousePos({ x: newX, y: newY })
       setDrawingState({ ...state, action: newAction })
     } else {
+      if (!(e.target as Element)?.closest(".viewport")) {
+        app.state.setHighlightedNodes([])
+        return
+      }
       if (autoSelect()) {
         const nodeId = (e.target as Element)?.closest("[data-drawable]")?.getAttribute("data-node-id") ?? "whiteboard"
-        app.state.setHighlightedNodes([nodeId])
+        if (nodeId !== "whiteboard" || app.project.topLevelNodes().length > 1) {
+          app.state.setHighlightedNodes([nodeId])
+        }
       }
     }
   }

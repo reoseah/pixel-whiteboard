@@ -7,6 +7,7 @@ export type ProjectState = {
   setNodes: SetStoreFunction<Record<string, NodeData>>
   selectedNodes: Accessor<string[]>
   setSelectedNodes: Setter<string[]>
+  topLevelNodes: Accessor<string[]>
 }
 
 export type NodeData = {

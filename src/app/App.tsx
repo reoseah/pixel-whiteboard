@@ -1,6 +1,6 @@
 import './App.css'
 
-import { Component, createSignal, onCleanup, Show } from 'solid-js'
+import { Component, createMemo, createSignal, onCleanup, Show } from 'solid-js'
 import { createStore } from 'solid-js/store'
 import { Dynamic } from 'solid-js/web';
 import * as Y from "yjs"
@@ -122,12 +122,28 @@ const useProject = (): ProjectState => {
     }
   })
   const [selectedNodes, setSelectedNodes] = createSignal<string[]>([])
+  const topLevelNodes = createMemo(() => {
+    const children = new Set<string>()
+    for (const node of Object.values(nodes)) {
+      for (const child of node.children) {
+        children.add(child)
+      }
+    }
+    const topLevelNodes = []
+    for (const nodeId in nodes) {
+      if (!children.has(nodeId)) {
+        topLevelNodes.push(nodeId)
+      }
+    }
+    return topLevelNodes
+  })
 
   return {
     nodes,
     setNodes,
     selectedNodes,
-    setSelectedNodes
+    setSelectedNodes,
+    topLevelNodes
   }
 }
 

@@ -51,29 +51,13 @@ export function Viewport(props: { app: Application }) {
     window.addEventListener("mouseup", handleMouseUp)
   }
 
-  const topLevelNodes = createMemo(() => {
-    const children = new Set<string>()
-    for (const node of Object.values(props.app.project.nodes)) {
-      for (const child of node.children) {
-        children.add(child)
-      }
-    }
-    const topLevelNodes = []
-    for (const nodeId in props.app.project.nodes) {
-      if (!children.has(nodeId)) {
-        topLevelNodes.push(nodeId)
-      }
-    }
-    return topLevelNodes
-  })
-
   // `transition: transform 0.Xs` won't work here
   // can't animate the background grid pattern
   // animating only the contents make them look like they're lagging
   // so we're not using transitions at all
   return (
     <div
-      class="workspace-view"
+      class="viewport"
       data-active-tool={props.app.state.tool().id}
       style={{
         cursor: dragging() ? 'grabbing' : props.app.state.spaceHeld() ? 'grab' : (props.app.state.tool().cursor ?? 'default'),
@@ -83,15 +67,14 @@ export function Viewport(props: { app: Application }) {
       <svg
         width={innerWidth()}
         height={innerHeight()}
-        style={{
-          display: props.app.state.viewportZoom() >= 10 ? "block" : "none",
-          position: "absolute",
-          "z-index": -1,
+        class="pixel-grid"
+        classList={{
+          "display-none": props.app.state.viewportZoom() < 10,
         }}
       >
         <defs>
           <pattern
-            id="pixelCornersGrid"
+            id="pixel-grid-pattern"
             width={props.app.state.viewportZoom()}
             height={props.app.state.viewportZoom()}
             patternUnits="userSpaceOnUse"
@@ -102,7 +85,7 @@ export function Viewport(props: { app: Application }) {
         <rect
           width="100%"
           height="100%"
-          fill="url(#pixelCornersGrid)"
+          fill="url(#pixel-grid-pattern)"
           transform={`translate(${gridOffsetX()} ${gridOffsetY()})`}
         />
       </svg>
@@ -110,7 +93,7 @@ export function Viewport(props: { app: Application }) {
       <div style={{
         transform: `translate(${translateX()}px, ${translateY()}px)`
       }}>
-        <For each={topLevelNodes()}>
+        <For each={props.app.project.topLevelNodes()}>
           {(nodeId) => {
             const node = () => props.app.project.nodes[nodeId]
 

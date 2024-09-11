@@ -102,6 +102,10 @@ kbd {
   transform: translateZ(0);
 }
 
+.display-none {
+  display: none;
+}
+
 .scr-only {
   position: absolute;
   width: 1px;

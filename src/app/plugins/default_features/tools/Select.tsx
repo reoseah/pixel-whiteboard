@@ -33,7 +33,7 @@ export const Select = (): Tool => {
   }
 
   const handleMouseDown = (e: MouseEvent) => {
-    if (!(e.target as Element)?.closest(".workspace-view")) {
+    if (!(e.target as Element)?.closest(".viewport")) {
       return;
     }
     if (e.button !== 0) {

@@ -15,7 +15,7 @@ export const CreateFrame = (): Tool => {
   const height = () => Math.abs(y2() - y1())
 
   const createMouseDown = (app: Application) => (e: MouseEvent) => {
-    if (!(e.target as Element)?.closest(".workspace-view")) {
+    if (!(e.target as Element)?.closest(".viewport")) {
       return
     }
     if (e.button !== 0) {
