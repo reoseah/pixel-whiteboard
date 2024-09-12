@@ -1,6 +1,6 @@
 import "./Viewport.css"
 import { createMemo, createSignal, For, Show } from "solid-js"
-import { Application, Selection } from "../api"
+import { Application, getMaxX, getMaxY, getMinX, getMinY, Selection } from "../api"
 import { Dynamic } from "solid-js/web"
 import { Entries } from "@solid-primitives/keyed"
 
@@ -106,10 +106,10 @@ export function Viewport(props: { app: Application }) {
         </For>
         <Show when={props.app.state.selection().length}>
           {(_) => {
-            const minX = () => Math.min(...props.app.state.selection().map((s: Selection) => s.x))
-            const minY = () => Math.min(...props.app.state.selection().map((s: Selection) => s.y))
-            const maxX = () => Math.max(...props.app.state.selection().map((s: Selection) => s.x + s.width))
-            const maxY = () => Math.max(...props.app.state.selection().map((s: Selection) => s.y + s.height))
+            const minX = () => Math.min(...props.app.state.selection().map(getMinX))
+            const minY = () => Math.min(...props.app.state.selection().map(getMinY))
+            const maxX = () => Math.max(...props.app.state.selection().map(getMaxX))
+            const maxY = () => Math.max(...props.app.state.selection().map(getMaxY))
 
             return (
               <svg

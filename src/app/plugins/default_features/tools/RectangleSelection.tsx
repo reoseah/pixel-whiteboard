@@ -1,23 +1,9 @@
 import { batch, createSignal } from "solid-js"
-import { Application, getCanvasX, getCanvasY, isViewportClick, Tool, Selection } from "../../../api"
+import { Application, getCanvasX, getCanvasY, isViewportClick, Tool, Selection, combineSelections } from "../../../api"
 import { SelectionExcludeIcon, SelectionIcon, SelectionIntersectIcon, SelectionReplaceIcon, SelectionSubtractIcon, SelectionUnionIcon } from "../../../components/icons"
 import SubToolbar from "../../../components/SubToolbar"
 import InputGroup from "../../../components/form/InputGroup"
 import ToggleButton from "../../../components/form/ToggleButton"
-
-export type SelectionMode = "replace" | "add" | "subtract" | "intersect" | "exclude"
-
-export const combineSelections = (selection: Selection[], newSelection: Selection, mode: SelectionMode): Selection[] => {
-  console.log(selection, newSelection, mode)
-  if (mode === "replace") {
-    return [newSelection]
-  } else if (mode === "add") {
-    return [...selection, newSelection]
-  }
-  // TODO: Implement other modes
-  alert("Not implemented")
-  return []
-}
 
 export const RectangleSelection = (): Tool => {
   let app!: Application

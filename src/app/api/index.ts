@@ -54,3 +54,50 @@ export type Application = {
 export type Selection =
   | { type: "rectangle", x: number, y: number, width: number, height: number }
   | { type: "raster", tiles: Map<number, Map<number, Uint8Array>>, tileSize: number }
+
+export type SelectionMode = "replace" | "add" | "subtract" | "intersect" | "exclude"
+
+export const combineSelections = (selection: Selection[], newSelection: Selection, mode: SelectionMode): Selection[] => {
+  console.log(selection, newSelection, mode)
+  if (mode === "replace") {
+    return [newSelection]
+  } else if (mode === "add") {
+    return [...selection, newSelection]
+  }
+  // TODO: Implement other modes
+  alert("Not implemented")
+  return []
+}
+
+
+export const getMinX = (selection: Selection): number => {
+  if (selection.type === "rectangle") {
+    return selection.x
+  } else {
+    return Math.min(...Array.from(selection.tiles.keys())) * selection.tileSize
+  }
+}
+
+export const getMinY = (selection: Selection): number => {
+  if (selection.type === "rectangle") {
+    return selection.y
+  } else {
+    return Math.min(...Array.from(selection.tiles.values()).flatMap((row) => Array.from(row.keys()))) * selection.tileSize
+  }
+}
+
+export const getMaxX = (selection: Selection): number => {
+  if (selection.type === "rectangle") {
+    return selection.x + selection.width
+  } else {
+    return Math.max(...Array.from(selection.tiles.keys())) * selection.tileSize + selection.tileSize
+  }
+}
+
+export const getMaxY = (selection: Selection): number => {
+  if (selection.type === "rectangle") {
+    return selection.y + selection.height
+  } else {
+    return Math.max(...Array.from(selection.tiles.values()).flatMap((row) => Array.from(row.keys()))) * selection.tileSize + selection.tileSize
+  }
+}
