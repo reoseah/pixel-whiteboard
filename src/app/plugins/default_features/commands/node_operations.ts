@@ -14,8 +14,8 @@ export const InvertSelection: Command = {
   keybinds: [{ key: "A", ctrl: true, shift: true }],
   icon: SelectionIcon,
   execute: app => {
-    const selected = app.state.selectedNodes
-    app.state.setSelectedNodes(Object.keys(app.project.nodes).filter(id => !selected().includes(id)))
+    const selected = app.state.selectedNodes()
+    app.state.setSelectedNodes(Object.keys(app.project.nodes).filter(id => !selected.includes(id)))
   }
 }
 
@@ -24,9 +24,9 @@ export const DeleteSelected: Command = {
   keybinds: [{ key: "Delete" }],
   icon: DeleteIcon,
   execute: app => {
-    const selected = app.state.selectedNodes
+    const selected = app.state.selectedNodes()
     app.project.setNodes(produce(draft => {
-      let nodesToDelete = selected()
+      let nodesToDelete = selected
 
       while (nodesToDelete.length > 0) {
         const id = nodesToDelete.pop()!

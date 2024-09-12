@@ -53,3 +53,4 @@ export type Application = {
 
 export type Selection =
   | { type: "rectangle", x: number, y: number, width: number, height: number }
+  | { type: "raster", tiles: Map<number, Map<number, Uint8Array>>, tileSize: number }

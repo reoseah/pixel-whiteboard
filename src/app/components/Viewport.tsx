@@ -125,18 +125,24 @@ export function Viewport(props: { app: Application }) {
               >
                 <For each={props.app.state.selection()}>
                   {(selection) => (
-                    <rect
-                      x={(selection.x - minX()) * props.app.state.viewportZoom() + .5}
-                      y={(selection.y - minY()) * props.app.state.viewportZoom() + .5}
-                      width={selection.width * props.app.state.viewportZoom()}
-                      height={selection.height * props.app.state.viewportZoom()}
-                      stroke="white"
-                      stroke-width="1"
-                      stroke-dasharray="3 3"
-                      stroke-dashoffset="0"
-                    >
-                      <animate attributeName="stroke-dashoffset" from="0" to="6" dur=".5s" repeatCount="indefinite" />
-                    </rect>
+                    <Show when={selection.type === "rectangle"}>
+                      <rect
+                        // @ts-ignore
+                        x={(selection.x - minX()) * props.app.state.viewportZoom() + .5}
+                        // @ts-ignore
+                        y={(selection.y - minY()) * props.app.state.viewportZoom() + .5}
+                        // @ts-ignore
+                        width={selection.width * props.app.state.viewportZoom()}
+                        // @ts-ignore
+                        height={selection.height * props.app.state.viewportZoom()}
+                        stroke="white"
+                        stroke-width="1"
+                        stroke-dasharray="3 3"
+                        stroke-dashoffset="0"
+                      >
+                        <animate attributeName="stroke-dashoffset" from="0" to="6" dur=".5s" repeatCount="indefinite" />
+                      </rect>
+                    </Show>
                   )}
                 </For>
               </svg>
