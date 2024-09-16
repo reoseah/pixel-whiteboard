@@ -12,6 +12,7 @@ export const NumberInput = (props: {
   icon?: JSX.Element
   unit?: JSX.Element
   title?: string
+  disabled?: boolean
 }) => {
   return (
     <label
@@ -31,6 +32,7 @@ export const NumberInput = (props: {
         max={props.max}
         step={props.step}
         size={props.size}
+        disabled={props.disabled}
         onclick={event => (event.target as HTMLInputElement).select()}
         onkeydown={event => {
           if (event.key === 'Enter' || event.key === 'Escape') {

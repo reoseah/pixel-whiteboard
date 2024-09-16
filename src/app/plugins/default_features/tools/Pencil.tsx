@@ -216,6 +216,7 @@ export const Pencil = (): Tool => {
             value={opacity()}
             onChange={value => setOpacity(value)}
             title="Not implemented yet"
+            disabled={true}
             min={0}
             max={100}
             step={1}

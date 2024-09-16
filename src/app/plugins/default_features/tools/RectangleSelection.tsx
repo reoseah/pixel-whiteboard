@@ -26,36 +26,40 @@ export const RectangleSelection = (): Tool => {
           <ToggleButton
             pressed={mode() === "replace"}
             onClick={() => setMode("replace")}
-            title="Replace Selection"
+            title="Replace selection"
           >
             <SelectionReplaceIcon />
           </ToggleButton>
           <ToggleButton
+            disabled={true}
             pressed={mode() === "add"}
             onClick={() => setMode("add")}
-            title="Add to Selection"
+            title="Add to selection (Not implemented)"
           >
             <SelectionUnionIcon />
           </ToggleButton>
           <ToggleButton
+            disabled={true}
             pressed={mode() === "subtract"}
             onClick={() => setMode("subtract")}
-            title="Subtract from Selection"
+            title="Subtract from selection (Not implemented)"
           >
             <SelectionSubtractIcon />
           </ToggleButton>
           <ToggleButton
+            disabled={true}
             pressed={mode() === "intersect"}
             onClick={() => setMode("intersect")}
-            title="Intersect with Selection"
+            title="Intersect with selection (Not implemented)"
           >
             <SelectionIntersectIcon />
           </ToggleButton>
 
           <ToggleButton
+            disabled={true}
             pressed={mode() === "exclude"}
             onClick={() => setMode("exclude")}
-            title="Exclude from Selection"
+            title="Exclude from selection (Not implemented)"
           >
             <SelectionExcludeIcon />
           </ToggleButton>

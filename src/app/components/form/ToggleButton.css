@@ -26,4 +26,10 @@
   &[aria-pressed="true"]:active {
     background-color: var(--primary-700);
   }
+
+  &:disabled {
+    background-color: var(--neutral-700);
+    color: var(--neutral-400);
+    cursor: not-allowed;
+  }
 }

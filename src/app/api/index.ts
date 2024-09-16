@@ -69,7 +69,6 @@ export const combineSelections = (selection: Selection[], newSelection: Selectio
   return []
 }
 
-
 export const getMinX = (selection: Selection): number => {
   if (selection.type === "rectangle") {
     return selection.x

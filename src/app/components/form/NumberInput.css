@@ -30,7 +30,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  color: var(--neutral-300);
+  color: var(--neutral-400);
 }
 
 .number-input {
@@ -47,5 +47,10 @@
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {
     -webkit-appearance: none;
+  }
+
+  &:disabled {
+    color: var(--neutral-400);
+    cursor: not-allowed;
   }
 }

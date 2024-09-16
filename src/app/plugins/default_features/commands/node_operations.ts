@@ -1,6 +1,7 @@
 import { produce } from "solid-js/store"
 import { Command } from "../../../api"
 import { DeleteIcon, SelectionIcon } from "../../../components/icons"
+import { Whiteboard } from "../nodes/Whiteboard"
 
 export const SelectAll: Command = {
   label: "Select all",
@@ -44,5 +45,8 @@ export const DeleteSelected: Command = {
       }
     }))
     app.state.setSelectedNodes([])
+    if (!app.project.nodes["whiteboard"]) {
+      app.project.setNodes("whiteboard", { type: "whiteboard", children: [] })
+    }
   }
 }
